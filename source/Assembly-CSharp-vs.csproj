@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProductVersion>10.0.20506</ProductVersion>
+	<SchemaVersion>2.0</SchemaVersion>
+	<ProjectGuid>{FF3AA3D0-C14E-79CF-67ED-1DA9AB832505}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace></RootNamespace>
+	<AssemblyName>Assembly-CSharp</AssemblyName>
+	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<FileAlignment>512</FileAlignment>
+	<BaseDirectory>Assets</BaseDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>Temp\bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE;UNITY_4_6_2;UNITY_4_6;UNITY_STANDALONE_LINUX;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_IL2CPP;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_4_6_FEATURES;INCLUDE_WP_BLUE_SUPPORT;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;UNITY5_SCRIPTING_IN_UNITY4;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_MONO;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_OSX</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>Temp\bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+	<Reference Include="System" />
+    <Reference Include="System.XML" />
+	<Reference Include="System.Core" />
+	<Reference Include="System.Xml.Linq" />
+	<Reference Include="UnityEngine">
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEditor">
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll</HintPath>
+	</Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\BoxComponent.cs" />
+     <Compile Include="Assets\ButtonScript.cs" />
+     <Compile Include="Assets\Console.cs" />
+     <Compile Include="Assets\Control.cs" />
+     <Compile Include="Assets\ControlPanel.cs" />
+     <Compile Include="Assets\FileSaving.cs" />
+     <Compile Include="Assets\Fluvio\FluidRigidbody2DParticles.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Image Effects\FluvioFisheye.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Image Effects\FluvioImageEffectBase.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Image Effects\FluvioImageEffects.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Image Effects\FluvioTwirlEffect.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Projectors\AnimatedProjector.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Scripts\FluvioCameraFly.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Scripts\FluvioDisplayVersion.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Scripts\FluvioFpsCounter.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Scripts\FluvioGUI.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Scripts\FluvioInstructions.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Scripts\FluvioParticleCountSlider.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Scripts\FluvioQualitySettings.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Scripts\FluvioReverseNormals.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Scripts\FluvioSetTimeSettings.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Scripts\FluvioSlowMotion.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Scripts\FluvioTouch.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Scripts\FluvioUnderwaterEffects.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Water4\Sources\Scripts\FluvioDisplace.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Water4\Sources\Scripts\FluvioGerstnerDisplace.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Water4\Sources\Scripts\FluvioMeshContainer.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Water4\Sources\Scripts\FluvioPlanarReflection.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Water4\Sources\Scripts\FluvioSpecularLighting.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Water4\Sources\Scripts\FluvioWaterBase.cs" />
+     <Compile Include="Assets\Fluvio\Fluvio Example Project\Common\Water4\Sources\Scripts\FluvioWaterTile.cs" />
+     <Compile Include="Assets\Fluvio\_Main\Resources\Fluvio_PreventCodeStripping.cs" />
+     <Compile Include="Assets\GetPixel.cs" />
+     <Compile Include="Assets\GhostPlatform.cs" />
+     <Compile Include="Assets\GlobalVariables.cs" />
+     <Compile Include="Assets\GluedObjectController.cs" />
+     <Compile Include="Assets\KeyScript.cs" />
+     <Compile Include="Assets\LavaScript.cs" />
+     <Compile Include="Assets\LockScript.cs" />
+     <Compile Include="Assets\MainScreen.cs" />
+     <Compile Include="Assets\ObjectMenu.cs" />
+     <Compile Include="Assets\Platform.cs" />
+     <Compile Include="Assets\RungScript.cs" />
+     <Compile Include="Assets\ServerControl.cs" />
+     <Compile Include="Assets\SocketRead.cs" />
+     <Compile Include="Assets\WirePieceScript.cs" />
+     <Compile Include="Assets\WireScript.cs" />
+     <Compile Include="Assets\bodyController.cs" />
+     <Compile Include="Assets\dispenserScript.cs" />
+     <Compile Include="Assets\explodingObjectController.cs" />
+     <Compile Include="Assets\garfBigScript.cs" />
+     <Compile Include="Assets\leftHandController.cs" />
+     <Compile Include="Assets\lever.cs" />
+     <Compile Include="Assets\mainGuyController.cs" />
+     <Compile Include="Assets\messageBox.cs" />
+     <Compile Include="Assets\rewardOrPunishmentController.cs" />
+     <Compile Include="Assets\rightHandController.cs" />
+     <Compile Include="Assets\transformingObjectController.cs" />
+     <Compile Include="Assets\triggerBoxController.cs" />
+     <Compile Include="Assets\worldObject.cs" />
+     <Compile Include="Assets\worldObject_empty.cs" />
+     <None Include="Assets\Fluvio\Fluvio Example Project\Common\Water4\Sources\Shaders\FX-SimpleWater4.shader" />
+     <None Include="Assets\Fluvio\Fluvio Example Project\Common\Image Effects\_Sources\Shaders\FluvioTwirlEffect.shader" />
+     <None Include="Assets\Fluvio\Fluvio Example Project\Unity-4.3.0\Scenes\Fluvio3DExample\BeastSettings.xml" />
+     <None Include="Assets\Fluvio\Fluvio Example Project\Common\Water4\Sources\Shaders\WaterInclude.cginc" />
+     <None Include="Assets\Fluvio\_Main\Fluvio.Runtime.xml" />
+     <None Include="Assets\Fluvio\Fluvio Example Project\Common\Image Effects\_Sources\Shaders\FluvioFisheyeShader.shader" />
+     <None Include="Assets\Fluvio\Fluvio Example Project\Common\Water4\Sources\Shaders\FX-Water4.shader" />
+     <None Include="Assets\Fluvio\Fluvio Example Project\Common\Water4\Sources\Shaders\FX-Water4Underwater.shader" />
+     <None Include="Assets\Fluvio\Fluvio Example Project\Common\Projectors\Shaders\Projector Light.shader" />
+ <Reference Include="Assembly-UnityScript-firstpass">
+ <HintPath>/Users/john/Desktop/watson-rair/trunk/DSim/DSim/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UI">
+ <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/4.6.2/UnityEngine.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="Fluvio.Runtime">
+ <HintPath>/Users/john/Desktop/watson-rair/trunk/DSim/DSim/Assets/Fluvio/_Main/Fluvio.Runtime.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass-vs.csproj">
+      <Project>{732309E7-9187-B03B-11A5-54B536DFE176}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>
