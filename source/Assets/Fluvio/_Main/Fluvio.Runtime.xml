@@ -1,0 +1,1788 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Fluvio.Runtime</name>
+  </assembly>
+  <members>
+    <member name="T:ThinksquirrelSoftware.Fluvio.FluidAxes">
+      <summary>
+            Represents the 3D or 2D axes that a fluid simulates or emits from.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.ResolutionComparison">
+      <summary>
+            Represents the comparison between two resolutions by aspect ratio.
+            </summary>
+      <remarks>
+            Used in the FluidProfile class.
+            </remarks>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.PhoneGeneration">
+      <summary>
+            Represents an iPhone Generation. Equiavlent to UnityEngine.iPhone.generation.
+            </summary>
+      <remarks>
+            Used in the FluidProfile class.
+            </remarks>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.FluidBroadPhaseType">
+      <summary>
+            The type of broad phase to use for the fluid solver.
+            </summary>
+            None - Useful for particle counts of 100 or less
+            Octrees have a fixed maximum range, but do not need to be rebalanced. They use approximate radius search.
+            k-d trees do not have a maximum range, but must be rebalanced as particles move around. They use k-nearest neighbor search.</member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Fluid">
+      <summary>
+            Main fluid component.
+            </summary>
+    </member>
+    <member name="E:ThinksquirrelSoftware.Fluvio.Fluid.OnPreSolve">
+      <summary>
+            Occurs every fixed update, before the fluid solver runs.
+            </summary>
+    </member>
+    <member name="E:ThinksquirrelSoftware.Fluvio.Fluid.OnPostSolve">
+      <summary>
+            Occurs every fixed update, after the fluid solver runs.
+            </summary>
+    </member>
+    <member name="E:ThinksquirrelSoftware.Fluvio.Fluid.OnAllocation">
+      <summary>
+            Occurs whenever new particles are allocated or deallocated.
+            </summary>
+    </member>
+    <member name="E:ThinksquirrelSoftware.Fluvio.Fluid.OnFluidEmission">
+      <summary>
+            Occurs on every particle emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.emitters">
+      <summary>
+            Gets an array of the fluid's emitters. (Allocates a new array)
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.particles">
+      <summary>
+            Gets an array of the fluid's particles. (Allocates a new array)
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.plugins">
+      <summary>
+            Gets an array of the fluid's plugins. (Allocates a new array)
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.solverEnabled">
+      <summary>
+            Controls whether or not the fluid's solver is enabled.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.playOnEnable">
+      <summary>
+            Should fluid simulation automatically play when enabled?
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.isPlaying">
+      <summary>
+            Is the fluid currently playing?
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.particleCount">
+      <summary>
+            Gets the fluid's particle count. (Includes inactive particles)
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.activeParticleCount">
+      <summary>
+            Gets the fluid's active particle count.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.emitterCount">
+      <summary>
+            Gets the fluid's emitter count.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.pluginCount">
+      <summary>
+            Gets the fluid's plugin count.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.useGravity">
+      <summary>
+            Controls whether or not the fluid will use global gravity settings.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.simulationScale">
+      <summary>
+            Controls the global simulation scale of the fluid.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.dimensions">
+      <summary>
+            The simulation dimensions for the fluid.
+            </summary>
+      <remarks>
+            2D fluids have special optimizations in place, and can usually support higher particle counts.
+            </remarks>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.layer">
+      <summary>
+            Gets or sets the layer associated with the fluid. Also sets the internal layer mask.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.broadPhaseType">
+      <summary>
+            Gets the type of the broad phase used by the fluid. (Read only)
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.broadPhaseSize">
+      <summary>
+            Gets or sets the size of the broad phase, in world space. @warning Changing this value at runtime may corrupt a fluid's state.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.broadPhaseOffset">
+      <summary>
+            Gets or sets the position offset of the broad phase, relative to the fluid. @warning Changing this value at runtime may corrupt a fluid's state.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.particleSkinWidth">
+      <summary>
+            Gets or sets a fluid's particle skin width. Skin width controls how far a particle must travel before recalculating the broad phase.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.smoothingDistance">
+      <summary>
+            Gets or sets the smoothing distance of fluid particles. @warning Changing this value at runtime may corrupt a fluid's state.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.maxInteractions">
+      <summary>
+            Gets or sets the maximum amount of interactions allowed per particle per frame. Changing this value at runtime may allocate garbage.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.particleMass">
+      <summary>
+            Gets or sets the mass of each fluid particle.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.fluidMass">
+      <summary>
+            Returns the total mass of a fluid.
+            </summary>
+      <remarks>
+            This is a shortcut for particleMass * activeParticleCount.
+            </remarks>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.initialDensity">
+      <summary>
+            Gets or sets the initial density of each fluid particle.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.minimumDensity">
+      <summary>
+            Gets or sets the minimum density of each fluid particle.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.viscosity">
+      <summary>
+            Gets or sets the viscosity of a fluid.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.gasConstant">
+      <summary>
+            Gets or sets the gas constant of a fluid.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.interactiveForce">
+      <summary>
+            Gets or sets the interactive force applied to a fluid.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.damping">
+      <summary>
+            Gets or sets the physical damping applied to a fluid.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.velocityLimit">
+      <summary>
+            Gets or sets the velocity limit of each fluid particle.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.velocityDampen">
+      <summary>
+            Gets or sets the velocity dampen amount.
+            </summary>
+      <remarks>
+            Particle velocities are dampened if they are greater than velocityLimit. For example, A value of 1 will reduce a particle's velocity by 100%. A value of .5 will reduce a particle's velocity by 50%.
+            </remarks>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.solverIterationCount">
+      <summary>
+            Gets or sets the solver iteration count. Increase this value to increase stability at the cost of performance. It is not recommended to set this higher than 2.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.material">
+      <summary>
+            The material associated with a fluid.
+            </summary>
+      <remarks>
+            This will return null if the fluid does not have an associated particle system.
+            </remarks>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.materials">
+      <summary>
+            The materials list associated with a fluid.
+            </summary>
+      <remarks>
+            This will return null if the fluid does not have an associated particle system.
+            </remarks>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.sharedMaterial">
+      <summary>
+            The shared material associated with a fluid.
+            </summary>
+      <remarks>
+            This will return null if the fluid does not have an associated particle system.
+            </remarks>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Fluid.sharedMaterials">
+      <summary>
+            The shared materials list associated with a fluid.
+            </summary>
+      <remarks>
+            This will return null if the fluid does not have an associated particle system.
+            </remarks>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.GetEmitters(ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter[]@)">
+      <summary>
+            Writes the fluid's emitters into an array. This will automatically resize the array, if needed.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.GetEmitters(ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter[])">
+      <summary>
+            Writes the fluid's emitters into an array.
+            </summary>
+      <returns>
+            The amount of emitters written into the array.
+            </returns>
+    </member>
+    <!--FIXME: Invalid documentation markup was found for member M:ThinksquirrelSoftware.Fluvio.Fluid.GetPlugins(ThinksquirrelSoftware.Fluvio.Plugins.FluidPlugin[]@)-->
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.GetPlugins(ThinksquirrelSoftware.Fluvio.Plugins.FluidPlugin[])">
+      <summary>
+            Writes the fluid's plugins into an array.
+            </summary>
+      <returns>
+            The amount of plugins written into the array.
+            </returns>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.GetParticles(ThinksquirrelSoftware.Fluvio.FluidParticle[]@)">
+      <summary>
+            Writes the fluid's particles into an array. This will automatically resize the array, if needed.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.GetParticles(ThinksquirrelSoftware.Fluvio.FluidParticle[])">
+      <summary>
+            Writes the fluid's particles into an array.
+            </summary>
+      <returns>
+            The amount of particles written into the array.
+            </returns>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.GetParticle(System.Int32)">
+      <summary>
+            Gets a fluid particle by index.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.SetParticles(ThinksquirrelSoftware.Fluvio.FluidParticle[],System.Int32)">
+      <summary>
+            Sets a fluid's particle array up to the specified count, or the fluid's particle count (whichever value is lower).
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.SetParticle(ThinksquirrelSoftware.Fluvio.FluidParticle,System.Int32)">
+      <summary>
+            Sets a single fluid particle by index.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.SetParticle(ThinksquirrelSoftware.Fluvio.FluidParticle@,System.Int32)">
+      <summary>
+            Sets a single fluid particle by index.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.Play">
+      <summary>
+            Starts fluid simulation, if it is not already playing.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.Pause">
+      <summary>
+            Pause fluid simulation, if it is playing.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.AddEmitter(ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter)">
+      <summary>
+            Adds an emitter to the fluid.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.RemoveEmitter(ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter)">
+      <summary>
+            Removes an emitter from the fluid.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.AddPlugin(ThinksquirrelSoftware.Fluvio.Plugins.FluidPlugin)">
+      <summary>
+            Adds a plugin to the fluid.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.RemovePlugin(ThinksquirrelSoftware.Fluvio.Plugins.FluidPlugin)">
+      <summary>
+            Removes a plugin from the fluid.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.SpawnParticle(ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter,UnityEngine.Vector3,UnityEngine.Vector3)">
+      <summary>
+            Spawns a fluid particle at the specified position with the specified force. Returns a copy of the particle struct, or null if a particle cannot be spawned.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.DespawnParticle(ThinksquirrelSoftware.Fluvio.FluidParticle)">
+      <summary>
+            Despawns a fluid particle.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.DespawnParticle(ThinksquirrelSoftware.Fluvio.FluidParticle,System.Single)">
+      <summary>
+            Despawns a fluid particle after the specified time.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.StartPlugin(ThinksquirrelSoftware.Fluvio.Plugins.FluidPlugin)">
+      <summary>
+            Starts a fluid plugin. This is usally handled automatically.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.StopPlugin(ThinksquirrelSoftware.Fluvio.Plugins.FluidPlugin)">
+      <summary>
+            Stops a fluid plugin. This is usally handled automatically.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.StartAllPlugins">
+      <summary>
+            Starts all fluid plugins. This is usally handled automatically.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.StopAllPlugins">
+      <summary>
+            Stops all fluid plugins. This is usally handled automatically.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.GetPlugin``1">
+      <summary>
+            Gets the first fluid plugin found of the specified type.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.GetPlugins``1">
+      <summary>
+            Gets all fluid plugins of the specified type.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.GetFluidBounds">
+      <summary>
+            Gets the bounds of a fluid.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.Find(System.String)">
+      <summary>
+            Find the first fluid matching the name specified.
+            </summary>
+      <param name="name">
+            The name of the fluid to search for.
+            </param>
+      <returns>
+            The matching fluid. Returns <see cref="!:null" /> if not found.
+            </returns>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.FindAll(System.String)">
+      <summary>
+            Find all fluids matching the name specified.
+            </summary>
+      <param name="name">
+            The name of the fluid to search for.
+            </param>
+      <returns>
+            The matching fluids. Returns <see cref="!:null" /> if not found.
+            </returns>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.All">
+      <summary>
+            Gets all active fluids.
+            </summary>
+      <returns>
+            All active fluids in the scene.
+            </returns>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Fluid.Simulate(System.Single)">
+      <summary>
+            Simulate a fluid for the specified deltaTime.
+            </summary>
+      <remarks>
+            This method can be used to simulate the fluid at a different speed.
+            </remarks>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.FluidParticle">
+      <summary>
+            Represents a fluid particle.
+            </summary>
+      <remarks>
+            This object is a value type - when modifying a particle, it must be reapplied into the fluid array.
+            </remarks>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluidParticle.emitter">
+      <summary>
+            Gets the parent emitter associated with this particle. (Read only)
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluidParticle.enabled">
+      <summary>
+            If true, the particle is currently enabled.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluidParticle.position">
+      <summary>
+            Gets or sets the position of the particle.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluidParticle.velocity">
+      <summary>
+            Gets or sets the velocity of the particle.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluidParticle.particleLife">
+      <summary>
+            Gets or sets the particle's life.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluidParticle.startLife">
+      <summary>
+            Gets the start life of the particle.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluidParticle.lifetime">
+      <summary>
+            Gets the lifetime of the particle, from 0-1. Returns 1 when particleLife = startLife, or if the startLife is Infinity.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluidParticle.smoothingDistance">
+      <summary>
+            Gets the smoothing distance of the particle.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluidParticle.density">
+      <summary>
+            Gets the current density of the particle.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluidParticle.pressure">
+      <summary>
+            Gets the current pressure of the particle.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluidParticle.mass">
+      <summary>
+            Gets or sets the mass of the particle. Changing this value may produce non-physical behaviour.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluidParticle.ID">
+      <summary>
+            Gets the particle's ID. This number is unique to the particle within the fluid.
+            </summary>
+      <remarks>
+            Returns -1 for disabled/invalid particles.
+            </remarks>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluidParticle.neighbors">
+      <summary>
+            Gets a list of IDs, representing a particle's neighbors. (Allocates a new array)
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.FluidParticle.ResetMassData">
+      <summary>
+            Resets the mass data of a particle.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.FluidParticle.GetNeighbors(System.Int32[]@)">
+      <summary>
+            Writes the particle's neighbors into an array. This will automatically resize the array, if needed.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.FluidParticle.GetNeighbors(System.Int32[])">
+      <summary>
+            Writes the particle's neighbors into an array.
+            </summary>
+      <returns>
+            The amount of neighbors written into the array.
+            </returns>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.FluidParticle.AddForce(UnityEngine.Vector3)">
+      <summary>
+            Adds the specified force to the particle.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.FluidParticle.AddForce(UnityEngine.Vector3,UnityEngine.ForceMode)">
+      <summary>
+            Adds the specified force to the particle, using a specific force mode.
+            </summary>
+      <remarks>
+            ForceMode.Force: f0 += f1
+            ForceMode.Acceleration: f0 += f1 * invMass
+            ForceMode.Impulse: f0 += f1 / dt
+            ForceMode.VelocityChange: f0 += (f1 * invMass) / dt
+            </remarks>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.FluvioBase">
+      <summary>
+            MonoBehavior base class for all Fluvio components.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.FluvioBase.cachedTransform">
+      <summary>
+            This property provides a cached version the component's transform for performance reasons.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.FluvioTimeStep">
+      <summary>
+            Represents a time step for Fluvio's solver.
+            </summary>
+      <remarks>
+            This object is a value type.
+            </remarks>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.FluvioTimeStep.#ctor(System.Single,System.Single)">
+      <summary>
+            Creates a new time step struct.
+            </summary>
+    </member>
+    <member name="F:ThinksquirrelSoftware.Fluvio.FluvioTimeStep.iter">
+      <summary>
+            The amount of solver iterations, as a float.
+            </summary>
+    </member>
+    <member name="F:ThinksquirrelSoftware.Fluvio.FluvioTimeStep.inv_iter">
+      <summary>
+            1.0f / iter
+            </summary>
+    </member>
+    <member name="F:ThinksquirrelSoftware.Fluvio.FluvioTimeStep.dt">
+      <summary>
+            The delta time of the current frame.
+            </summary>
+    </member>
+    <member name="F:ThinksquirrelSoftware.Fluvio.FluvioTimeStep.dt_iter">
+      <summary>
+            dt * inv_iter
+            </summary>
+    </member>
+    <member name="F:ThinksquirrelSoftware.Fluvio.FluvioTimeStep.dt2">
+      <summary>
+            dt^2
+            </summary>
+    </member>
+    <member name="F:ThinksquirrelSoftware.Fluvio.FluvioTimeStep.dt2_iter">
+      <summary>
+            dt^2 * inv_iter
+            </summary>
+    </member>
+    <member name="F:ThinksquirrelSoftware.Fluvio.FluvioTimeStep.inv_dt">
+      <summary>
+            1.0f / dt
+            </summary>
+    </member>
+    <member name="F:ThinksquirrelSoftware.Fluvio.FluvioTimeStep.inv_dt_iter">
+      <summary>
+            inv_dt * inv_iter
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.VersionInfo">
+      <summary>
+            Contains Fluvio version information.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.VersionInfo.incremental">
+      <summary>
+            Gets the incremental version number.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.VersionInfo.major">
+      <summary>
+            Gets the major version number.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.VersionInfo.minor">
+      <summary>
+            Gets the minor version number.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.VersionInfo.revision">
+      <summary>
+            Gets the revision version number.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.VersionInfo.isBeta">
+      <summary>
+            Whether or not the current Fluvio build is a beta.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.VersionInfo.isFreeEdition">
+      <summary>
+            Whether or not the current Fluvio build is the free edition.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.VersionInfo.version">
+      <summary>
+            Gets the version of Fluvio.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.VersionInfo.license">
+      <summary>
+            Gets the current Fluvio license, in human-readable form.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.VersionInfo.isPro">
+      <summary>
+            Determines whether or not this build of Fluvio is the professional version (source code), or standard version (assembly).
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.VersionInfo.ReferenceManualUrl">
+      <summary>
+            Gets the Fluvio reference manual URL.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.VersionInfo.SupportForumUrl">
+      <summary>
+            Gets the Fluvio support forum URL.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.VersionInfo.ArchiveUrl">
+      <summary>
+            Gets the Fluvio reference manual archive URL.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.VersionInfo.ComponentUrl(System.Type)">
+      <summary>
+            Gets the Fluvio manual URL for the specified component.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.VersionInfo.ComponentUrl(System.Type,System.Boolean)">
+      <summary>
+            Gets the Fluvio manual URL for the specified component.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.VersionInfo.ScriptingUrl(System.Type)">
+      <summary>
+            Gets the Fluvio Scripting API URL for the specified type.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.VersionInfo.ScriptingUrl(System.Type,System.Boolean)">
+      <summary>
+            Gets the Fluvio Scripting API URL for the specified type.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.VersionInfo.ContentLink">
+      <summary>
+            Gets the Asset Store content link for the current Fluvio version.
+            </summary>
+    </member>
+    <!--FIXME: Invalid documentation markup was found for member T:ThinksquirrelSoftware.Fluvio.BroadPhase.BinaryHeap`2-->
+    <member name="P:ThinksquirrelSoftware.Fluvio.BroadPhase.BinaryHeap`2.Count">
+      <summary>
+            Get a count of the number of items in the collection.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.BinaryHeap`2.Clear">
+      <summary>
+            Removes all items from the collection.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.BinaryHeap`2.TrimExcess">
+      <summary>
+            Sets the capacity to the actual number of elements in the BinaryHeap,
+            if that number is less than a threshold value.
+            </summary>
+      <remarks>
+            The current threshold value is 90% (.NET 3.5), but might change in a future release.
+            </remarks>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.BinaryHeap`2.Insert(`0,`1)">
+      <summary>
+            Inserts an item onto the heap.
+            </summary>
+      <param name="newItem">The item to be inserted.</param>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.BinaryHeap`2.Peek">
+      <summary>
+            Return the root item from the collection, without removing it.
+            </summary>
+      <returns>Returns the item at the root of the heap.</returns>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.BinaryHeap`2.RemoveRoot">
+      <summary>
+            Removes and returns the root item from the collection.
+            </summary>
+      <returns>Returns the item at the root of the heap.</returns>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.BroadPhase.FluidIndexGrid">
+      <summary>
+            Implementation of an index grid broad phase
+            </summary>
+      <remarks>
+            This is an internal class.
+            </remarks>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.BroadPhase.KdTree">
+      <summary>
+            Organizes points into a kd-tree structure.
+            </summary>
+      <remarks>
+            This class implements a data structure that stores a list of points in space.
+            A common task in game programming is to take a supplied point and discover which
+            of a stored set of points is nearest to it. The kd-tree allows this "nearest neighbour"
+            search to be carried out quickly, or at least much more quickly than a simple linear search
+            through the list.
+            The nearest-neighbour search returns an integer index - it is assumed that the original
+            array of points is available for the lifetime of the tree, and the index refers to that
+            array.
+            </remarks>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.KdTree.MakeFromPoints(System.Int32,UnityEngine.Vector3[])">
+      <summary>
+            Make a new tree from a list of points.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.KdTree.Regenerate(ThinksquirrelSoftware.Fluvio.BroadPhase.KdTree,System.Int32,UnityEngine.Vector3[])">
+      <summary>
+            Regenerate a tree from a list of points, reusing any old objects from the root.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.KdTree.Rebalance(ThinksquirrelSoftware.Fluvio.BroadPhase.KdTree)">
+      <summary>
+            Rebalance the tree.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.KdTree.FindNearest(UnityEngine.Vector3)">
+      <summary>
+            Find the nearest point in the set to the supplied point.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.KdTree.FindNearest(UnityEngine.Vector3,System.Single)">
+      <summary>
+            Find the nearest point in the set to the supplied point, up to the maximum square distance.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.KdTree.FindNearest(UnityEngine.Vector3,System.Int32)">
+      <summary>
+            Find the nearest points in the set up to the maximum amount.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.KdTree.FindNearest(UnityEngine.Vector3,System.Int32,System.Single)">
+      <summary>
+            Find the nearest points in the set up to the maximum amount, up to the maximum square distance.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.KdTree.FindNearest(UnityEngine.Vector3,System.Int32[],System.Int32,System.Single)">
+      <summary>
+            Find the nearest points in the set up to the maximum amount, up to the maximum square distance.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.KdTree.K_NN(UnityEngine.Vector3,ThinksquirrelSoftware.Fluvio.BroadPhase.HyperRect,System.Single,System.Int32,ThinksquirrelSoftware.Fluvio.BroadPhase.NeighborList)">
+      <summary>
+            K-Nearest neighbor algorithm
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.BroadPhase.KdTree.Dump(System.Int32)">
+      <summary>
+            Simple output of tree structure - mainly useful for getting a rough idea of how deep the tree is (and therefore how well the splitting heuristic is performing).
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Emitters.FluidBurstEmitter">
+      <summary>
+            Emits in a spherical (or circular) burst pattern.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidBurstEmitter.position">
+      <summary>
+            The position offset (in local space) of the emitter.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidBurstEmitter.worldPosition">
+      <summary>
+            The world space position to emit from.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidBurstEmitter.radius">
+      <summary>
+            The radius of the emitter.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidBurstEmitter.emitterAxes">
+      <summary>
+            The axes to emit from.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Emitters.FluidCubeEmitter">
+      <summary>
+            Emits in a cube pattern.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidCubeEmitter.position">
+      <summary>
+            The position offset (in local space) of the emitter.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidCubeEmitter.worldPosition">
+      <summary>
+            The world space position to emit from.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidCubeEmitter.dimensions">
+      <summary>
+            The dimensions (in local space) of the cube.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidCubeEmitter.force">
+      <summary>
+            The force (in local space) applied to all particles on emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidCubeEmitter.worldForce">
+      <summary>
+            The force (in world space) applied to all particles on emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidCubeEmitter.uniform">
+      <summary>
+            Determines whether particles should emit in a uniform fashion.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidCubeEmitter.spacing">
+      <summary>
+            If uniform = true, determines the particle spacing.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Emitters.FluidEllipsoidEmitter">
+      <summary>
+            Emits in an ellipsoid pattern.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEllipsoidEmitter.position">
+      <summary>
+            The position offset (in local space) of the emitter.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEllipsoidEmitter.worldPosition">
+      <summary>
+            The world space position to emit from.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEllipsoidEmitter.dimensions">
+      <summary>
+            The dimensions (in local space) of the ellipsoid.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEllipsoidEmitter.force">
+      <summary>
+            The force (in local space) applied to all particles on emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEllipsoidEmitter.worldForce">
+      <summary>
+            The force (in world space) applied to all particles on emission.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter">
+      <summary>
+            Base class for emitter components.
+            </summary>
+    </member>
+    <member name="E:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.OnFluidEmission">
+      <summary>
+            Occurs on every particle emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.particles">
+      <summary>
+            Gets an array of the emitter's particles. (Allocates a new array)
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.emit">
+      <summary>
+            Controls particle emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.isEmitting">
+      <summary>
+            Whether or not the emitter is emitting particles.
+            </summary>
+      <remarks>
+            Returns false if:
+            - The application is in edit mode
+            - The emitter is disabled, emission is disabled, or emission/maxParticles are set to 0
+            - The emitter has reached max particles and currently cannot emit any more.
+            </remarks>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.emission">
+      <summary>
+            The amount of particles to emit per emission pulse.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.maxParticles">
+      <summary>
+            Gets or sets the maximum amount of particles allowed from this emitter.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.minEmitTime">
+      <summary>
+            Gets or sets the amount of time between emissions. This will never actually be lower than the fixed timestep.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.initialDelay">
+      <summary>
+            Gets or sets the initial delay before the first emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.oneShotOnMax">
+      <summary>
+            If enabled, emission will stop once the maximum amount of particles has been reached.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.maxParticleDistance">
+      <summary>
+            Gets or sets the maximum distance a particle can go from the emitter. Particles outside of this range will be automatically destroyed.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.emitterLife">
+      <summary>
+            Gets or sets the life of the emitter. After this period of time, the emitter will automatically stop emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.particleLife">
+      <summary>
+            Gets or sets the base life of a particle. Particle life is calculated as a range between (life - jitter) and (life + jitter).
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.particleLifeJitter">
+      <summary>
+            Gets or sets the life jitter of a particle. Particle life is calculated as a range between (life - jitter) and (life + jitter).
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.forceMultiplier">
+      <summary>
+            Gets or sets the force multiplier applied to the emission force.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.particleCount">
+      <summary>
+            Gets the amount of particles belonging to this emitter.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.emissionCenter">
+      <summary>
+            Gets the emitter's center. The location of this point depends on the type of emitter as well as the position of the object's transform.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.ChangeEmitPosition">
+      <summary>
+            The function to change the emission position. This is run on every particle emission.
+            </summary>
+      <returns>
+            The new emission position.
+            </returns>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.ChangeEmitForce">
+      <summary>
+            The function to change the emission force. This is run on every particle emission.
+            </summary>
+      <returns>
+            The new emission force.
+            </returns>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.Initialize">
+      <summary>
+            The emitter initialization method.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.GetEmissionCenter">
+      <summary>
+            Gets the emission center of the emitter.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.EmitOne">
+      <summary>
+            Emits one particle, increasing the fluid's maximum particle count if needed.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.EmitOne(System.Boolean)">
+      <summary>
+            Emits one particle, if possible. If increaseMaxParticles = true, the fluid's maximum particle count will be increased by one.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.EmitOne(UnityEngine.Vector3,UnityEngine.Vector3)">
+      <summary>
+            Emit a particle at the specified position and force, increasing the fluid's maximum particle count if needed.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.EmitOne(UnityEngine.Vector3,UnityEngine.Vector3,System.Boolean)">
+      <summary>
+            Emit a particle at the specified position and force. If increaseMaxParticles = true, the fluid's maximum particle count will be increased by one.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.EmitOne(ThinksquirrelSoftware.Fluvio.FluidParticle)">
+      <summary>
+            Emit a particle based on a specified template particle, increasing the fluid's maximum particle count if needed.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.EmitOne(ThinksquirrelSoftware.Fluvio.FluidParticle,System.Boolean)">
+      <summary>
+            Emit a particle based on a specified template particle. If increaseMaxParticles = true, the fluid's maximum particle count will be increased by one.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.Emit">
+      <summary>
+            Starts emission.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.Emit(System.Boolean)">
+      <summary>
+            Starts or stops emission.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.Emit(System.Int32)">
+      <summary>
+            Starts emission, and increases the fluid's maximum particle count by the specified amount.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.GetParticles(ThinksquirrelSoftware.Fluvio.FluidParticle[]@)">
+      <summary>
+            Writes the emitter's particles into an array. This will automatically resize the array, if needed.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidEmitter.GetParticles(ThinksquirrelSoftware.Fluvio.FluidParticle[])">
+      <summary>
+            Writes the emitter's particles into an array.
+            </summary>
+      <returns>
+            The amount of particles written into the array.
+            </returns>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Emitters.FluidLineEmitter">
+      <summary>
+            Emits in a line.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidLineEmitter.position">
+      <summary>
+            The start position (in local space) of the line.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidLineEmitter.endPosition">
+      <summary>
+            The end position (in local space) of the line.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidLineEmitter.force">
+      <summary>
+            The force (in local space) applied to all particles on emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidLineEmitter.worldPosition">
+      <summary>
+            The start position (in world space) of the line.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidLineEmitter.worldEndPosition">
+      <summary>
+            The end position (in world space) of the line.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidLineEmitter.worldForce">
+      <summary>
+            The force (in world space) applied to all particles on emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidLineEmitter.uniform">
+      <summary>
+            Determines whether particles should emit in a uniform fashion.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidLineEmitter.spacing">
+      <summary>
+            If uniform = true, determines the particle spacing.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Emitters.FluidMeshEmitter">
+      <summary>
+            Emits at mesh vertices.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidMeshEmitter.mesh">
+      <summary>
+            The mesh associated with this emitter.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidMeshEmitter.sharedMesh">
+      <summary>
+            The shared mesh associated with this emitter.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidMeshEmitter.force">
+      <summary>
+            The force (in local space) applied to all particles on emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidMeshEmitter.worldForce">
+      <summary>
+            The force (in world space) applied to all particles on emission.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidMeshEmitter.GetVertexCount">
+      <summary>
+            The vertex count of the mesh.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Emitters.FluidStreamEmitter">
+      <summary>
+            Emits in a stream.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidStreamEmitter.position">
+      <summary>
+            The start position (in local space) of the stream force.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidStreamEmitter.endPosition">
+      <summary>
+            The end position (in local space) of the stream force.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidStreamEmitter.force">
+      <summary>
+            The force (in local space) applied to all particles on emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidStreamEmitter.worldPosition">
+      <summary>
+            The start position (in world space) of the stream force.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidStreamEmitter.worldEndPosition">
+      <summary>
+            The end position (in world space) of the stream force.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidStreamEmitter.worldForce">
+      <summary>
+            The force (in world space) applied to all particles on emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidStreamEmitter.radius">
+      <summary>
+            The radius of the emitter.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidStreamEmitter.emitterAxes">
+      <summary>
+            The axes to emit from.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Emitters.FluidVoxelEmitter">
+      <summary>
+            Voxelizes a mesh into emission points.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidVoxelEmitter.mesh">
+      <summary>
+            The mesh associated with this emitter.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidVoxelEmitter.sharedMesh">
+      <summary>
+            The shared mesh associated with this emitter.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidVoxelEmitter.voxelSize">
+      <summary>
+            The resolution of voxel points.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidVoxelEmitter.maxIterations">
+      <summary>
+            The maximum number of points to calculate.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidVoxelEmitter.voxelShell">
+      <summary>
+            Determines whether only a voxel shell will be created.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidVoxelEmitter.force">
+      <summary>
+            The force (in local space) applied to all particles on emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Emitters.FluidVoxelEmitter.worldForce">
+      <summary>
+            The force (in world space) applied to all particles on emission.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidVoxelEmitter.GetVoxelCount">
+      <summary>
+            The voxel count, based on the mesh and emitter settings.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidVoxelEmitter.Refresh">
+      <summary>
+            Reinitializes the emitter.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Emitters.FluidVoxelEmitter.GetPointTable">
+      <summary>
+            Gets the voxel point table.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidTreeQueryCallback">
+      <summary>
+            Fluid tree query callback. This is run during a nearest-neighbor search.
+            </summary>
+      <param name="position">
+            The position to query the tree with.
+            </param>
+      <returns>
+            If true, continue the query - if false, terminate the query.
+            </returns>
+      <remarks>
+            This is implemented as an interface to avoid memory issues in Mono with C# delegates.
+            </remarks>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidBroadPhase">
+      <summary>
+            Represents a spacial tree broadphase for tracking fluid particle positions.
+            </summary>
+      <remarks>
+            Fluid trees use integer ID proxies.
+            </remarks>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidBroadPhase.isDirty">
+      <summary>
+            A flag that is set when the tree is dirty.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidBroadPhase.version">
+      <summary>
+            Gets the version of the tree. Use this to detect changes.
+            </summary>
+    </member>
+    <!--FIXME: Invalid documentation markup was found for member M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidBroadPhase.Initialize(ThinksquirrelSoftware.Fluvio.Fluid)-->
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidBroadPhase.AddProxy(UnityEngine.Vector3@)">
+      <summary>
+            Adds a proxy to the tree at the specified position. This marks the tree for rebalancing.
+            </summary>
+      <returns>
+            The proxy ID of the newly created proxy.
+            </returns>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidBroadPhase.RemoveProxy(System.Int32)">
+      <summary>
+            Removes a proxy from the tree. This marks the tree for rebalancing.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidBroadPhase.MoveProxy(System.Int32,UnityEngine.Vector3@)">
+      <summary>
+            Moves a proxy within the tree. This will mark the tree for rebalancing if the squared position delta is larger than the fluid's particle skin width.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidBroadPhase.Rebalance">
+      <summary>
+            Rebalance the tree. This will synchronize all proxies.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidBroadPhase.SetCapacity(System.Int32)">
+      <summary>
+            Sets the capacity for particle proxies.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidBroadPhase.Query(ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidTreeQueryCallback,UnityEngine.Vector3@,System.Single)">
+      <summary>
+            Queries the tree, doing a nearest-neighbor search. The callback is run for every neighbor found until finished/terminated by the user.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidBroadPhase.DrawDebug(UnityEngine.Camera)">
+      <summary>
+            Draws debug information for the tree.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidBroadPhase.SetDirty">
+      <summary>
+            Marks the tree for rebalancing.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidObject">
+      <summary>
+            Represents an object associated with a fluid.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidObject.fluid">
+      <summary>
+            Gets or sets the fluid that this object belongs to.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidSolver">
+      <summary>
+            Interface type for fluid solvers.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidSolver.enabled">
+      <summary>
+            If true, enables the physics solver.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidSolver.Synchronize">
+      <summary>
+            Synchronize all proxies for the broadphase.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidSolver.ClearForces">
+      <summary>
+            Clears all forces in the solver.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidSolver.SetCellSpace(ThinksquirrelSoftware.Fluvio.Fluid)">
+      <summary>
+            Sets the cell space for the solver.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidSolver.StartSolverFrame(ThinksquirrelSoftware.Fluvio.FluvioTimeStep@)">
+      <summary>
+            Starts the solver frame.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidSolver.FindNeighbors">
+      <summary>
+            Finds all neighbors.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidSolver.Solve(ThinksquirrelSoftware.Fluvio.FluvioTimeStep@)">
+      <summary>
+            Run the solver for one frame.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidSolver.IntegrateVelocities(ThinksquirrelSoftware.Fluvio.FluvioTimeStep@,UnityEngine.Vector3@)">
+      <summary>
+            Performs integration of solver data into positions and velocities.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IFluidSolver.ApplyPositionAndVelocityConstraints(ThinksquirrelSoftware.Fluvio.FluidParticle@)">
+      <summary>
+            Applies position and velocity constraints to the particle.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.ObjectModel.IResettable">
+      <summary>
+            Defines an object that can be reset to a default state.
+            </summary>
+    </member>
+    <member name="E:ThinksquirrelSoftware.Fluvio.ObjectModel.IResettable.OnResetObject">
+      <summary>
+            Occurs after the object has been reset.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.ObjectModel.IResettable.ResetObject">
+      <summary>
+            Resets the object to its default state.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionPlugin">
+      <summary>
+            Represents a fluid plugin that listens for collision events.
+            </summary>
+      <remarks>
+            \note Collision events create additional overhead and only work with rigidbody particles.
+            </remarks>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionPlugin.OnFluidCollisionEnter(UnityEngine.Collision)">
+      <summary>
+            This event occurs when a fluid particle enters into a collision with another object.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionPlugin.OnFluidCollisionStay(UnityEngine.Collision)">
+      <summary>
+            This event occurs on every physics frame while a fluid particle is in collision with another object.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionPlugin.OnFluidCollisionExit(UnityEngine.Collision)">
+      <summary>
+            This event occurs when a fluid particle ceases to collide with another object.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionSound">
+      <summary>
+            FluidPlugin that plays audio on collision.
+            </summary>
+      <remarks>
+            Collision messages must be enabled.
+            </remarks>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionSound.collisionSource">
+      <summary>
+            The audio source for collisions.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionSound.collisionVelocity">
+      <summary>
+            The minimum velocity for a collision sound to play.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionSound.minCollisions">
+      <summary>
+            The minimum amount of collisions to play a collision sound.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionSound.collisionFadeTime">
+      <summary>
+            The fade time for the collision sound.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionSound.highImpactSource">
+      <summary>
+            The audio source for high impact collisions.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionSound.impactVelocity">
+      <summary>
+            The minimum velocity for a high impact sound to play.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionSound.minHighImpactCollisions">
+      <summary>
+            The minimum amount of high impact collisions before playing a sound.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionSound.scalePitchWithTime">
+      <summary>
+            Whether or not the audio's pitch should scale with the time scale.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidCollisionSound.onlyPlayIfFluidIsPlaying">
+      <summary>
+            If enabled, audio will pause whenever the fluid is paused.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug">
+      <summary>
+            FluidPlugin for debug information.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.initialState">
+      <summary>
+            The initial state of fluid visualization. If enabled, fluid lines will be drawn on plugin initialization.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.drawVelocity">
+      <summary>
+            Controls whether or not to draw velocity lines.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.drawParticles">
+      <summary>
+            Controls whether or not to draw particles.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.drawSmoothingDistances">
+      <summary>
+            Controls whether or not to draw smoothing distances.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.drawBroadPhase">
+      <summary>
+            Controls whether or not to draw the broad phase.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.drawOnKeyPress">
+      <summary>
+            Controls whether to draw on key press or when toggled.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.key">
+      <summary>
+            The key to to press to toggle fluid lines.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.lineColor">
+      <summary>
+            The main color of the fluid lines.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.densityColor1">
+      <summary>
+            The color of particles at minimum density.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.densityColor2">
+      <summary>
+            The color of particles at maximum density.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.showDebugText">
+      <summary>
+            Controls whether or not to show debug text.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.invertText">
+      <summary>
+            Controls whether or not the debug text should be inverted.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.debugTextPosition">
+      <summary>
+            The position (in GUI space) of the debug text.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.debugTextAlignment">
+      <summary>
+            The debug text paragraph alignment.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.debugTextAnchor">
+      <summary>
+            The debug text anchor point.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Plugins.FluidDebug.GetDebugText">
+      <summary>
+            Gets the debug text GUIText component.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Plugins.FluidDestructor">
+      <summary>
+            FluidPlugin that destroys all particles of a fluid that enter the trigger area.
+            </summary>
+      <remarks>
+            Useful for drains and invisible areas. Optionally, the plugin can spawn splash particles when a particle is destroyed.
+            </remarks>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDestructor.destructionTime">
+      <summary>
+            The delay before destroying a fluid particle.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDestructor.destructionTimeJitter">
+      <summary>
+            A jitter applied to destructionTime.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDestructor.bounds">
+      <summary>
+            The bounds of the destructor.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDestructor.splashParticleSystem">
+      <summary>
+            (Unity 4+) Gets or sets the splash particle system. The splash particle system, if set, will emit when a fluid particle is destroyed.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDestructor.splashEmissionCount">
+      <summary>
+            (Unity 4+) Gets or sets the splash emission count.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDestructor.splashEmissionOffset">
+      <summary>
+            (Unity 4+) Gets or sets the splash emission offset.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidDestructor.splashEmissionEllipsoid">
+      <summary>
+            (Unity 4+) Gets or sets the splash emission ellipsoid.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Plugins.FluidEmitterSound">
+      <summary>
+            FluidPlugin that controls the sounds associated with a fluid emitter.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidEmitterSound.emissionClip">
+      <summary>
+            The audio clip to play on emission.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidEmitterSound.volume">
+      <summary>
+            The volume of the audio clip.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidEmitterSound.pitch">
+      <summary>
+            The pitch of the audio clip.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidEmitterSound.audioRangeMin">
+      <summary>
+            The minimum range for the audio clip (3D audio only).
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidEmitterSound.audioRangeMax">
+      <summary>
+            The maximum range for the audio clip (3D audio only).
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidEmitterSound.audioPriority">
+      <summary>
+            The priority of the audio source. (Priority: 0 = most important. 256 = least important. Default = 128.)
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidEmitterSound.fadeTime">
+      <summary>
+            The fade time for the audio clip when not emitting.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidEmitterSound.loop">
+      <summary>
+            Whether or not the clip should loop.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidEmitterSound.scalePitchWithTime">
+      <summary>
+            Whether or not the clip's pitch should scale with the time scale.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidEmitterSound.onlyPlayIfFluidIsPlaying">
+      <summary>
+            If enabled, audio will pause whenever the fluid is paused.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Plugins.FluidParticleRenderer">
+      <summary>
+            This plugin interfaces with the Shuriken particle system.
+            </summary>
+      <remarks></remarks>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidParticleRenderer.useExternalForces">
+      <summary>
+            If enabled, use external forces from the Shuriken particle system to influence Fluvio's simulation.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidParticleRenderer.renderInWorldSpace">
+      <summary>
+            Whether or not the fluid is rendering in world space. This setting can be changed in the editor through Shuriken.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Plugins.FluidPlugin">
+      <summary>
+            Base class for fluid plugins.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Plugins.FluidPlugin.OnEnable">
+      <summary>
+            This is called by Unity when the object is enabled. Overriding classes MUST call base.OnEnable() to initialize the plugin properly.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Plugins.FluidPlugin.OnDestroy">
+      <summary>
+            This is called by Unity when the object is disabled. Overriding classes MUST call base.OnDestroy() to remove the plugin properly.
+            </summary>
+    </member>
+    <member name="M:ThinksquirrelSoftware.Fluvio.Plugins.FluidPlugin.Initialize">
+      <summary>
+            Provides an initialization method for the fluid plugin.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Plugins.FluidRigidbodyParticles">
+      <summary>
+            FluidPlugin that creates rigidbodies for fluid particles.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidRigidbodyParticles.colliderSizeModifier">
+      <summary>
+            Controls the size of physics colliders, as a multiple of smoothing distance.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidRigidbodyParticles.massModifier">
+      <summary>
+            Controls the mass of rigidbodies, as a multiple of particle mass.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidRigidbodyParticles.rigidbodyInterpolation">
+      <summary>
+            The rigidbody interpolation to use for each particle.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidRigidbodyParticles.physicMaterial">
+      <summary>
+            The physic material to use for each particle.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidRigidbodyParticles.rigidbodies">
+      <summary>
+            Provides access to the rigidbody array used for fluid particles. The index of the rigidbody in the array corresponds to the index of the particle in the fluid's particle array.
+            </summary>
+      <remarks>
+            Modifying rigidbodies directly may produce non-physical behaviour. Do not destroy these objects!
+            </remarks>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Plugins.FluidTriggerSound">
+      <summary>
+            FluidPlugin that plays an audio source upon entering a trigger.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidTriggerSound.audioSource">
+      <summary>
+            The audio source to play.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidTriggerSound.scalePitchWithTime">
+      <summary>
+            Whether or not the audio source's pitch should scale with the time scale.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidTriggerSound.onlyPlayIfFluidIsPlaying">
+      <summary>
+            If enabled, audio will pause whenever the fluid is paused.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidTriggerSound.minTriggerCount">
+      <summary>
+            The minimum amount of particles that must be in the trigger to play the audio source.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidTriggerSound.fadeTime">
+      <summary>
+            The fade time of the audio source.
+            </summary>
+    </member>
+    <member name="P:ThinksquirrelSoftware.Fluvio.Plugins.FluidTriggerSound.bounds">
+      <summary>
+            The bounds of the trigger.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.Solvers.SPHSimulationSolver">
+      <summary>
+            SPH simulation solver.
+            </summary>
+            TODO: Optimize vector calculations using Vector3.Set? Probably not needed.</member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.ObjectModel.ResetDelegate">
+      <summary>
+            Reset delegate. Fires for objects that are reset.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.ObjectModel.AllocationDelegate">
+      <summary>
+            Allocation delegate. Fires whenever memory is reallocated on a fluid.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.ObjectModel.SolverDelegate">
+      <summary>
+            Fluid solver delegate. These fire at different points as the solver runs.
+            </summary>
+    </member>
+    <member name="T:ThinksquirrelSoftware.Fluvio.ObjectModel.FluidEmissionCallback">
+      <summary>
+            Fluid emission callback. This fires for each particle emission.
+            </summary>
+    </member>
+  </members>
+</doc>
