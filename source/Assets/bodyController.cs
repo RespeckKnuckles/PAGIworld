@@ -506,11 +506,12 @@ public class bodyController : worldObject {
 			while (!messageQueue.TryRemoveAt(0))
 				Thread.Sleep(100);
 			//process firstMsg
+			firstMsg.stringContent = firstMsg.stringContent.Trim();
 			switch (firstMsg.messageType)
 			{
 			case AIMessage.AIMessageType.other:
 				Debug.Log("received unrecognized command from client connection " + firstMsg.stringContent);
-				outgoingMessages.Add("UnrecognizedCommandError:" + firstMsg.stringContent);
+				outgoingMessages.Add("UnrecognizedCommandError:" + firstMsg.stringContent.Trim() + "\n");
 				break;
 			
 			case AIMessage.AIMessageType.print:
@@ -546,7 +547,7 @@ public class bodyController : worldObject {
 				
 			case AIMessage.AIMessageType.loadTask:
 				Debug.Log("received message to load new task");
-				outgoingMessages.Add("loadTask," + firstMsg.stringContent);
+				toReturn = "loadTask," + firstMsg.stringContent.Trim();
 				//remove all world objects currently in scene (except for body/hands)
 				worldObject[] goArray = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(worldObject)) as worldObject[];
 				List<string> doNotRemove = new List<string>() { "leftHand", "rightHand", "mainBody" };
@@ -557,7 +558,18 @@ public class bodyController : worldObject {
 						Destroy(obj.gameObject);
 					}
 				}
-				FileSaving fs = new FileSaving(firstMsg.stringContent);
+				bool loadedOk = true;
+				try
+				{
+					FileSaving fs = new FileSaving(firstMsg.stringContent);
+				}
+				catch(Exception e)
+				{
+					outgoingMessages.Add(toReturn + ",ERR," + e.ToString() + "\n");
+					loadedOk = false;
+				}
+				if (loadedOk)
+					outgoingMessages.Add(toReturn + ",OK\n");
 				break;
 			
 			case AIMessage.AIMessageType.setState:
@@ -579,7 +591,7 @@ public class bodyController : worldObject {
 				}
 				if (((State)firstMsg.detail).lifeTime != TimeSpan.Zero)
 					GlobalVariables.activeStates.Add((State)firstMsg.detail);
-				outgoingMessages.Add("stateUpdated," + firstMsg.stringContent + "\n");
+				outgoingMessages.Add("stateUpdated," + firstMsg.stringContent.Trim() + "\n");
 				break;
 				
 			case AIMessage.AIMessageType.getReflexes:
@@ -618,10 +630,10 @@ public class bodyController : worldObject {
 				if (re!=null)
 				{
 					GlobalVariables.activeReflexes.TryRemove(re);
-					outgoingMessages.Add("removedReflex," + firstMsg.stringContent + ",OK\n");
+					outgoingMessages.Add("removedReflex," + firstMsg.stringContent.Trim() + ",OK\n");
 				}
 				else
-					outgoingMessages.Add("removedReflexFAILED" + firstMsg.stringContent + ",FAILED\n");
+					outgoingMessages.Add("removedReflexFAILED" + firstMsg.stringContent.Trim() + ",FAILED\n");
 				
 				break;
 			case AIMessage.AIMessageType.setReflex:
