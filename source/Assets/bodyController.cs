@@ -897,7 +897,7 @@ public class bodyController : worldObject {
 						int y = int.Parse(tmp[1]);
 						visualSensor s = visualSensors[x,y];
 						s.updateSensor();
-						string response = firstMsg.stringContent;
+						string response = firstMsg.stringContent.Trim();
 						for (int i=0; i<s.vq.Length; i++)
 							response += "," + s.vq[i].ToString();
 						response += "," + s.type + "," + s.name + "\n";
@@ -910,7 +910,7 @@ public class bodyController : worldObject {
 						y = int.Parse(tmp[1]);
 						s = peripheralSensors[x,y];
 						s.updateSensor();
-						response = firstMsg.stringContent;
+						response = firstMsg.stringContent.Trim();
 						for (int i=0; i<s.vq.Length; i++)
 							response += "," + s.vq[i].ToString();
 						response += "," + s.type + "," + s.name + "\n";
