@@ -295,7 +295,14 @@ public class ControlPanel : MonoBehaviour
 			leftHandController[] leftHand = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(leftHandController)) as leftHandController[];
 			rightHandController[] rightHand = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(rightHandController)) as rightHandController[];
 			leftHand[0].rigidbody2D.position = new Vector2(-1f, 1f);
-			rightHand[0].rigidbody2D.position = new Vector2(1f, 1f);			
+			rightHand[0].rigidbody2D.position = new Vector2(1f, 1f);	
+			mainGuy[0].rigidbody2D.rotation = 0;
+			leftHand[0].rigidbody2D.rotation = 0;
+			rightHand[0].rigidbody2D.rotation = 0;
+			mainGuy[0].rigidbody2D.velocity = Vector2.zero;
+			leftHand[0].rigidbody2D.velocity = Vector2.zero;
+			rightHand[0].rigidbody2D.velocity = Vector2.zero;
+			mainGuy[0].rigidbody2D.AddForce(Vector2.zero); //forces update of rotation
 		}
 		GUILayout.EndHorizontal();
 		

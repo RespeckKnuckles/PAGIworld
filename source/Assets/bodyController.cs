@@ -237,7 +237,7 @@ public class bodyController : worldObject {
 					//Debug.Log(Screen.width); 
 					Vector3 v3 = Camera.main.WorldToScreenPoint(new Vector3(v.x, v.y, 0));
 					//GUI.Box(new Rect(v3.x-1,(Screen.height - v3.y)-1, 2, 2), GUIContent.none); //why is this so slow
-					GUI.Label(new Rect(v3.x-10, (Screen.height - v3.y)-10, 20, 20), "o");
+					GUI.Label(new Rect(v3.x-3, (Screen.height - v3.y)-3, 14, 18), "o");
 					//GUI.Box(new Rect(10, 10, 0.5f, 0.5f), GUIContent.none); 
 				}
 			}
@@ -252,7 +252,7 @@ public class bodyController : worldObject {
 					//Debug.Log(Screen.width); 
 					Vector3 v3 = Camera.main.WorldToScreenPoint(new Vector3(v.x, v.y, 0));
 					//GUI.Box(new Rect(v3.x-1,(Screen.height - v3.y)-1, 2, 2), GUIContent.none); //why is this so slow
-					GUI.Label(new Rect(v3.x-5, (Screen.height - v3.y)-5, 10, 10), "*");
+					GUI.Label(new Rect(v3.x-3, (Screen.height - v3.y)-3, 10, 10), "*");
 					//GUI.Box(new Rect(10, 10, 0.5f, 0.5f), GUIContent.none); 
 				}
 			}
@@ -565,7 +565,9 @@ public class bodyController : worldObject {
 				}
 				catch(Exception e)
 				{
-					outgoingMessages.Add(toReturn + ",ERR," + e.ToString() + "\n");
+					string errDesc = e.ToString().Replace('\n',';');
+					errDesc = errDesc.Replace('\r',' ');
+					outgoingMessages.Add(toReturn + ",ERR," + errDesc + "\n");
 					loadedOk = false;
 				}
 				if (loadedOk)
@@ -761,6 +763,9 @@ public class bodyController : worldObject {
 						break;
 					case "BR":
 						rigidbody2D.rotation += firstMsg.function1.evaluate(getSensorAspectValue);
+						leftHand.rigidbody2D.rotation = rigidbody2D.rotation;
+						rightHand.rigidbody2D.rotation = rigidbody2D.rotation;
+						rigidbody2D.AddForce(Vector2.zero); //forces update of rotation
 						outgoingMessages.Add ("BR,1\n");
 					break;
 					case "RHG":
@@ -810,6 +815,7 @@ public class bodyController : worldObject {
 						else if (firstMsg.stringContent.Trim() == "MPN") //peripheral visual field (names only)
 						{
 							StringBuilder sb = new StringBuilder("MPN,");
+							int count = 0;
 							for (int y=0; y<numPeripheralSensorsY; y++)
 							{
 								for (int x=0; x<numPeripheralSensorsX; x++)
@@ -820,8 +826,10 @@ public class bodyController : worldObject {
 									if (sName=="Background")
 										sName = "";
 									sb.Append(sName + ",");
+									count++;
 								}
 							}
+							Debug.Log(count);
 							sb[sb.Length-1] = '\n';
 							outgoingMessages.Add(sb.ToString());
 						}

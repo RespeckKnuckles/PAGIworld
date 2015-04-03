@@ -545,8 +545,11 @@ public class AIMessage
 	
 	public static AIMessage fromString(string s)
 	{
+		if (s.Trim()=="")
+			throw new Exception("ERR: Received string that was nothing but whitespace!");
+
 		string[] clientArgs = s.Split(',');
-		AIMessage a = new AIMessage(AIMessage.AIMessageType.other, "ERR: Unrecognized Command " + s + "\n", 100f, "");
+		AIMessage a = new AIMessage(AIMessage.AIMessageType.other, "ERR: Unrecognized Command. Received string:" + s + "\n", 100f, "");
 		clientArgs[0] = clientArgs[0].Trim();
 		if (clientArgs[0]== "sensorRequest")
 		{

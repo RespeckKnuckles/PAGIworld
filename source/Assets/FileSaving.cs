@@ -124,10 +124,14 @@ public class FileSaving{
 		
 		//set position/rotation of body, hands
 		mainBody.rigidbody2D.transform.position = new Vector2(bodyX, bodyY);
+		mainBody.rigidbody2D.velocity = Vector2.zero;
 		//Debug.Log("x " + bodyX + " Y " + bodyY);
 		mainBody.rigidbody2D.transform.rotation = new Quaternion(0, 0, bodyRotation, 0);
 		rightHand.transform.position = new Vector2(rightHandX, rightHandY);
 		leftHand.transform.position = new Vector2(leftHandX, leftHandY);
+		rightHand.rigidbody2D.transform.rotation = mainBody.rigidbody2D.transform.rotation;
+		leftHand.rigidbody2D.transform.rotation = mainBody.rigidbody2D.transform.rotation;
+		mainBody.rigidbody2D.AddForce(new Vector2(0,0)); //this forces the screen to update his rotation
 	}
 	
 	public void storeCurrentTask()
