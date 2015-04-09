@@ -1,5 +1,5 @@
 echo "removing old versions"
-rm *.zip
+rm pagi_*_newest.zip
 echo "compressing linux version"
 d=$(date +'%m.%d.%Y')
 zip -r pagi_linux_newest.zip pagi_linux.x86 pagi_linux.x86_64 pagi_linux_Data 

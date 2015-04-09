@@ -312,6 +312,7 @@ public class Control : MonoBehaviour {
 				Thread.Sleep(100);
 			while (!bodyInterface.outgoingMessages.TryRemoveAt(0))
 				Thread.Sleep(100);
+			s = s.Trim() + "\n";
 			byte[] toSend = Encoding.ASCII.GetBytes(s);
 			//send message to each open socket		
 			foreach (Socket client in clients)
@@ -322,7 +323,7 @@ public class Control : MonoBehaviour {
 					Debug.Log("client " + client.RemoteEndPoint.ToString() + " is closed, skipping...");
 					continue;
 				}	
-				Debug.Log ("sent reply to " + client.RemoteEndPoint.ToString() + ": " + s);
+				Debug.Log ("sent reply to " + client.RemoteEndPoint.ToString() + ": " + s.Trim());
 				//Thread.Sleep(100); //because the response generates an error otherwise
 				client.Send(toSend);
 			}	

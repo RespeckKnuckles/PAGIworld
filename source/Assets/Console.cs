@@ -92,7 +92,8 @@ public class Console : MonoBehaviour
 		
 		StringBuilder sb = new StringBuilder();
 		// Iterate through the recorded logs.
-		for (int i = 0; i < logs.Count; i++) {
+		int maxLogDisplay = 100; //max # of log entries to display
+		for (int i = 0; i < (logs.Count > maxLogDisplay ? maxLogDisplay : logs.Count); i++) {
 			var log = logs[i];
 			
 			// Combine identical messages if collapse option is chosen.
@@ -155,6 +156,8 @@ public class Console : MonoBehaviour
 	/// <param name="type">Type of message (error, exception, warning, assert).</param>
 	void HandleLog (string message, string stackTrace, LogType type)
 	{
+		if (message.Contains("You are trying to create a MonoBehaviour using the 'new' keyword."))
+			return;
 		//Debug.Log("received log msg");
 		logs.Insert(0, new Log() {
 			message = System.DateTime.Now.ToLongTimeString() + "  " + message,

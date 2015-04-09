@@ -79,6 +79,29 @@ public class touchSensor : sensor
 		for (int i=0; i<texture.Length; i++)
 			texture[i] = objectTouched.texture[i]; 
 	}
+	
+	/// <summary>
+	/// Returns a string with all of the values to be returned (see documentation).
+	/// Make sure to update the sensor before using this.
+	/// </summary>
+	/// <returns>The report.</returns>
+	public string getReport()
+	{
+		if (objectTouched.objectName == "Background")
+		{
+			return "0,0,0,0,0,0,0,Background\n";
+		}
+		else {
+			string toReturn = "1,";
+			toReturn += temp.ToString();
+			for (int i=0; i<texture.Length; i++)
+				toReturn += "," + texture[i].ToString();
+			//Debug.Log(texture.Length + " of " + sensor.objectTouched.name);
+			toReturn += "," + endorphins.ToString();
+			toReturn += "," + objectTouched.objectName;
+			return toReturn;
+		}
+	}
 }
 
 public class visualSensor : sensor
@@ -793,7 +816,6 @@ public class bodyController : worldObject {
 					case 'M': //a full map of the visual field
 						if (firstMsg.stringContent.Trim() == "MDN") //detailed visual field (names only)
 						{
-							Debug.Log("here");
 							StringBuilder sb = new StringBuilder("MDN,");
 							//string toReturn = "MDN,";
 							for (int y=0; y<numVisualSensorsY; y++)
@@ -847,17 +869,7 @@ public class bodyController : worldObject {
 							int sensorNum = int.Parse(firstMsg.stringContent[1].ToString());
 							touchSensor sensor = bodySensor[sensorNum];
 							sensor.updateSensor();
-							if (sensor.objectTouched.objectName == "Background")
-								outgoingMessages.Add("B" + sensorNum.ToString() + ",0,0,0,0,0,0,0\n");
-							else {
-								toReturn = "B" + sensorNum.ToString() + ",1,";
-								toReturn += sensor.temp.ToString();
-								for (int i=0; i<sensor.texture.Length; i++)
-									toReturn += "," + sensor.texture[i].ToString();
-								Debug.Log(sensor.texture.Length + " of " + sensor.objectTouched.name);
-								toReturn += "," + sensor.endorphins.ToString();
-								outgoingMessages.Add(toReturn + "\n");
-							}
+							outgoingMessages.Add("B" + sensorNum.ToString() + "," + sensor.getReport() + "\n");
 						}
 					break;
 					case 'S': //speed sensor
@@ -870,21 +882,14 @@ public class bodyController : worldObject {
 							leftHandSensor[4].updateSensor(); //recall sensor 4 is right in the middle of the hand
 							Vector2 relativePoint = rigidbody2D.GetPoint(leftHandSensor[4].getPosition());
 							outgoingMessages.Add("LP," + relativePoint.x.ToString () + "," + relativePoint.y.ToString() + "\n");
+	
 						}
 						else
 						{
 							int sensorNum = int.Parse(firstMsg.stringContent[1].ToString());
 							touchSensor sensor = leftHandSensor[sensorNum];
 							sensor.updateSensor();
-							if (sensor.objectTouched.objectName == "Background")
-								outgoingMessages.Add("L" + sensorNum.ToString() + ",0,0,0,0,0,0\n");
-							else {
-								toReturn = "L" + sensorNum.ToString() + ",1,";
-								toReturn += sensor.temp.ToString();
-								for (int i=0; i<sensor.texture.Length; i++)
-									toReturn += "," + sensor.texture[i].ToString();
-								outgoingMessages.Add(toReturn + "\n");
-							}
+							outgoingMessages.Add("L" + sensorNum.ToString() + "," + sensor.getReport() + "\n");
 						}//test
 					break; 
 					case 'R': //R0-R4, or RP
@@ -899,15 +904,7 @@ public class bodyController : worldObject {
 							int sensorNum = int.Parse(firstMsg.stringContent[1].ToString());
 							touchSensor sensor = rightHandSensor[sensorNum];
 							sensor.updateSensor();
-							if (sensor.objectTouched.objectName == "Background")
-								outgoingMessages.Add("R" + sensorNum.ToString() + ",0,0,0,0,0,0\n");
-							else {
-								toReturn = "R" + sensorNum.ToString() + ",1,";
-								toReturn += sensor.temp.ToString();
-								for (int i=0; i<sensor.texture.Length; i++)
-									toReturn += "," + sensor.texture[i].ToString();
-								outgoingMessages.Add(toReturn + "\n");
-							}
+							outgoingMessages.Add("R" + sensorNum.ToString() + "," + sensor.getReport() + "\n");
 						}
 					break;
 					case 'V': //visual sensor V0.0 - V30.20
