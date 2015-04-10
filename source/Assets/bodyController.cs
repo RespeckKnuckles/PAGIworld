@@ -176,6 +176,7 @@ public class bodyController : worldObject {
 	// Use this for initialization
 	void Start () {
 		Application.runInBackground = true;
+		//Debug.Log(System.IO.Directory.GetCurrentDirectory());
 		
 		leftHandRigidBody = leftHand.rigidbody2D;
 		rightHandRigidBody = rightHand.rigidbody2D;
@@ -549,9 +550,10 @@ public class bodyController : worldObject {
 				Debug.Log("received message to find object: " + firstMsg.stringContent);
 				string toReturn = "findObj," + firstMsg.stringContent;
 				string searchType = ((string)firstMsg.detail).Trim();
-				Debug.Log(searchType);
+				//Debug.Log(searchType);
 				if (searchType == "D" || searchType == "PD")
 				{
+					//Debug.Log("Checking detailed sensor");
 					foreach (visualSensor v in visualSensors)
 					{
 						v.updateSensor();

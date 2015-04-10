@@ -244,6 +244,7 @@ public class Control : MonoBehaviour {
 		}
 		catch (System.Exception e)
 		{
+			Debug.Log ("Exception when accepting incoming connection: " + e);
 			Debug.LogError ("Exception when accepting incoming connection: " + e);
 		}
 		
