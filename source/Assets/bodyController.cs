@@ -234,6 +234,9 @@ public class bodyController : worldObject {
 		//texture = new Texture2D(1, 1);
 		//texture.SetPixel(0,0, Color.blue);
 		//texture.Apply();
+		string[] s = System.Environment.GetCommandLineArgs();
+		foreach (string S in s)
+			Debug.Log("cmd: " + S);
 	}
 
 	//Texture2D texture;

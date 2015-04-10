@@ -69,10 +69,28 @@ public class Control : MonoBehaviour {
 		
 		if (isServer)
 		{
+			//get port number
+			string[] arg = System.Environment.GetCommandLineArgs();
+			if (arg.Contains("-p"))
+			{
+				int i = Array.IndexOf(arg, "-p");
+				if (arg.Count()-1==i)
+				{
+					Debug.Log("Command line argument -p not followed by anything!");
+				}
+				else
+				{
+					int newPort;
+					if (int.TryParse(arg[Array.IndexOf(arg, "-p")+1], out newPort))
+						kPort = newPort;
+					else
+						Debug.Log("Error: Could not parse port number\"" +
+						 arg[Array.IndexOf(arg, "-p")+1] + "\"");
+				}
+			}
 			if (Host (kPort))
 			{
-				Debug.Log("world " + GlobalVariables.portNumber);
-				Debug.Log(kPort);
+				//Debug.Log("world " + GlobalVariables.portNumber);
 				Debug.Log("Server started");
 				//gameObject.SendMessage ("OnServerStarted");
 			}
