@@ -212,10 +212,8 @@ public class ControlPanel : MonoBehaviour
 		if (GUILayout.Button(new GUIContent("test")))
 		{
 			worldObject w = Instantiate(emptyblock, new Vector3(10f,10f), new Quaternion()) as worldObject;
-
 			Texture2D tex = null;
 			byte[] fileData;
-
 			string fileName = "bill.jpeg";
 			if (File.Exists(fileName))     {
 				fileData = File.ReadAllBytes(fileName);

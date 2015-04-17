@@ -32,6 +32,8 @@ public class worldObject:MonoBehaviour{ //describes objects in the world
 	/// Called when loading from file. Load all non-standard data from "valuesToSave".
 	///</summary> 
 	public virtual void loadVals() {}
+
+
 	
 	//very basic mouse dragging code:
 	void OnMouseDrag()
