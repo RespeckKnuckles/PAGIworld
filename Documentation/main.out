@@ -1,0 +1,29 @@
+\BOOKMARK [1][-]{section.1}{All Commands}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Sensor Requests}{section.1}% 2
+\BOOKMARK [3][-]{subsubsection.1.1.1}{Body tactile sensors}{subsection.1.1}% 3
+\BOOKMARK [3][-]{subsubsection.1.1.2}{Hand tactile sensors}{subsection.1.1}% 4
+\BOOKMARK [3][-]{subsubsection.1.1.3}{Velocity sensors}{subsection.1.1}% 5
+\BOOKMARK [3][-]{subsubsection.1.1.4}{Body position sensors}{subsection.1.1}% 6
+\BOOKMARK [3][-]{subsubsection.1.1.5}{Proprioception sensors}{subsection.1.1}% 7
+\BOOKMARK [3][-]{subsubsection.1.1.6}{Rotation sensor}{subsection.1.1}% 8
+\BOOKMARK [3][-]{subsubsection.1.1.7}{Vision sensors}{subsection.1.1}% 9
+\BOOKMARK [3][-]{subsubsection.1.1.8}{Map vision sensors}{subsection.1.1}% 10
+\BOOKMARK [3][-]{subsubsection.1.1.9}{Object searches}{subsection.1.1}% 11
+\BOOKMARK [2][-]{subsection.1.2}{Force Effectors}{section.1}% 12
+\BOOKMARK [3][-]{subsubsection.1.2.1}{Hand and body forces}{subsection.1.2}% 13
+\BOOKMARK [3][-]{subsubsection.1.2.2}{Jumping}{subsection.1.2}% 14
+\BOOKMARK [3][-]{subsubsection.1.2.3}{Rotation}{subsection.1.2}% 15
+\BOOKMARK [3][-]{subsubsection.1.2.4}{Gripping and releasing}{subsection.1.2}% 16
+\BOOKMARK [2][-]{subsection.1.3}{States and Reflexes}{section.1}% 17
+\BOOKMARK [3][-]{subsubsection.1.3.1}{Other state and reflex commands}{subsection.1.3}% 18
+\BOOKMARK [3][-]{subsubsection.1.3.2}{All sensor aspect codes}{subsection.1.3}% 19
+\BOOKMARK [2][-]{subsection.1.4}{Creating Items Dynamically}{section.1}% 20
+\BOOKMARK [3][-]{subsubsection.1.4.1}{Creating Menu Items Dynamically}{subsection.1.4}% 21
+\BOOKMARK [3][-]{subsubsection.1.4.2}{Creating and Controlling Custom Objects}{subsection.1.4}% 22
+\BOOKMARK [2][-]{subsection.1.5}{Others}{section.1}% 23
+\BOOKMARK [3][-]{subsubsection.1.5.1}{Loading Tasks / Resetting Tasks}{subsection.1.5}% 24
+\BOOKMARK [3][-]{subsubsection.1.5.2}{Printing Text to the Screen}{subsection.1.5}% 25
+\BOOKMARK [2][-]{subsection.1.6}{Unprovoked Notifications}{section.1}% 26
+\BOOKMARK [3][-]{subsubsection.1.6.1}{Endorphins: Rewards and Punishments}{subsection.1.6}% 27
+\BOOKMARK [3][-]{subsubsection.1.6.2}{Spoken commands}{subsection.1.6}% 28
+\BOOKMARK [3][-]{subsubsection.1.6.3}{Triggers}{subsection.1.6}% 29

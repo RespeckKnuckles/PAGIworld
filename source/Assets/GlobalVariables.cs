@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 public class GlobalVariables : MonoBehaviour {
 
 	public static bool androidBuild = true;
-	public static string versionNumber = "0.1.6";
+	public static string versionNumber = "0.1.7";
 	
 	public static int portNumber = 42209;
 
@@ -28,6 +28,8 @@ public class GlobalVariables : MonoBehaviour {
 	
 	public static bool spokenCommandFieldVisible = false; //whether or not the command box is visible
 	public static bool sendNotificationOnReflexFirings = true; //when reflexes fire, should messages be sent?
+	public static bool viewControlsVisible = false;
+	public static bool centerCamera = false; //keeps camera centered on PAGI guy
 	public static bool showDetailedVisionMarkers = false;	
 	public static bool showPeripheralVisionMarkers = false;
 	
@@ -108,7 +110,29 @@ public class GlobalVariables : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		//check if any objects are off scren
+		worldObject[] goArray = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(worldObject)) as worldObject[];
+		List<string> doNotRemove = new List<string>() { "leftHand", "rightHand", "mainBody" };
+		foreach (worldObject obj in goArray)
+		{
+			if (obj.transform.hasChanged)
+			{
+				//is it out of bounds?
+				if (obj.transform.position.x < -195f || obj.transform.position.x > 194f || obj.transform.position.y < -122f || obj.transform.position.y > 126f)
+				{
+					if (!doNotRemove.Contains(obj.objectName))
+					{
+						Destroy(obj.gameObject);
+					}
+					else
+					{
+						obj.rigidbody2D.velocity = new Vector2(0,0);
+					}
+				}
+				obj.transform.hasChanged = false;
+			}
+		}
+
 		//check all activeStates to see if any need to expire
 		List<State> toRemove = new List<State>();
 		List<State> activeStates_copy = activeStates.getCopy();

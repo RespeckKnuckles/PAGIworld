@@ -89,6 +89,8 @@ public class Console : MonoBehaviour
 	void ConsoleWindow (int windowID)
 	{
 		scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+		//if (GUI.Button(new Rect(-5, -10, 18, 18), new GUIContent("x")))
+		//	show = false;
 		
 		StringBuilder sb = new StringBuilder();
 		// Iterate through the recorded logs.

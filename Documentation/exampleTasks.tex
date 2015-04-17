@@ -1,0 +1,41 @@
+\section{Some Example Tasks}
+\label{sect:example_tasks}
+
+We have designed some tasks to demonstrate the range of possibilities and showcase some of PAGI World's more unique features. Several of these tasks will be described next.
+
+\subsection{The Piaget-MacGyver Room}
+\label{sect:macgyver}
+
+A prime example of a typical MacGyver task comes from Season 2, Episode 5 of the MacGyver television series. MacGyver found himself in a position where a mountain lion was threatening a friend of his. MacGyver, positioned at a ledge above his friend and the mountain lion, reconfigured some rocks and a log so that he could guide a nearby stream of water in such a way that it created a small waterfall separating his friend and the mountain lion. The mountain lion ran away immediately.
+
+Of course, other solutions may have been available. Perhaps MacGyver could have simply thrown rocks at the mountain lion, or fashioned a bow and arrow out of twigs, sharpened stones, and parts of his knapsack. But these different solutions would have come with their own unique advantages and disadvantages, and furthermore, let us not lose sight of the PAGI-related question: Could an artificially intelligent agent figure out any of these solutions without having been specifically trained for that particular solution? PAGI problems such as the Piaget-MacGyver room challenge researchers to find answers to this question.
+
+We can model this task in PAGI World as in Figure \ref{} %%%%%%ADD DESCRIPTION OF TASK AND IMAGE HERE
+
+\subsection{Two Piagetian Tasks}
+
+Some tasks which might be considered Piaget-MacGyver Rooms can come directly from classical Piagetian experiments. Inhelder and Piaget's (1958) Balance Beam Task (BBT) \cite{Inhelder1958} has been modeled many times using a variety of modeling techniques \cite{Wilkening1982,Sage1983,Shultz1994,Schmidt1996,Turner2002,Licato2012}. In the BBT, a balancing beam with a set of weights are provided to a subject. The balancing beam has notches, hooks, or some other apparatus that allows the weights to be placed on the left or right sides of the balancing beam at predefined intervals. In most versions of the task, the values of the weights and the distances that the locations are from the center are made available to the subject. The task is normally to figure out some version of the torque rule, which relates the product of the value of a weight and its distance from the center. For example, the subject may be presented with a configuration of weights on the scale, and the subject is asked to predict whether the right or left side will tilt downwards or the scale will balance.
+
+We recreate the BBT in PAGI World as in Figure \ref{} %%%%%%%%%DESCRIBE implemented task
+
+In the magnet test, also from \cite{Inhelder1958}, the subject is provided with a circular board with a rotating bar or needle in the middle. Surrounding the rotating bar are boxes which appear exactly the same except for a simple shape pictured on top of each box: either a circle, diamond, star, or square. Rotating the needle reveals that more often than not, it stops so that it is pointing to the star boxes. The subject is asked to explain why this is the case (it's because there is a magnet hidden inside of the star boxes), and is encouraged to experiment by for example moving the boxes around. Some explanations provided by subjects seem to display a form of Analogico-Deductive Reasoning (ADR) \cite{Bringsjord2012}.
+
+The magnet test can be implemented in PAGI World by %%%%%%describe implemented task
+
+One clear limitation of computationally modeling these Piagetian tasks is that you can't really communicate with the AI agent in natural language like you can with the children in Piagetian experiments. Although the current state of the art in natural language processing and generation prohibits such communication at present, PAGI World offers tools to make it easier for researchers who are trying to achieve this benchmark. There is a way to ``talk to" the AI agent through an input text box in PAGI World itself. Having the agent talk back, however, can be handled in two ways: through simple output handled completely by the code on the AI side, or by sending a message to PAGI World that can be displayed in an output window.
+
+However, because it is difficult to give an AI agent complex instructions on how to perform a task (assuming that knowledge of what conditions constitute successful completion of a task aren't built in to the agent's code), PAGI World also allows for objects in the simulation to have an objective utility value. These are called \textit{endorphins}; objects with a positive endorphin value are those that the AI agent may want to pursue (e.g. food items), whereas negative endorphin values are those the agent should avoid. Most objects in PAGI World have an endorphin value of zero, and PAGI World itself does not ensure that certain endorphin-seeking behaviors are implemented by the agent. 
+
+%\subsection{PERI psychometric tasks?}
+
+%\subsection{Crow Intelligence Tasks}
+%Wire Bending and Pebble Dropping
+%Cockatoos can do it too http://news.sciencemag.org/plants-animals/2014/09/cockatoos-can-learn-each-other-how-make-and-use-tools
+%- use Logic-based approach for this
+
+In order to demonstrate the variety of AI approaches that can be used with PAGI World tasks, we will next describe some tasks for which we have also developed simple AI systems to solve those tasks. 
+
+\input{dancing}
+%another task believed to demonstrate animal intelligence...talk about dogs
+
+\input{classicalConditioning}

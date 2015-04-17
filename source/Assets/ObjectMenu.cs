@@ -119,6 +119,8 @@ public class ObjectMenu : MonoBehaviour
 		
 		GUI.contentColor = Color.white;
 		
+		if (GUI.Button(new Rect(0, 0, 18, 18), new GUIContent("x")))
+			show = false;
 		
 		
 		GUILayout.BeginHorizontal();
@@ -126,35 +128,28 @@ public class ObjectMenu : MonoBehaviour
 		GUILayout.EndHorizontal();
 		
 		GUILayout.BeginHorizontal();
-		if (GUILayout.Button(new GUIContent("Wall Piece", "Creates a normal wall."))) {
-			Instantiate(wall);
-			wall.rigidbody2D.position = new Vector2(0, 20f);
+		if (GUILayout.Button(new GUIContent("Wall Piece", "Creates a normal wall block."))) {
+			Instantiate(wall, new Vector2(0, 20f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Horizontal Wall", "Creates a horizontal wall."))) {
-			//logs.Clear();
-			Instantiate(wallHorizontal);
-			wallHorizontal.rigidbody2D.position = new Vector2(0, 20f);
+			Instantiate(wallHorizontal, new Vector2(0, 20f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Vertical Wall", "Creates a vertical wall."))) {
-			Instantiate(wallVertical);
-			wallVertical.rigidbody2D.position = new Vector2(0, 20f);
+			Instantiate(wallVertical, new Vector2(0, 20f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Left Ramp", "Creates a left ramp."))) {
-			Instantiate(leftRamp);
-			leftRamp.rigidbody2D.position = new Vector2(0, 20f);
+			Instantiate(leftRamp, new Vector2(0, 20f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Right Ramp", "Creates a right ramp."))) {
-			//logs.Clear();
-			Instantiate(rightRamp);
-			rightRamp.rigidbody2D.position = new Vector2(0, 20f);
+			Instantiate(rightRamp, new Vector2(0, 20f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Lava Block", "Creates a very hot block."))) {
 			//logs.Clear();
-			Instantiate(lavaBlock, new Vector2(0, 0), new Quaternion());
+			Instantiate(lavaBlock, new Vector2(0, 20f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Ice Block", "Creates a very cold block."))) {
 			//logs.Clear();
-			Instantiate(iceBlock, new Vector2(0, 0), new Quaternion());
+			Instantiate(iceBlock, new Vector2(0, 20f), new Quaternion());
 		}
 		GUILayout.EndHorizontal();
 		
@@ -167,26 +162,19 @@ public class ObjectMenu : MonoBehaviour
 		
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("Wall Piece", "Creates a floating wall."))) {
-			Instantiate(fWall);
-			fWall.rigidbody2D.position = new Vector2(0, 20f);
+			Instantiate(fWall, new Vector2(-10f, 20f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Horizontal Wall", "Creates a horizontal wall."))) {
-			//logs.Clear();
-			Instantiate(fWallHorizontal);
-			fWallHorizontal.rigidbody2D.position = new Vector2(0, 20f);
+			Instantiate(fWallHorizontal, new Vector2(-5f, 20f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Vertical Wall", "Creates a vertical wall."))) {
-			Instantiate(fWallVertical);
-			fWallVertical.rigidbody2D.position = new Vector2(0, 20f);
+			Instantiate(fWallVertical, new Vector2(0, 20f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Left Ramp", "Creates a left ramp."))) {
-			Instantiate(fLeftRamp);
-			fLeftRamp.rigidbody2D.position = new Vector2(0, 20f);
+			Instantiate(fLeftRamp, new Vector2(5f, 20f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Right Ramp", "Creates a right ramp."))) {
-			//logs.Clear();
-			Instantiate(fRightRamp);
-			fRightRamp.rigidbody2D.position = new Vector2(0, 20f);
+			Instantiate(fRightRamp, new Vector2(10f, 20f), new Quaternion());
 		}
 		GUILayout.EndHorizontal();
 		
@@ -200,19 +188,19 @@ public class ObjectMenu : MonoBehaviour
 		GUILayout.BeginHorizontal();
 		
 		if (GUILayout.Button(new GUIContent("Red Wall", "Creates a red wall block."))) {
-			Instantiate(redWall, new Vector3(-5,10), new Quaternion());
+			Instantiate(redWall, new Vector3(-5,15), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Red Bomb", "Creates a red dynamite stick."))) {
 			Instantiate(redDynamite, new Vector3(5,10), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Green Wall", "Creates a green wall block."))) {
-			Instantiate(greenWall, new Vector3(-5,10), new Quaternion());
+			Instantiate(greenWall, new Vector3(0,15), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Green Bomb", "Creates a green dynamite stick."))) {
 			Instantiate(greenDynamite, new Vector3(5,10), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Blue Wall", "Creates a blue wall block."))) {
-			Instantiate(blueWall, new Vector3(-5,10), new Quaternion());
+			Instantiate(blueWall, new Vector3(5,15), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Blue Bomb", "Creates a blue dynamite stick."))) {
 			Instantiate(blueDynamite, new Vector3(5,10), new Quaternion());
@@ -235,20 +223,17 @@ public class ObjectMenu : MonoBehaviour
 			garf.rigidbody2D.position = new Vector2(0, 20f);
 		}*/
 		if (GUILayout.Button(new GUIContent("Trigger Box", "Creates a trigger box."))) {
-			Instantiate(triggerBox);
-			triggerBox.rigidbody2D.position = new Vector2(5, 30f);
+			Instantiate(triggerBox, new Vector2(10f, 10f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Health Pack", "Creates a health pack."))) {
-			GameObject t = Instantiate(healthPack) as GameObject;
-			t.rigidbody2D.position = new Vector2(0f, 0f);
+			Instantiate(healthPack, new Vector2(-10f, 5f), new Quaternion());
 		}
 		/*if (GUILayout.Button(new GUIContent("Double health pack", "Creates a double health pack."))) {
 			GameObject t = Instantiate(doubleHealthPack) as GameObject;
 			t.rigidbody2D.position = new Vector2(0f, 0f);
 		}*/
 		if (GUILayout.Button(new GUIContent("Injured man", "Creates an injured man."))) {
-			GameObject t = Instantiate(injuredMan) as GameObject;
-			t.rigidbody2D.position = new Vector2(0f, 0f);
+			Instantiate(injuredMan, new Vector2(15f, 5f), new Quaternion());
 		}
 		GUILayout.EndHorizontal();
 
@@ -261,15 +246,13 @@ public class ObjectMenu : MonoBehaviour
 		
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("Apple", "Creates an apple."))) {
-			Instantiate(apple);
-			apple.rigidbody2D.position = new Vector2(5, 30f);
+			Instantiate(apple, new Vector2(5, 15f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Steak", "Creates a steak."))) {
 			Instantiate(steak, new Vector3(0,10), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Bacon", "Creates bacon."))) {
-			Instantiate(bacon);
-			bacon.rigidbody2D.position = new Vector2(5, 30f);
+			Instantiate(bacon, new Vector2(5, 15f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Pill", "Creates a good pill."))) {
 			Instantiate(pill, new Vector3(0,10), new Quaternion());
@@ -278,8 +261,7 @@ public class ObjectMenu : MonoBehaviour
 			Instantiate(redPill, new Vector3(0,10), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Poison Bottle", "Creates a poisonous bottle."))) {
-			Instantiate(poison);
-			poison.rigidbody2D.position = new Vector2(5, 40f);
+			Instantiate(poison, new Vector2(5, 15f), new Quaternion());
 		}
 		GUILayout.EndHorizontal();
 		

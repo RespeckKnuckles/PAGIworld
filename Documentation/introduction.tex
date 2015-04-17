@@ -1,0 +1,95 @@
+\section{Introduction}
+\label{sect:introduction}
+
+Towards the end of his long and extremely distinguished career, Jean Piaget began to name and concretely describe some mechanisms which he believed were responsible for the emergence of many features of mature cognition: formal reasoning, an understanding of causality, and analogical ability were among these, along with many others \cite{Piaget1958,Piaget1974,Piaget2001}.
+Piaget had long suspected that these features and the concepts they relied on were constructed by the child using simpler schemas acquired through interaction with the physical world, at least since Piaget and Inhelder (1958). Thus the role that the world plays in shaping the constructs and abilities of the child, which informs the related question of how much AI can progress without having a real-world-like environment, has been a cornerstone issue of AI for some time now \cite{Brooks1990,Brooks1991,Harnad1990}.
+
+But modeling Piaget's beliefs is, to this day, an unmet goal. This is a dream of computational cognitive modelers, but perhaps more specifically the field of developmental AI---This is the field which attempts to show how, using an agent endowed with minimal innate capacities embedded in a sufficiently rich environment, higher-level cognitive abilities can emerge. These abilities may include logico-mathematical reasoning, an understanding of causality, robust analogical reasoning, and others. Furthermore, work in developmental AI systems has strived to show that the emergence of such abilities could be done in such a way that reflects the way they develop in humans, whether this is in the pattern predicted by Piaget's stage theories, Neo-Piagetian stage theories, or more gradually.
+
+Frank Guerin (2011), in his recent survey of the Developmental AI field, concluded that current systems were lacking in several key areas\nocite{Guerin2011}. Guerin then suggested that a major reason (arguably the most important reason) why the field has the shortcomings he described, was the absence of a suitable simulation environment. Current simulation environments used by Developmental AI projects were missing several key features, and Guerin described some conditions that would need to be met by simulation environments in order to cure this problem. Among the most important of these are the following, which we refer to as \textbf{C1}, \textbf{C2}, and \textbf{C3}:
+
+\begin{itemize}
+
+\item[\textbf{C1}] It is rich enough to provide knowledge which would bootstrap the understandings of concepts rooted in physical relationships, e.g.: inside vs. outside, large vs. strong, etc.
+
+\item[\textbf{C2}] It can allow for the modeling and acquisition of spatial knowledge, which Guerin notes is widely regarded to be a foundational domain of knowledge acquisition, through interaction with the world.
+
+\item[\textbf{C3}] It can support the creation and maintenance of knowledge which the agent can verify itself.
+
+\end{itemize}
+
+This paper describes a task-centered, physically realistic simulation environment that we have developed to simultaneously address challenges \textbf{C1-C3}. By doing so, it is our hope that this system can remove a glaring roadblock in the fields of developmental AI and cognitive modeling in general. The plan for this paper is as follows: we will elaborate on conditions \textbf{C1-C3}, and close out this section by explaining the concepts of PAI and PAGI. Section \ref{sect:PAGI_World} attempts to answer why such a simulation environment does not currently exist, and then fully introduces PAGI World. Section \ref{sect:example_tasks} outlines several examples of tasks in PAGI World and AI solutions we developed to perform some of these tasks. Next, Section \ref{sect:criticisms} tries to respond to any possible objections to the assumptions and claims we make in this paper. Finally, we conclude and discuss exciting next steps.
+
+\subsection{Guerin's Conditions}
+
+A common theme running through conditions \textbf{C1-C3} is that what is lacking from current microworlds is a physically realistic environment---one in which the agent can acquire, develop, and test its concepts. But the concerns raised by Guerin (2011) are not only of interest to the field of Developmental AI; in fact all of AI in general can benefit by addressing them. For example, feature \textbf{C1} is extremely important for cognitive models of analogy, which are currently struggling to overcome what has been called the Tailorability Concern (TC)\cite{Gentner2011,Licato2013b}. The TC, brutally summarized, is that models of analogy (though this can be applied to all cognitive architectures in general) have far too long dealt almost exclusively with manually constructed knowledge representations, using toy examples often selected solely to display some particular ability. Licato et al. (2013) goes on to argue that overcoming the TC is necessary to progress the fields of analogy and cognitive architectures. After making this point, they develop a set of conditions that must be met in order to claim victory over the TC:
+
+%\begin{mdframed}[skipabove=0.05in,skipbelow=0.1in,roundcorner=10pt,backgroundcolor=gray!15,
+%  linewidth=0pt,roundcorner=8pt,fontcolor = black!90,
+%  frametitle={ $TCA_3$ }
+%    ,frametitlerule=true,frametitlerulecolor=gray!80,
+%  frametitlebackgroundcolor=gray!30, frametitlerulewidth=0.5pt]
+%\begin{itemize}\begin{footnotesize} \itemsep0pt
+%\item A set of justificatio
+%\end{footnotesize}
+%\end{itemize} 
+%\end{mdframed}
+
+\begin{small}
+\begin{quote}
+\begin{mdframed}[backgroundcolor=gray!15]
+$\mathbf{TCA_3}$ A computational system of analogy answers the TC if and only if given no more than either
+\begin{itemize}
+\item unstructured textural and/or visual data, or
+\item a large, pre-existing database,
+\end{itemize}
+and minimal input, it is able to consistently produce \textit{useful} analogies and demonstrate stability through a variety of input forms and domains.
+\end{mdframed}
+\end{quote}
+\end{small}
+
+According to $\mathbf{TCA_3}$, then, good performance by the part of a cognitive agent on a sufficiently large knowledge base from which source analogs could be drawn is required to answer the TC. An agent interacting in the sort of microworld called for by Guerin (2011) might ideally be able to acquire such source analogs by simply interacting with its environment. 
+
+\textbf{C1} and the TC together require that the microworld itself is what provides the knowledge which is drawn upon to construct concepts of basic physical relationships, not manually constructed source analogs or fully explicit logical theories. \textbf{C2} expands on \textbf{C1} by requiring that this knowledge of physical relationships not be static, but rather should allow for an agent in the world to learn through interaction. The idea that children learn by initiating interactions with the world based on their (often incomplete) conceptions of reality---in a manner that resembles scientific experimentation---was championed by Piaget and later constructivists \cite{vonGlasersfeld1991,Quartz1997,Piaget2001b}, and is at the core of views like the Bickhard's Interactivist Model \cite{Bickhard2008}.
+
+A microworld that meets \textbf{C2}, then, should recognize that the concepts, schemas, and representations used by the agents will frequently change, and this is difficult to do if the information provided from the microworld to the agents within it are frozen in representation. There are many ways in which information might be frozen in representation: It may make use of labeled concepts which are too high level and do not change, or it may be too rigid in its form of presentation. Consider, for example, the Event Calculus (EC) \cite{EVENTCALCULUS}, which defines the event, a fixed set of predicates and objects, and certain inference steps as primitives. The DORA model, which attempts to explain concept acquisition and construction at the neurobiological level, also (at present) requires primitive conceptual constructs that allow for pairwise comparison of analog values \cite{Doumas2008,Doumas2013}. \textbf{C2} helps to ensure that microworlds make as few assumptions about which of these primitives are required as possible.
+
+Note that this is to say nothing about what mode of representation the agent is better off using. It may benefit the agent to use fully top-down approaches \cite{Bringsjord2008a,Bringsjord2008c}, or perhaps hybrid representations \cite{Sun2002}, depending on the task being solved and the purpose of the demonstration. Some inflexibility may be unavoidable---every form of representation has some set of primitive constructs at its core, whether they are logical operators, undefined microfeatures, or a mostly fixed set of sensory inputs and outputs. PAGI World tries to provide a lower granularity for these primitive constructs, with the assumption that a powerful AGI system can eventually come along and construct all of the other higher level constructs with them.
+
+In contrast with \textbf{C1} and \textbf{C2}, \textbf{C3} comes closest to placing a requirement on the type of knowledge and cognitive operations on this knowledge that the agents in the microworld have. However, it goes just short of that by not requiring that the agents actually \textit{do} maintain and verify their own knowledge. Rather, it specifies that the world be rich enough to allow such an agent to exist.
+
+\textbf{C3} requires further elaboration. Guerin (2011) cites Sutton's (2006) `Verification Principle' (VP), which states:
+
+\begin{quote}
+An AI system can create and maintain knowledge only to the extent that it can verify that knowledge itself \cite{Sutton2006}.
+\end{quote}
+
+The VP, Sutton argues, is extremely important in AI systems which aim to acquire and develop knowledge that will eventually become too large or numerous for humans to independently verify. Just like the commonsense reasoner who is reluctant to accept revelations of knowledge that do not `make sense' to the reasoner, AI and AGI systems would need some way to consider ideas with discretion. Because PAGI World only provides its agents with low-level information that accurately describe the state of the microworld and avoids providing interpretations of this information, an agent that satisfies the VP is entirely possible. However, it would be specific to the tasks to determine how to measure adherence to the VP.
+
+\subsection{PAI and PAGI}
+
+Another formulation of the Tailorability Concern and recommendation for how to surpass it was also presented in Licato et al. (2013):
+
+\begin{small}
+ \begin{quote}
+\begin{mdframed}[backgroundcolor=gray!15]
+  $\mathbf{TCA_4}$ A computational system $\mathcal A$ for analogy
+  generation answers the TC if and only if, given as input no more
+  than either
+   \begin{itemize}
+    \item unstructured textual and/or visual data, or 
+    \item a vast, pre-existing database not significantly
+      pre-engineered ahead of time by humans for any particular tests
+      of $\mathcal A$,
+   \end{itemize}
+  is --- in keeping with aforementioned \textit{Psychometric AI} ---
+  able to consistently generate analogies that enable $\mathcal A$ to
+  perform \emph{provably well} on precisely defined tests of cognitive
+  ability and skill.
+\end{mdframed}
+ \end{quote}
+\end{small}
+
+$\mathbf{TCA_4}$ ties the TC to Artificial General Intelligence (AGI) by introducing the concept of \textit{Psychometric AI} (PAI) \cite{Bringsjord2011,Bringsjord2003b}. PAI sees good performance on well-established tests of intelligence as a solid indicator of progress in AI. Some may note that most intelligence tests fail to capture human-level skills such as creativity and real-time problem solving; therefore, related to PAI is Psychometric Artificial \textit{General} Intelligence (PAGI) \cite{Bringsjord2012}. For example, one test of PAGI is Bringsjord and Licato's (2012) \textit{Piaget-MacGyver Room}, in which an agent is inside a room with certain items and a task to be performed. The agent must achieve the task using some combination of the items in the room (or using none of them, if possible). Depending on the task, the solutions may require using the items in unusual ways, as viewers of the MacGyver television series may remember. We describe three example Piaget-MacGyver Rooms in PAGI World in Section \ref{sect:example_tasks}.
+
+Note that although we have adopted ``PAGI World" as the name of our simulation environment in order to reflect the fact that it is designed to support many types of PAGI tests (including variants of the Piaget-MacGyver Room, as we will describe in this paper), PAI tests are just as easily implementable in PAGI World.

@@ -9,6 +9,5 @@ public class worldObject_empty : worldObject {
 	
 	// Update is called once per frame
 	void Update () {
-	
 	}
 }

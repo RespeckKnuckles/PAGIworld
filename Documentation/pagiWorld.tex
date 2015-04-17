@@ -1,0 +1,90 @@
+\section{PAGI World}
+\label{sect:PAGI_World}
+
+Before we describe PAGI World, it may be helpful to take a step back to ask why such a simulation does not currently exist, and try to understand if any of the roadblocks currently in the way affect the plausibility of our current project.
+
+\subsection{Why Isn't Such a System Already Available?}
+
+\subsubsection{Technical Difficulties}
+
+One potential roadblock is obvious---programming a realistic physics simulation is \textit{hard}. Some of this difficulty is reduced by working with a 2d, rather than 3d, environment. Although some libraries have previously been available for 2d physics simulations, they have often been very language specific and somewhat difficult to configure. 
+
+Secondly, even if one were to stick with a 2d physics library and commit to it, it requires a lot of development resources to enable the resulting simulation to run on more than one major operating system. Furthermore, even if \textit{that} problem is somehow addressed, there is a diversity of languages which AI researchers prefer to use: Python, LISP, C++, etc. All of these technical issues tend to reduce how willing researchers are to adopt certain simulation environments.
+
+We are extremely lucky in that all of the above problems can be solved with one design choice. Unity, a free game development engine, has \textit{very} recently released a 2d feature set, along with comes a 2d physics model that is extremely easy to work with. In fact, the blog post making the announcement of the 2d feature set was dated November 12, 2013.\footnote{This announcement can be found at \url{http://blogs.unity3d.com/2013/11/12/unity-4-3-2d-game-development-overview/}.} Furthermore, Unity allows for simultaneous compilation to all major operating systems, so that developers only have to write one version of the program and it is trivial to release versions for Mac OS, Windows, and Linux. Because Unity produces self-contained executables, very little to no setup is required by the end users.
+
+Finally, because Unity allows scripting in C\#, we were able to write an interface for AI systems that communicate with PAGI World through TCP/IP Ports. This means that AI scripts can be written in \textit{virtually any} programming language that supports port communication.
+
+\subsubsection{Theoretical Difficulties}
+
+Unity conveniently helps to remove many of the technical roadblocks that have previously stood in the way of developing simulation environments that can be widely adopted. But there are also theoretical roadblocks; these are problems with the generality vs. work-required tradeoff. For example, if a simulation environment is too specifically tailored toward a certain task, then not only can systems eventually be written to achieve that particular task and nothing else, but the simulation environment quickly becomes less useful once the task is solved. On the other hand, if the system is too general (e.g. if a researcher decides to start from scratch with nothing but Unity), then the researcher must devote too much time and energy towards developing the simulation environment; it is easy to see why this may not be seen by researchers as a profitable use of time.
+
+PAGI World was designed with this tradeoff in mind. A \textit{task} in PAGI World might be thought of as a large Piaget-MacGyver Room with a configuration of objects. Users can, at run-time, open an object menu (Figure TODO) and select from a variety of pre-defined world objects such as walls made of different materials (and thus different weights, temperatures, and friction coefficients), smaller objects like food or poisonous items, functional items like buttons, water dispensers, switches, and more. The list of available world objects will frequently be expanding and new world objects will be importable into tasks without having to recreate tasks with each update. Perhaps most importantly, tasks can be saved and loaded, so that as new PAI/PAGI experiments are designed, new tasks can be created by anyone. Later in this article, we will describe several tasks that have already been implemented and are currently available for download.
+
+%TODO: INSERT FIGURE SHOWING SCREENSHOT OF OBJECT MENU AND ITS USE
+
+\subsubsection{Problems with Robotics Environments}
+
+There have been some attempts to create physically realistic simulation environments for AI researchers. However, as we will argue, they have largely been lacking in addressing the concerns in Guerin (2011) and Licato et al. (2013). We will briefly discuss other systems which have similar goals to those of PAGI world, only in order to emphasize the uniqueness of this project. What follows is not intended to be a comprehensive survey of the field, but we have tried to provide a representative sample of what is currently available.
+
+The subfields of Developmental Robotics \cite{Lungarella2003} and Cognitive Developmental Robotics \cite{Asada2009} have long offered an option for researchers interested in demonstrating the effectiveness of a certain AI theory when placed in a real-time test environment. But as researchers know, robotics research can be quite costly, and working with hardware can introduce a steep learning curve that some may want to avoid if possible. Robot software simulators offer a compromise, thus for this and other reasons the number of robotics simulation software options has been increasing quickly over the past few years. Not surprisingly, several surveys and reviews of the software alternatives have emerged to make sense of the growing landscape.%; we will attempt to extract some key points from these reviews.
+
+Although we must emphasize that PAGI World is not in any way intended to be a tool for robotics development, there is a clear overlap in interest with robotics simulation environments, and thus a quick review of the relevant literature is appropriate here. Some robotics researchers have already realized the value of using computer games as testbeds for human-level AI \cite{Laird2001}, and more specifically the ability for Unity to simulate worlds for testing robotics, and have created basic frameworks for modeling robot sensors and kinematics \cite{Hernandez-Belmonte2011,Mattingly2012}. But although the simulators designed for robotics are already popular and enjoy widespread support, they may be too focused on the specifics of robot hardware for our purposes. For example, of particular concern to robotics researchers are environments that allow them to simulate robot locomotion, grasping, joint dampening \cite{Drumwright2010}, hardware support, robot configuration methods \cite{Kramer2007}, accuracy of contact resolution, and having the same interface between the simulated and actual robot control systems \cite{Ivaldi2014}. Furthermore, the sorts of PAI/PAGI tasks which PAGI World focuses on are not currently available.
+
+We propose to distinguish PAGI World from the current crop of robotics simulators on several key points:
+\begin{itemize}
+\item We will abstract as many of the low level details of hardware implementation as possible, so that the AI researcher can focus on cognitive-level problems.
+\item Although low-level sensory information about the world will be available, we will have information available at a slightly higher level of abstraction as well: e.g. object names, locations, etc.
+\item We focus on having many PAI/PAGI tasks available
+\item We will have an easy-to-use system in place for QUICKLY creating new PAI/PAGI tasks, such that anyone without programming experience can create them and share them with others. This helps to ensure that the amount of tasks available will continue to increase, and therefore time spent developing AI systems to work with PAGI World will be re-usable.
+\item Our simulator is tied to Unity 2D. This connects PAGI World to an extremely stable physics and graphics engine that enjoys widespread community support and is rapidly being upgraded. We can therefore have a reasonable degree of confidence that any bugs with the physics simulator or other engine-level components will be addressed.
+\end{itemize}
+
+In short, PAGI World is PAI/PAGI task-oriented, and targeted to cognitive-level researchers, rather than to robotics researchers.
+
+\subsubsection{Other Simulation Environments}
+
+There have been some notable attempts to provide simulation environments for AI systems, particularly those inspired by the Developmental AI approach. David (2010) \nocite{David2010} created a Developmental AI testbed by updating an older version created by Frank Guerin.
+
+Although some of the present paper's authors are sympathetic to the power of Piagetian schemas and the AI systems derived from Piaget's theories, David (2010)'s system is tightly coupled with a particular cognitive architecture also presented in the same paper which uses schema-based AI systems, whereas PAGI World is agnostic about what AI approach is used. It is unclear how easy or difficult it would be to adapt arbitrary cognitive architectures to work with their simulation environment.
+
+%The physics engine is not sophisticated enough to simulate objects which are not rectangular in shape, whereas PAGI World leverages the full power of Unity's 2D physics engine to represent physics entities whose bounding shapes can be polygons or ovals. 
+
+They used JBox2D for their physics engine, which according to David (2010) is poorly documented and difficult to work with (e.g. implementing a method to detect when the robot hand touched an object took longer than they planned due to a lack of documentation with JBox2D). Although a newer version of JBox2D became available afterwards, implementing the new version requires the simulation programmer to manually update the relevant code, whereas updates to the Unity 2D physics engine will automatically be propagated to PAGI World, without any code changes on our part. In other words, upgrades to PAGI World's physics engine will be virtually transparent to AI developers.
+
+%TODO: environments used by Tom Shultz and others in the book "computational developmental psychology"
+
+Drescher (1991)\nocite{Drescher1991} proposed an early microworld in which an agent, whose development made use of a primitive form of Piagetian schemas, explored the world and learned about the objects with which it interacted. Although it was a promising start, after this initial start it was not developed further, nor was any significant effort made by other researchers to pick up on Drescher's work, as far as we are aware (at least one small-scale re-implementation of Drescher's work exists, e.g. \cite{Chaput2003}). Nevertheless, Drescher's microworld has some very interesting elements that we have taken as a starting point for PAGI World, and we will next describe those starting points in detail.
+
+\subsubsection{Drescher's Simulation}
+
+Drescher's (1991) microworld simulation environment was created primarily to test his Piagetian artificial agent, which took low-level information about the environment and constructed increasingly complex schemas about its microworld. The microworld consists of a 2D scene divided into a grid which limits the granularity of all other elements in the microworld. Inside this microworld there are objects which take up discrete areas of the grid and contain visual and tactile properties. These properties can be described by vectors which, for the purposes of this simulation, have arbitrarily chosen values.
+
+Most importantly, the microworld contains a single robot-like agent with a single hand that can move in a 3 cell x 3 cell region relative to the part of the robot's body which is considered to be its `eye.' If the hand object is adjacent to an object in the world (including the robot's own body), a four-dimensional vector containing tactile information is returned to the agent. The body has tactile sensors as well, though they do not return tactile information as detailed as those of the hand. 
+
+Visual information is available as well, in the form of a visual field whose position is defined relative to the robot's body. A smaller region within the visual field, called the foveal region, represents the area within the visual field where the robot is currently looking. The foveal region returns vectors representing visual information, and the cells in the visual field not in the foveal region also return visual information, but with lower detail. 
+
+Perhaps one of the most interesting features of Drescher's microworld is the fact that the robot can only interact directly with the world by sending a set of predefined ``built-in actions." Although the internal schema mechanism of the robot may learn to represent actions as richer and more complicated, ultimately what is sent to the simulation environment is always extremely low-level. Likewise, the information provided to the robot is always extremely low-level. The task of identifying and naming objects in the world---and even of knowing that objects in the world consistently exist!---is up to the learning mechanism the robot utilizes.
+
+This fact, which is that the learning and control system of the artificial agent can be developed almost completely independently of the features of the world itself, is one of the primary reasons why Drescher's microworld is appealing as a starting point for PAGI World. It is in line with the theoretical assumptions we make here, which will be described further in the next section. But first, we will offer a list of the primary areas in which PAGI World departs and have innovated beyond Drescher's microworld:
+
+%We share the following features:
+%\begin{itemize}
+%\item The design philosophy that the only way the agent should directly interact with the world are through predefined low-level inputs and outputs
+%\item 
+%\end{itemize}
+
+%However, PAGI World departs from Drescher's microworld in many key areas:
+\begin{itemize}
+\item \textbf{Agnosticism on the AI method used.} Whereas Drescher's microworld was created for the sole purpose of testing his Piagetian schema learning mechanism, we have designed the world, program, and interfaces so that as wide a variety as possible of AI techniques can be used. 
+\item \textbf{Optional mid-level input.} Related to the previous point, we realize that some researchers simply won't want to translate vector input for every piece of tactile or visual information they come across, and so we offer the option for the agent to directly receive the name of the object upon touching or viewing it. 
+\item \textbf{Granularity.} The granularity of our world is dramatically higher; consider the increase in size of the visual field: Drescher's was an area of 7x7 cells with one visual sensor per cell. We have improved the visual area to span a 450x300 unit area, with a visual sensor spaced 15 units from the nearest one (each unit roughly corresponds to a screen pixel).
+\item \textbf{Vision System.} In addition to having a wider visual field, ours has no foveal region, because the tasks we design require a visual field large enough to observe multiple objects at once. Certainly it is plausible that rapid eye movements can account for this ability in human beings, but our initial investigations found it to have too little theoretical benefit compared to how difficult it made working with the system.
+\item \textbf{Hands.} We have given the robot two hands instead of one, each with similar ranges of motion but different distances relative to the body which they can reach. Although the simulation world is 2D, the hands exist on a separate layer which floats above objects, which the hands can grip and move (provided they are not too heavy or otherwise held down).
+\item \textbf{Realistic Physics.} Undoubtedly the most important improvement we introduce is a realistic physics provided by Unity 2D, which we have already mentioned.
+\end{itemize}
+
+%\subsection{How to Get Started}
+%A full tutorial and detailed installation instructions are available at our website. 
+%writing an AI system
+%creating a new task

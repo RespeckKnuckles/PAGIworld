@@ -1,0 +1,36 @@
+\section{Criticisms}
+\label{sect:criticisms}
+
+Although we have tried to be as accommodating as possible, there may still be some concerns and misunderstandings about PAI World and the theory behind it. This section will attempt to address such concerns.
+
+\subsubsection{``PAGI World is not welcoming to top-down AI approaches, or approaches that rely heavily on explicit knowledge."}
+
+It is true that the communication between the agent and the environment is restricted to mostly low-level information. However, this does not mean that the reasoning (or other processes used by the agent) also have to be exclusively low-level. Top-down approaches, such as those in the Logicist AI (LAI) camp \cite{Bringsjord2008c}, can and should benefit from attempts to bridge explicit and implicit knowledge, \textit{but cannot do so if they do not have sufficient access to both types.} 
+
+According to Bringsjord (2008), ``even dynamic perception and action can be systematically logic-based," and thus the exclusively low-level information in PAGI World can spur the development of dynamic perception tools, whether logic-based or not. PAGI World can thus serve as a target for LAI and non-LAI researchers alike---though admittedly they may focus initially on different tasks, we hold that tasks of interest to both schools of thought can be captured in PAGI World. For example, planning of the sort that would be required by the MacGuyver water-directing task described in Section \ref{sect:macgyver} may be difficult to do without symbolic manipulation and reasoning. PAGI World is general enough to allow for tasks that require reasoning over high-level and low-level knowledge alike.
+
+\subsubsection{``PAGI World assumes that embodied cognition is necessary for AGI," or ``conditions \textbf{C1-C3} are simply a restatement of Brooks' (1991) thesis."}
+
+This objection is related to the previous, and just like the previous it is simply not true. PAGI World does not take a position on which approach to modeling cognition is best; rather, it provides an environment in which all approaches should have equal opportunity (as much as possible) to flourish, and therefore gives the field of AI a common benchmark to compare vastly different modeling approaches. A researcher not interested in modeling embodied cognition can focus instead on those tasks on which good performance is predominately determined by higher-level cognitive abilities. 
+
+Guerin (2011) argued that his points, in which \textbf{C1 - C3} are rooted, constituted a weaker form of Brooks's (1991) thesis, in that Guerin only requires that AGI agents be built in a microworld with ``certain essential features of the world," while Brooks requires that no less than the real world be used \cite{Brooks1991}. We do not even take a position that is as strong as Guerin's, at least in this paper. \textit{PAGI World does not assume that bottom-up AI is needed for AGI, it only assumes that AGI must be able to exist in a world in which no more than low-level information is directly available to the AI agent.} The distinction is subtle, admittedly, and it may be the case that the reader already interprets Brooks' or Guerin's theses as equivalent to our own. We do not take a position here that rules out the possibility of AGI being developed outside of an environment like PAGI World, in for example an environment with nothing but logical representations. We do, however, require that AGI be demonstrated to perform well in an environment like PAGI World, on the sort of PAGI tasks that PAGI World specializes in.
+
+\subsubsection{``Eventually all of the tasks are going to be figured out."}
+
+This would be fantastic, because a goal of PAGI World is to encourage the development of artificially-intelligent agents who can solve certain psychometric tasks. AI approaches which are able to solve many of these tasks will have a strong claim to being the currently-best PAGI systems. Furthermore, if there are multiple AI approaches which solve the same tasks, the very fact that they use the same simulation environment will allow us a direct comparison of the alternate AI approaches which is currently lacking from a field that seems like it has a new test environment for every task---this was in fact one of the problem areas identified by Guerin (2011).
+
+What if we run out of interesting tasks? This is where our focus on designing an interface that makes it extremely easy to create new tasks comes in. So long as researchers come up with ideas for how to test AI systems, PAGI World will offer an environment to create tasks to test those ideas. It is requested that any researcher who creates a new task makes that task available to others. We plan on creating a website that will serve as a central repository for all such tasks.
+
+%%%%%%%%%%%%%%%LEFT OFF HERE%%%%%%%%%%%%%%%
+
+\subsubsection{``Certain essential features of physical causality, including detailed vision, sound, etc. are not included."}
+
+Given that this is a simulation environment which strives for realism, and that it is therefore not the same as the real world, at some level a degree of abstraction is unavoidable. These abstractions have already been mostly discussed: finitely sized vectors describing tactile features, 2D rather than 3D physics, etc. 
+
+However, PAGI World offers a framework which future expansions can follow. There is nothing at present preventing PAGI World from simulating sound events and sending low-level sound data to the agent just as it does with visual and tactile data. We have simply chosen not to prioritize the development of a realistic sound simulator at this time.
+
+\subsubsection{``A lot of learning children do is by example, which PAGI World doesn't support."}
+
+This is simply not true. We support at least two forms of supervised instruction: There is an input text box through which human users can type and send strings directly to the AI script, which can serve as feedback. This form of instruction is used in the dancing task we described earlier in this paper. Secondly, the endorphin system, also mentioned earlier, which allows certain foods to be rewards and others to be negative stimuli, can also be used as a method of training AI systems.
+
+Furthermore, we are currently developing a component that will allow for a second AI agent to exist simultaneously in a task. Details for the most effective way to implement this are still being considered, and we welcome suggestions from the readers and any researchers who use the beta version of PAGI World.

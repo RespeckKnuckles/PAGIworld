@@ -505,11 +505,21 @@ public class bodyController : worldObject {
 			}
 		}
 	}
-	
+
+	public Camera mainCamera;
 	// Update is called once per frame
 	void Update () {
 	
-		
+		if (GlobalVariables.centerCamera) //scroll camera
+		{
+			//Vector2 newLeft = 
+			if (mainCamera == null)
+				Debug.Log("no camera");
+			else
+				mainCamera.transform.Translate((transform.position - mainCamera.transform.position) - new Vector3(0,0,10));
+		}
+
+
 		//Debug.Log(rigidbody2D.transform.rotation*new Vector2(0,100));
 		//Debug.Log (rigidbody2D.position);
 		//visualSensors[15,1].updateSensor();
@@ -1055,6 +1065,8 @@ public class bodyController : worldObject {
 
 		if (Input.GetKeyDown(KeyCode.Space))
 			jump(30000f);
+		if (Input.GetKey(KeyCode.V))
+			GlobalVariables.viewControlsVisible = true;
 		
 		//Rotate
 		if (Input.GetKey(KeyCode.R))

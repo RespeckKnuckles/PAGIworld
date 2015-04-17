@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 /// <summary>
 /// A console to display Unity's debug logs in-game. Credit goes to: https://gist.github.com/mminer/975374
@@ -39,6 +40,8 @@ public class ControlPanel : MonoBehaviour
 	
 	Rect windowRect = new Rect(margin, margin, Screen.width - (margin * 2), Screen.height - (margin * 2));
 	Rect titleBarRect = new Rect(0, 0, 100, 20);
+	Rect viewControlsWindowRect = new Rect(Screen.width - (margin + 200), margin,200,200);//Screen.height - (margin + 400), 200, 400);// margin, margin, Screen.width - (margin * 2), Screen.height - (margin * 2));
+	Rect viewControlsTitleBarRect = new Rect(0, 0, 5, 5);
 	//GUIContent clearLabel = new GUIContent("Clear", "Clear the contents of the console.");
 	//GUIContent collapseLabel = new GUIContent("Collapse", "Hide repeated messages.");
 	
@@ -150,6 +153,9 @@ public class ControlPanel : MonoBehaviour
 	
 	void OnGUI ()
 	{
+		if (GlobalVariables.viewControlsVisible)
+			viewControlsWindowRect = GUILayout.Window(12112, viewControlsWindowRect, ViewPortWindow, "View Port");
+
 		if (!show) {
 			return;
 		}
@@ -159,6 +165,79 @@ public class ControlPanel : MonoBehaviour
 		else
 			windowRect = GUILayout.Window(12345, windowRect, ConsoleWindow, "Controls");
 	}
+
+	void ViewPortWindow(int windowID)
+	{
+		GUI.contentColor = Color.white;
+
+		//GUILayout.BeginHorizontal();
+		if (GUI.Button(new Rect(0, 0, 18, 18), new GUIContent("x")))
+		//if (GUILayout.Button(new GUIContent("X"))) {
+			//Debug.Log("resetting");
+			GlobalVariables.viewControlsVisible = false;
+		//}
+		//GUILayout.EndHorizontal();
+
+		GUILayout.BeginHorizontal();
+		if (GUILayout.Button(new GUIContent("Zoom -")))
+			camera.orthographicSize = (camera.orthographicSize >= 89.3f)?125f:camera.orthographicSize + camera.orthographicSize*0.4f;
+		if (GUILayout.Button(new GUIContent("Zoom +")))
+			camera.orthographicSize = (camera.orthographicSize <= 41.7f)?20f:camera.orthographicSize - camera.orthographicSize*0.4f;
+		GUILayout.EndHorizontal();
+		
+		float scrollFactor = 5f; //larger means it scrolls less
+
+		GUILayout.BeginHorizontal();
+		if (GUILayout.Button(new GUIContent("/\\")))
+			camera.transform.Translate(0, camera.orthographicSize/scrollFactor, 0);
+		GUILayout.EndHorizontal();
+
+		GUILayout.BeginHorizontal();
+		if (GUILayout.Button(new GUIContent("<")))
+			camera.transform.Translate(-(camera.orthographicSize/scrollFactor), 0, 0);
+		if (GUILayout.Button(new GUIContent(">")))
+			camera.transform.Translate(camera.orthographicSize/scrollFactor, 0, 0);
+		GUILayout.EndHorizontal();
+		
+		GUILayout.BeginHorizontal();
+		if (GUILayout.Button(new GUIContent("\\/")))
+			camera.transform.Translate(0, -camera.orthographicSize/scrollFactor, 0);
+		GUILayout.EndHorizontal();
+
+		GUILayout.BeginHorizontal();
+		GlobalVariables.centerCamera = GUILayout.Toggle(GlobalVariables.centerCamera, "Keep PAGI Guy Centered");
+		GUILayout.EndHorizontal();
+
+		GUILayout.BeginHorizontal();
+		if (GUILayout.Button(new GUIContent("test")))
+		{
+			worldObject w = Instantiate(emptyblock, new Vector3(10f,10f), new Quaternion()) as worldObject;
+
+			Texture2D tex = null;
+			byte[] fileData;
+
+			string fileName = "bill.jpeg";
+			if (File.Exists(fileName))     {
+				fileData = File.ReadAllBytes(fileName);
+				tex = new Texture2D(5, 5);
+				tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+				
+				Sprite newSprite = new Sprite();
+				newSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0), 50f);
+				w.GetComponent<SpriteRenderer>().sprite = newSprite;
+				BoxCollider2D b = w.GetComponent<BoxCollider2D>();
+				b.center = newSprite.bounds.center;
+				b.size = newSprite.bounds.size;
+				//Debug.Log("w " + newSprite.bounds + " h " + b.bounds);
+            }
+			else
+				Debug.Log("file " + fileName + " not found");
+		}
+        GUILayout.EndHorizontal();
+
+		GUI.DragWindow(windowRect);
+	}
+	public worldObject emptyblock;
 	
 	string newPortStr = GlobalVariables.portNumber.ToString();
 	/// <summary>
@@ -189,6 +268,8 @@ public class ControlPanel : MonoBehaviour
 		GUILayout.EndScrollView();*/
 		
 		GUI.contentColor = Color.white;
+		if (GUI.Button(new Rect(0, 0, 18, 18), new GUIContent("x")))
+			show = false;
 		
 		GUILayout.BeginHorizontal();
 		
@@ -276,6 +357,8 @@ public class ControlPanel : MonoBehaviour
 		GlobalVariables.sendNotificationOnReflexFirings = GUILayout.Toggle(GlobalVariables.sendNotificationOnReflexFirings, "Send notifications when reflexes fire?");
 		
 		GlobalVariables.spokenCommandFieldVisible = GUILayout.Toggle(GlobalVariables.spokenCommandFieldVisible, "Show command textbox");
+		
+		GlobalVariables.viewControlsVisible = GUILayout.Toggle(GlobalVariables.viewControlsVisible, "Show view controls");
 		GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal();
