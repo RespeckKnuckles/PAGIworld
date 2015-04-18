@@ -262,7 +262,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   toggleKey: 9
-  emptyblock: {fileID: 11447566, guid: 87be3a2e74cb84e48b0d55023190a551, type: 2}
   garf: {fileID: 11400000, guid: a797a01ebf2d04812ac99d5952469131, type: 2}
 --- !u!114 &153903081
 MonoBehaviour:
@@ -543,6 +542,7 @@ MonoBehaviour:
   handIsClosed: 0000
   powerMode: 0
   mainCamera: {fileID: 153903074}
+  emptyblock: {fileID: 11447566, guid: 87be3a2e74cb84e48b0d55023190a551, type: 2}
 --- !u!1 &227506160
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using System.IO;
 
@@ -211,31 +212,13 @@ public class ControlPanel : MonoBehaviour
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("test")))
 		{
-			worldObject w = Instantiate(emptyblock, new Vector3(10f,10f), new Quaternion()) as worldObject;
-			Texture2D tex = null;
-			byte[] fileData;
-			string fileName = "bill.jpeg";
-			if (File.Exists(fileName))     {
-				fileData = File.ReadAllBytes(fileName);
-				tex = new Texture2D(5, 5);
-				tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
-				
-				Sprite newSprite = new Sprite();
-				newSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0), 50f);
-				w.GetComponent<SpriteRenderer>().sprite = newSprite;
-				BoxCollider2D b = w.GetComponent<BoxCollider2D>();
-				b.center = newSprite.bounds.center;
-				b.size = newSprite.bounds.size;
-				//Debug.Log("w " + newSprite.bounds + " h " + b.bounds);
-            }
-			else
-				Debug.Log("file " + fileName + " not found");
+			AIMessage a = AIMessage.fromString("createItem,name,bill.jpeg,5,10,0,3,3.14,2,0,5");
+			GlobalVariables.messageQueue.Add(a);
 		}
         GUILayout.EndHorizontal();
 
 		GUI.DragWindow(windowRect);
 	}
-	public worldObject emptyblock;
 	
 	string newPortStr = GlobalVariables.portNumber.ToString();
 	/// <summary>

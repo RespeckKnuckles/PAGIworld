@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Text;
 using System;
+using System.IO;
 
 public abstract class sensor
 {
@@ -507,6 +508,7 @@ public class bodyController : worldObject {
 	}
 
 	public Camera mainCamera;
+	public worldObject emptyblock;
 	// Update is called once per frame
 	void Update () {
 	
@@ -550,7 +552,45 @@ public class bodyController : worldObject {
 				Debug.Log("received unrecognized command from client connection " + firstMsg.stringContent);
 				outgoingMessages.Add("UnrecognizedCommandError:" + firstMsg.stringContent.Trim() + "\n");
 				break;
-			
+			case AIMessage.AIMessageType.createItem:
+				Debug.Log("Received command to create item");
+				Dictionary<string,System.Object> dd = (Dictionary<string,System.Object>)firstMsg.detail;
+				//foreach (string k in dd.Keys)
+				//	Debug.Log(k + ": " + dd[k]);
+				//create item
+				Texture2D tex = null;
+				byte[] fileData;
+				string fileName = (string)dd["filePath"];
+				if (File.Exists(fileName))     {
+					fileData = File.ReadAllBytes(fileName);
+					tex = new Texture2D(5, 5);
+					tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+					
+					Sprite newSprite = new Sprite();
+					newSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0), 50f);
+					worldObject w = Instantiate(emptyblock, new Vector3(10f,10f), new Quaternion()) as worldObject;
+					w.GetComponent<SpriteRenderer>().sprite = newSprite;
+					BoxCollider2D b = w.GetComponent<BoxCollider2D>();
+					b.center = newSprite.bounds.center;
+					b.size = newSprite.bounds.size;
+					//fill out parameters
+					w.objectName = (string)dd["name"];
+					w.name = (string)dd["name"];
+					w.rigidbody2D.position = new Vector2((float)dd["x"],(float)dd["y"]);
+					w.rigidbody2D.mass = (float)dd["mass"];
+					//set friction
+					b.sharedMaterial = (PhysicsMaterial2D)Resources.Load("PhysicsMaterials2D/pm" + (int)dd["friction"]);
+					w.rigidbody2D.rotation = (180f/3.14f)*(float)dd["rotation"];
+					//TODO:endorphins,disappear,kinematic
+					
+					outgoingMessages.Add("createItem,"+(string)dd["name"]+",OK\n");
+				}
+				else
+				{
+					Debug.Log("file " + fileName + " not found");
+					outgoingMessages.Add("createItem,"+(string)dd["name"]+",FAILED,fileNotFound\n");
+				}
+				break;
 			case AIMessage.AIMessageType.print:
 				Debug.Log("received command to print message");
 				Debug.Log("AI-side says: " + firstMsg.stringContent);

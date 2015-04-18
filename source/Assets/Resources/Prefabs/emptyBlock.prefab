@@ -80,7 +80,7 @@ MonoBehaviour:
   - 0
   - 0
   objectName: wallBlock
-  objectType: movable
+  objectType: customItem
   canBeDragged: 1
   prefabID: 6
 --- !u!212 &21247566

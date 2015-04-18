@@ -218,14 +218,22 @@ The object names are the same identifiers that are returned by sensors, e.g. the
 
 (As of version 0.1.7) It is possible to create your own objects in PAGI World, which you can then control by sending force commands. This is done by calling the command:
 
-\texttt{createItem,name,fp,x,y,m,fr,r,e,d,k} where:
+\texttt{createItem,name,fp,x,y,m,ph,r,e,d,k} where:
 
 \begin{itemize}
 \item \texttt{fp} - The path to the image to be used. The image must be either a png, jpg, or jpeg. The filename must have no commas or this string will be messed up! Also note that the image file is \textit{not} saved with task files, so if you have a task file that has custom items, use relative directories and always include the image files with your task files. The image will be loaded at a size of 50 pixels per world unit. Also, the size of the bounding box will \textit{always} be rectangular, regardless of the shape of the image. You may load png files if you want partially transparent images, but the bounding box will still be calculated based on the total image size.
 \item \texttt{name} - The unique string identifier for this individual item. If you use a name that is already taken, then the previous item with this name will be deleted.
 \item \texttt{x,y} - The x,y positions where the item should initially appear.
 \item \texttt{m} - The initial mass of the item. For reference, the mass of an apple is 1, and the mass of a wall piece is 50.
-\item \texttt{fr} - The amount of friction of an item. Note that currently there are only three settings: -1 (no friction), 0 (normal friction), and 1 (high friction). All other given values will default to 0.
+\item \texttt{ph} - The physics material to use for this item. This can be one of the following:
+	\begin{itemize}
+	\item 0 - Low friction, low bounciness
+	\item 1 - Normal friction, low bounciness (Most items should be this setting by default)
+	\item 2 - High friction, low bounciness
+	\item 3 - Low friction, high bounciness
+	\item 4 - Normal friction, high bounciness
+	\item 5 - High friction, high bounciness
+	\end{itemize}
 \item \texttt{r} - The initial rotation of the item, in radians. 
 \item \texttt{e} - The amount of endorphins the object provides.
 \item \texttt{d} - 1 if the object should disappear upon contact with PAGI guy (e.g., if it is a food or poison item), 0 otherwise.

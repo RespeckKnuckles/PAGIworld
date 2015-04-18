@@ -118,7 +118,7 @@ public class GlobalVariables : MonoBehaviour {
 			if (obj.transform.hasChanged)
 			{
 				//is it out of bounds?
-				if (obj.transform.position.x < -195f || obj.transform.position.x > 194f || obj.transform.position.y < -122f || obj.transform.position.y > 126f)
+				if (obj.transform.position.x < -195f || obj.transform.position.x > 194f || obj.transform.position.y < -122f)// || obj.transform.position.y > 126f)
 				{
 					if (!doNotRemove.Contains(obj.objectName))
 					{
@@ -537,6 +537,7 @@ public class AIMessage
 {
 	public enum AIMessageType { sensorRequest, addForce, dropItem, print,
 		setState, setReflex, removeReflex, getStates, getReflexes, findObj,
+		createItem, addForceToItem, getInfoAboutItem, destroyItem,
 		establishConnection, removeConnection, loadTask, other }
 	public AIMessageType messageType;
 	/// <summary>
@@ -573,7 +574,7 @@ public class AIMessage
 			throw new Exception("ERR: Received string that was nothing but whitespace!");
 
 		string[] clientArgs = s.Split(',');
-		AIMessage a = new AIMessage(AIMessage.AIMessageType.other, "ERR: Unrecognized Command. Received string:" + s + "\n", 100f, "");
+		AIMessage a = new AIMessage(AIMessage.AIMessageType.other, "ERR: Unrecognized Command. Received string:\"" + s + "\"\n", 100f, "");
 		clientArgs[0] = clientArgs[0].Trim();
 		if (clientArgs[0]== "sensorRequest")
 		{
@@ -728,6 +729,53 @@ public class AIMessage
 		}
 		else if (clientArgs[0] == "getActiveReflexes")
 			a.messageType = AIMessageType.getReflexes;
+		else if (clientArgs[0] == "createItem")
+		{
+			//createItem,name,filePath,x,y,mass,friction,rotation,endorphins,disappear,kinematic
+			a.messageType = AIMessageType.createItem;
+			Dictionary<string,System.Object> args = new Dictionary<string,System.Object>();
+			if (clientArgs.Length==11)
+			{
+				try
+				{
+					args.Add("name", clientArgs[1]);
+					args.Add("filePath", clientArgs[2]);
+					args.Add("x", float.Parse(clientArgs[3]));
+					args.Add("y", float.Parse(clientArgs[4]));
+					args.Add("mass", float.Parse(clientArgs[5]));
+					args.Add("friction", int.Parse(clientArgs[6]));
+					if (!(new List<String>{"0","1","2","3","4","5"}).Contains(clientArgs[6].Trim()))
+						throw new Exception("Friction must be either -1, 0, or 1!");
+					args.Add("rotation", float.Parse(clientArgs[7]));
+					args.Add("endorphins", float.Parse(clientArgs[8]));
+					args.Add("disappear", clientArgs[9].Trim()=="1");
+					args.Add("kinematic", int.Parse(clientArgs[10]));
+					if (!(new List<String>{"0", "1", "2", "3", "4", "5"}).Contains(clientArgs[10].Trim()))
+						throw new Exception("Friction must be an integer from 0 to 5");
+				}
+				catch(Exception e)
+				{
+					a.messageType = AIMessageType.other;
+					a.stringContent = "ERROR: Error parsing one or more values in command: \""
+						+ s + "\"\n";
+					//throw e;
+					return a;
+				}
+			}
+			else
+				throw new Exception("Incorrect # of arguments given in client message: " + s);
+			
+			a.detail = args;
+		}
+		else if (clientArgs[0] == "addForceToItem")
+		{
+		}
+		else if (clientArgs[0] == "getInfoAboutItem")
+		{
+		}
+		else if (clientArgs[0] == "destroyItem")
+		{
+		}
 		//else if (clientArgs[0] == "establishConnection")
 		//{}
 		//else if (clientArgs[0] == "removeConnection")
