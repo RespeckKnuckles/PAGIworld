@@ -209,7 +209,7 @@ public class ControlPanel : MonoBehaviour
 		GlobalVariables.centerCamera = GUILayout.Toggle(GlobalVariables.centerCamera, "Keep PAGI Guy Centered");
 		GUILayout.EndHorizontal();
 
-		GUILayout.BeginHorizontal();
+		/*GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("test")))
 		{
 			AIMessage a = AIMessage.fromString("createItem,myname,bill.jpeg,5,10,1.5,3,0,0,5");
@@ -220,7 +220,7 @@ public class ControlPanel : MonoBehaviour
 			AIMessage a = AIMessage.fromString("addForceToItem,myname,0,200,0");
 			GlobalVariables.messageQueue.Add(a);
 		}
-        GUILayout.EndHorizontal();
+        GUILayout.EndHorizontal();*/
 
 		GUI.DragWindow(windowRect);
 	}

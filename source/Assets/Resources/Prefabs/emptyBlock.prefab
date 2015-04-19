@@ -82,7 +82,7 @@ MonoBehaviour:
   objectName: wallBlock
   objectType: customItem
   canBeDragged: 1
-  prefabID: -1
+  prefabID: 29
 --- !u!212 &21247566
 SpriteRenderer:
   m_ObjectHideFlags: 1

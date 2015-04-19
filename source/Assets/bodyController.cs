@@ -572,6 +572,7 @@ public class bodyController : worldObject {
 					newSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0), 50f);
 					//should it be a worldObject, endorphinthing or what?
 					worldObject w;
+					string wName = (string)dd["name"];
 					float e = (float)dd["endorphins"];
 					if (e == 0)
 						w = Instantiate(emptyblock, new Vector3((float)dd["x"],(float)dd["y"]),
@@ -583,13 +584,22 @@ public class bodyController : worldObject {
 							new Quaternion(0,0,(float)dd["rotation"],0)) as rewardOrPunishmentController;
 						((rewardOrPunishmentController)w).endorphins = (float)dd["endorphins"];
 					}
+					//add to dictionary for reference later, make sure no duplicates
+					while (customItems.ContainsKey(wName))
+					{
+						if (customItems[wName] != null)
+						{
+							Destroy(customItems[wName].gameObject);
+						}
+						customItems.Remove(wName);
+					}
+					customItems.Add(wName,w);
 
 					w.GetComponent<SpriteRenderer>().sprite = newSprite;
 					BoxCollider2D b = w.GetComponent<BoxCollider2D>();
 					b.center = newSprite.bounds.center;
 					b.size = newSprite.bounds.size;
 					//fill out parameters
-					string wName = (string)dd["name"];
 					w.objectName = wName;
 					w.name = wName;
 					w.rigidbody2D.mass = (float)dd["mass"];
@@ -605,16 +615,6 @@ public class bodyController : worldObject {
 						w.gameObject.layer = backgroundLayer;
 					//fixed angle: 0,1 (implied), 2, 3
 					w.rigidbody2D.fixedAngle = (k==2 || k==3);
-					//add to dictionary for reference later, make sure no duplicates
-					while (customItems.ContainsKey(wName))
-					{
-						if (customItems[wName] != null)
-						{
-							Destroy(customItems[wName].gameObject);
-							customItems.Remove(wName);
-						}
-					}
-					customItems.Add(wName,w);
 					outgoingMessages.Add("createItem,"+(string)dd["name"]+",OK\n");
 				}
 				else
@@ -640,12 +640,61 @@ public class bodyController : worldObject {
 				else
 				{
 					if (customItems[firstMsg.stringContent] == null)
+					{
+						customItems.Remove(firstMsg.stringContent);
 						outgoingMessages.Add("addForceToItem," + firstMsg.stringContent + ",ERR:Object_Deleted\n");
+					}
 					else
 					{
 						customItems[firstMsg.stringContent].rigidbody2D.AddForce(firstMsg.vectorContent);
 						customItems[firstMsg.stringContent].rigidbody2D.AddTorque(firstMsg.floatContent);
 						outgoingMessages.Add("addForceToItem," + firstMsg.stringContent + ",OK\n");
+					}
+				}
+				break;
+			case AIMessage.AIMessageType.getInfoAboutItem:
+				Debug.Log ("Received command to getInfoAboutItem");
+				//find the item to add force to, add it
+				if (!customItems.ContainsKey(firstMsg.stringContent))
+				{
+					outgoingMessages.Add("getInfoAboutItem," + firstMsg.stringContent + ",ERR:Item_Name_Not_Found\n");
+				}
+				else
+				{
+					if (customItems[firstMsg.stringContent] == null)
+					{
+						customItems.Remove(firstMsg.stringContent);
+						outgoingMessages.Add("getInfoAboutItem," + firstMsg.stringContent + ",ERR:Object_Deleted\n");
+					}
+					else
+					{
+						worldObject wo = customItems[firstMsg.stringContent];
+						string toReturn = "getInfoAboutItem," + firstMsg.stringContent + ",";
+						toReturn = toReturn + wo.transform.position.x.ToString() + "," + wo.transform.position.y.ToString() + ",";
+						toReturn = toReturn + wo.rigidbody2D.velocity.x.ToString() + "," + wo.rigidbody2D.velocity.y.ToString() + "\n";
+						outgoingMessages.Add(toReturn);
+					}
+				}
+				break;
+			case AIMessage.AIMessageType.destroyItem:
+				Debug.Log ("Received command to destroyItem");
+				//find the item to add force to, add it
+				if (!customItems.ContainsKey(firstMsg.stringContent))
+				{
+					outgoingMessages.Add("destroyItem," + firstMsg.stringContent + ",ERR:Item_Name_Not_Found\n");
+				}
+				else
+				{
+					if (customItems[firstMsg.stringContent] == null)
+					{
+						customItems.Remove(firstMsg.stringContent);
+						outgoingMessages.Add("destroyItem," + firstMsg.stringContent + ",WARNING:Object_Already_Deleted\n");
+					}
+					else
+					{
+						Destroy(customItems[firstMsg.stringContent].gameObject);
+						customItems.Remove(firstMsg.stringContent);
+						outgoingMessages.Add("destroyItem," + firstMsg.stringContent + ",OK\n");
 					}
 				}
 				break;

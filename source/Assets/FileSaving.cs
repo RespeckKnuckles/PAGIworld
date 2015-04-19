@@ -42,6 +42,13 @@ public class FileSaving{
 	public float rightHandX, rightHandY;
 	public List<worldObjectSavedToFile> worldObjects = new List<worldObjectSavedToFile>();
 	
+	float gravityX, gravityY;
+	float gameSpeed;
+	bool centerCamera = false; //keeps camera centered on PAGI guy
+	bool showDetailedVisionMarkers = false;	
+	bool showPeripheralVisionMarkers = false;
+
+	
 	[System.NonSerialized]
 	worldObject mainBody,
 		rightHand,
@@ -78,7 +85,13 @@ public class FileSaving{
 		rightHandY = loaded.rightHandY;
 		leftHandX = loaded.leftHandX;
 		leftHandY = loaded.leftHandY;
-		
+		gravityX = loaded.gravityX;
+		gravityY = loaded.gravityY;
+		gameSpeed = loaded.gameSpeed;
+		centerCamera = loaded.centerCamera;
+		showDetailedVisionMarkers = loaded.showDetailedVisionMarkers;
+		showPeripheralVisionMarkers = loaded.showPeripheralVisionMarkers;
+
 		loadToCurrentTask();
 	}
 	
@@ -132,8 +145,15 @@ public class FileSaving{
 		rightHand.rigidbody2D.transform.rotation = mainBody.rigidbody2D.transform.rotation;
 		leftHand.rigidbody2D.transform.rotation = mainBody.rigidbody2D.transform.rotation;
 		mainBody.rigidbody2D.AddForce(new Vector2(0,0)); //this forces the screen to update his rotation
+
+		//load environment variables like gravity, game speed, etc.
+		Physics2D.gravity = new Vector2(gravityX, gravityY);
+		Time.timeScale = gameSpeed;
+		GlobalVariables.centerCamera = centerCamera;
+		GlobalVariables.showDetailedVisionMarkers = showDetailedVisionMarkers;
+		GlobalVariables.showPeripheralVisionMarkers = showPeripheralVisionMarkers;
 	}
-	
+
 	public void storeCurrentTask()
 	{
 		//store position/rotation of body, hands
@@ -144,8 +164,15 @@ public class FileSaving{
 		rightHandY = rightHand.transform.position.y;
 		leftHandX = leftHand.transform.position.x;
 		leftHandY = leftHand.transform.position.y;
-		
-		//Debug.Log("x " + bodyX + " Y " + bodyY);
+
+		//store environment variables like gravity, game speed, etc.
+		gravityX = Physics2D.gravity.x;
+		gravityY = Physics2D.gravity.y;
+		gameSpeed = Time.timeScale;
+		centerCamera = GlobalVariables.centerCamera;
+		showDetailedVisionMarkers = GlobalVariables.showDetailedVisionMarkers;
+		showPeripheralVisionMarkers = GlobalVariables.showPeripheralVisionMarkers;
+
 		
 		//save all world objects
 		worldObject[] goArray = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(worldObject)) as worldObject[];

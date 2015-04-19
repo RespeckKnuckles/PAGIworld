@@ -47,6 +47,10 @@ public class ObjectMenu : MonoBehaviour
 	public GameObject triggerBox; //26
 	public GameObject lavaBlock; //27
 	public GameObject iceBlock; //28
+
+	//These have prefab IDs but are not on the object menu
+	public GameObject customItemBlock; //29
+	public GameObject customItemEndorphinBlock; //30
 	
 	Vector2 scrollPosition;
 	bool show;

@@ -791,9 +791,23 @@ public class AIMessage
 		}
 		else if (clientArgs[0] == "getInfoAboutItem")
 		{
+			a.messageType = AIMessageType.getInfoAboutItem;
+			if (clientArgs.Length==2)
+			{
+				a.stringContent = clientArgs[1];
+			}
+			else
+				throw new Exception("Incorrect # of arguments given in client message: " + s);
 		}
 		else if (clientArgs[0] == "destroyItem")
 		{
+			a.messageType = AIMessageType.destroyItem;
+			if (clientArgs.Length==2)
+			{
+				a.stringContent = clientArgs[1];
+			}
+			else
+				throw new Exception("Incorrect # of arguments given in client message: " + s);
 		}
 		//else if (clientArgs[0] == "establishConnection")
 		//{}

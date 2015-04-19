@@ -257,7 +257,7 @@ After an item has been created, you can send force commands to it using:
 \item \texttt{fa} - The amount of rotational force to send to this item.
 \end{itemize}
 
-You are very strongly encouraged to send forces to custom created items to avoid unexpected behavior with PAGI World's physics engine. %Note that there are NO ways to directly set the positions or velocities of created items. This is to discourage any sort of perceptual input about things in the world that are not obtained through PAGI guy's sensors.
+You are allowed to send forces to custom created items, but not to directly edit or modify their positions or velocities, in order to avoid unexpected behavior with PAGI World's physics engine. %Note that there are NO ways to directly set the positions or velocities of created items. This is to discourage any sort of perceptual input about things in the world that are not obtained through PAGI guy's sensors.
 To get information about an item, call:
 
 \texttt{getInfoAboutItem,name} where \texttt{name} is the unique name of this item. This will return an error message if the item was deleted or the name was not found. Otherwise, this command will return:

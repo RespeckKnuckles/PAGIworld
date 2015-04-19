@@ -303,6 +303,8 @@ MonoBehaviour:
   triggerBox: {fileID: 100000, guid: 0d28acaadbdaa45eab762143f60489b3, type: 2}
   lavaBlock: {fileID: 188246, guid: 43f9f151721d04d54b08e0b5d41ef43e, type: 2}
   iceBlock: {fileID: 103686, guid: 157387113924d49de98567a4036bae7e, type: 2}
+  customItemBlock: {fileID: 0}
+  customItemEndorphinBlock: {fileID: 0}
 --- !u!114 &153903082
 MonoBehaviour:
   m_ObjectHideFlags: 0

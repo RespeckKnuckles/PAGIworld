@@ -82,7 +82,7 @@ MonoBehaviour:
   objectName: wallBlock
   objectType: customItem
   canBeDragged: 1
-  prefabID: -1
+  prefabID: 30
   disappearAfterTouching: 1
   endorphins: 0
 --- !u!212 &21274896
