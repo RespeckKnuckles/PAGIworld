@@ -734,7 +734,7 @@ public class AIMessage
 			//createItem,name,filePath,x,y,mass,friction,rotation,endorphins,disappear,kinematic
 			a.messageType = AIMessageType.createItem;
 			Dictionary<string,System.Object> args = new Dictionary<string,System.Object>();
-			if (clientArgs.Length==11)
+			if (clientArgs.Length==10)
 			{
 				try
 				{
@@ -745,19 +745,18 @@ public class AIMessage
 					args.Add("mass", float.Parse(clientArgs[5]));
 					args.Add("friction", int.Parse(clientArgs[6]));
 					if (!(new List<String>{"0","1","2","3","4","5"}).Contains(clientArgs[6].Trim()))
-						throw new Exception("Friction must be either -1, 0, or 1!");
+						throw new Exception("Friction must be an integer from 0 to 5");
 					args.Add("rotation", float.Parse(clientArgs[7]));
 					args.Add("endorphins", float.Parse(clientArgs[8]));
-					args.Add("disappear", clientArgs[9].Trim()=="1");
-					args.Add("kinematic", int.Parse(clientArgs[10]));
-					if (!(new List<String>{"0", "1", "2", "3", "4", "5"}).Contains(clientArgs[10].Trim()))
+					args.Add("kinematic", int.Parse(clientArgs[9]));
+					if (!(new List<String>{"0", "1", "2", "3", "4", "5"}).Contains(clientArgs[9].Trim()))
 						throw new Exception("Friction must be an integer from 0 to 5");
 				}
 				catch(Exception e)
 				{
 					a.messageType = AIMessageType.other;
 					a.stringContent = "ERROR: Error parsing one or more values in command: \""
-						+ s + "\"\n";
+						+ s + "\" (" + e.Message + ")\n";
 					//throw e;
 					return a;
 				}
@@ -769,6 +768,26 @@ public class AIMessage
 		}
 		else if (clientArgs[0] == "addForceToItem")
 		{
+			a.messageType = AIMessageType.addForceToItem;
+			if (clientArgs.Length==5)
+			{
+				a.stringContent = clientArgs[1];
+				try
+				{
+					a.vectorContent = new Vector2(float.Parse(clientArgs[2]), float.Parse(clientArgs[3]));
+					a.floatContent = float.Parse(clientArgs[4]);
+				}
+				catch(Exception e)
+				{
+					a.messageType = AIMessageType.other;
+					a.stringContent = "ERROR: Error parsing one or more values in command: \""
+						+ s + "\" (" + e.Message + ")\n";
+					//throw e;
+					return a;
+				}
+			}
+			else
+				throw new Exception("Incorrect # of arguments given in client message: " + s);
 		}
 		else if (clientArgs[0] == "getInfoAboutItem")
 		{

@@ -212,7 +212,12 @@ public class ControlPanel : MonoBehaviour
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("test")))
 		{
-			AIMessage a = AIMessage.fromString("createItem,name,bill.jpeg,5,10,0,3,3.14,2,0,5");
+			AIMessage a = AIMessage.fromString("createItem,myname,bill.jpeg,5,10,1.5,3,0,0,5");
+			GlobalVariables.messageQueue.Add(a);
+		}
+		if (GUILayout.Button(new GUIContent("test2")))
+		{
+			AIMessage a = AIMessage.fromString("addForceToItem,myname,0,200,0");
 			GlobalVariables.messageQueue.Add(a);
 		}
         GUILayout.EndHorizontal();
@@ -227,27 +232,6 @@ public class ControlPanel : MonoBehaviour
 	/// <param name="windowID">Window ID.</param>
 	void ConsoleWindow (int windowID)
 	{
-		/*scrollPosition = GUILayout.BeginScrollView(scrollPosition);
-		
-		// Iterate through the recorded logs.
-		for (int i = 0; i < logs.Count; i++) {
-			var log = logs[i];
-			
-			// Combine identical messages if collapse option is chosen.
-			if (collapse) {
-				var messageSameAsPrevious = i > 0 && log.message == logs[i - 1].message;
-				
-				if (messageSameAsPrevious) {
-					continue;
-				}
-			}
-			
-			GUI.contentColor = logTypeColors[log.type];
-			GUILayout.Label(log.message);
-		}
-		
-		GUILayout.EndScrollView();*/
-		
 		GUI.contentColor = Color.white;
 		if (GUI.Button(new Rect(0, 0, 18, 18), new GUIContent("x")))
 			show = false;

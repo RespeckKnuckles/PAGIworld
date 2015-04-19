@@ -235,9 +235,8 @@ The object names are the same identifiers that are returned by sensors, e.g. the
 	\item 5 - High friction, high bounciness
 	\end{itemize}
 \item \texttt{r} - The initial rotation of the item, in radians. 
-\item \texttt{e} - The amount of endorphins the object provides.
-\item \texttt{d} - 1 if the object should disappear upon contact with PAGI guy (e.g., if it is a food or poison item), 0 otherwise.
-\item \texttt{k} - Kinematic properties of the item. An object can be kinematic (meaning it will not move or rotate), fixed angle (meaning it will move but not rotate), and backgrounded (meaning it will not interact with other items in the world). The value you send for \texttt{k} will determine which combination of properties the object has:
+\item \texttt{e} - The amount of endorphins the object provides. If this is 0, then it will be have like a normal object. If it is non-zero, then after touching PAGI guy's body, it will disappear.
+\item \texttt{k} - Kinematic properties of the item. An object can be kinematic (meaning it will not move or rotate, even when sent force commands), fixed angle (meaning it will move but not rotate), and backgrounded (meaning it will not interact with other items in the world, and is invisible to all of PAGI guy's sensors). The value you send for \texttt{k} will determine which combination of properties the object has:
 	\begin{itemize}
 	\item 0 - Kinematic, and backgrounded (kinematic automatically implies fixed angle).
 	\item 1 - Kinematic, and not backgrounded. 

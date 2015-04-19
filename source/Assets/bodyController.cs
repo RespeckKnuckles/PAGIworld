@@ -509,6 +509,8 @@ public class bodyController : worldObject {
 
 	public Camera mainCamera;
 	public worldObject emptyblock;
+	public rewardOrPunishmentController emptyendorphinblock;
+	public Dictionary<string,worldObject> customItems = new Dictionary<string, worldObject>();
 	// Update is called once per frame
 	void Update () {
 	
@@ -568,27 +570,83 @@ public class bodyController : worldObject {
 					
 					Sprite newSprite = new Sprite();
 					newSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0), 50f);
-					worldObject w = Instantiate(emptyblock, new Vector3(10f,10f), new Quaternion()) as worldObject;
+					//should it be a worldObject, endorphinthing or what?
+					worldObject w;
+					float e = (float)dd["endorphins"];
+					if (e == 0)
+						w = Instantiate(emptyblock, new Vector3((float)dd["x"],(float)dd["y"]),
+						    new Quaternion(0,0,(float)dd["rotation"],0)) as worldObject;
+					else
+					{
+						w = Instantiate(emptyendorphinblock, 
+							new Vector3((float)dd["x"],(float)dd["y"]), 
+							new Quaternion(0,0,(float)dd["rotation"],0)) as rewardOrPunishmentController;
+						((rewardOrPunishmentController)w).endorphins = (float)dd["endorphins"];
+					}
+
 					w.GetComponent<SpriteRenderer>().sprite = newSprite;
 					BoxCollider2D b = w.GetComponent<BoxCollider2D>();
 					b.center = newSprite.bounds.center;
 					b.size = newSprite.bounds.size;
 					//fill out parameters
-					w.objectName = (string)dd["name"];
-					w.name = (string)dd["name"];
-					w.rigidbody2D.position = new Vector2((float)dd["x"],(float)dd["y"]);
+					string wName = (string)dd["name"];
+					w.objectName = wName;
+					w.name = wName;
 					w.rigidbody2D.mass = (float)dd["mass"];
 					//set friction
 					b.sharedMaterial = (PhysicsMaterial2D)Resources.Load("PhysicsMaterials2D/pm" + (int)dd["friction"]);
-					w.rigidbody2D.rotation = (180f/3.14f)*(float)dd["rotation"];
-					//TODO:endorphins,disappear,kinematic
-					
+					//kinematic
+					int k = (int)dd["kinematic"];
+					//kinematic: 0,1
+					w.rigidbody2D.isKinematic = (k==0 || k==1);
+					//backgrounded: 0,2,4
+					int backgroundLayer = LayerMask.NameToLayer("Nonreactive");
+					if (k==0 || k==2 || k==4)
+						w.gameObject.layer = backgroundLayer;
+					//fixed angle: 0,1 (implied), 2, 3
+					w.rigidbody2D.fixedAngle = (k==2 || k==3);
+					//add to dictionary for reference later, make sure no duplicates
+					while (customItems.ContainsKey(wName))
+					{
+						if (customItems[wName] != null)
+						{
+							Destroy(customItems[wName].gameObject);
+							customItems.Remove(wName);
+						}
+					}
+					customItems.Add(wName,w);
 					outgoingMessages.Add("createItem,"+(string)dd["name"]+",OK\n");
 				}
 				else
 				{
 					Debug.Log("file " + fileName + " not found");
 					outgoingMessages.Add("createItem,"+(string)dd["name"]+",FAILED,fileNotFound\n");
+				}
+				break;
+			case AIMessage.AIMessageType.addForceToItem:
+				Debug.Log ("Received command to addForceToItem");
+				//iterate through the customItems, remove any that no longer exist
+				List<string> toRemove = new List<string>();
+				foreach (string ky in customItems.Keys)
+					if (customItems[ky]==null)
+						toRemove.Add(ky);
+				foreach (string ky in toRemove)
+					customItems.Remove(ky);
+				//find the item to add force to, add it
+				if (!customItems.ContainsKey(firstMsg.stringContent))
+				{
+					outgoingMessages.Add("addForceToItem," + firstMsg.stringContent + ",ERR:Item_Name_Not_Found\n");
+				}
+				else
+				{
+					if (customItems[firstMsg.stringContent] == null)
+						outgoingMessages.Add("addForceToItem," + firstMsg.stringContent + ",ERR:Object_Deleted\n");
+					else
+					{
+						customItems[firstMsg.stringContent].rigidbody2D.AddForce(firstMsg.vectorContent);
+						customItems[firstMsg.stringContent].rigidbody2D.AddTorque(firstMsg.floatContent);
+						outgoingMessages.Add("addForceToItem," + firstMsg.stringContent + ",OK\n");
+					}
 				}
 				break;
 			case AIMessage.AIMessageType.print:

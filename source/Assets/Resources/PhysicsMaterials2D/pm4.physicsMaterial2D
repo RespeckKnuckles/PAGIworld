@@ -7,4 +7,4 @@ PhysicsMaterial2D:
   m_PrefabInternal: {fileID: 0}
   m_Name: pm4
   friction: 1
-  bounciness: 10
+  bounciness: .75

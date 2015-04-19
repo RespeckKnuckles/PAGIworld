@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  18 APR 2015 15:02
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  18 APR 2015 17:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -707,7 +707,7 @@ J|30000
  []
 
 [9] [10]
-Overfull \hbox (3.9854pt too wide) in paragraph at lines 242--243
+Overfull \hbox (3.9854pt too wide) in paragraph at lines 241--242
 []\OT1/ptm/m/n/10.95 0 - Kine-matic, and back-grounded (kine-matic au-to-mat-i-
 cally im-plies fixed
  []
@@ -715,12 +715,12 @@ cally im-plies fixed
 [11] [12]
 
 LaTeX Warning: Reference `sect:pagiEnvironment' on page 13 undefined on input l
-ine 310.
+ine 309.
 
 [13]
 
 LaTeX Warning: Reference `sect:creatingTasks' on page 14 undefined on input lin
-e 314.
+e 313.
 
 ) (./main.bbl
 
@@ -757,7 +757,7 @@ ve/2013/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2013/
 texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2013/texmf-dist
 /fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/typ
 e1/urw/times/utmri8a.pfb>
-Output written on main.pdf (14 pages, 119859 bytes).
+Output written on main.pdf (14 pages, 119893 bytes).
 PDF statistics:
  262 PDF objects out of 1000 (max. 8388607)
  236 compressed objects within 3 object streams
