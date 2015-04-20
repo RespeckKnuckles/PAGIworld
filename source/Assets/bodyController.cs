@@ -576,12 +576,12 @@ public class bodyController : worldObject {
 					float e = (float)dd["endorphins"];
 					if (e == 0)
 						w = Instantiate(emptyblock, new Vector3((float)dd["x"],(float)dd["y"]),
-						    new Quaternion(0,0,(float)dd["rotation"],0)) as worldObject;
+						                new Quaternion(0,0,(float)dd["rotation"],0)) as worldObject;
 					else
 					{
 						w = Instantiate(emptyendorphinblock, 
-							new Vector3((float)dd["x"],(float)dd["y"]), 
-							new Quaternion(0,0,(float)dd["rotation"],0)) as rewardOrPunishmentController;
+						                new Vector3((float)dd["x"],(float)dd["y"]), 
+						                new Quaternion(0,0,(float)dd["rotation"],0)) as rewardOrPunishmentController;
 						((rewardOrPunishmentController)w).endorphins = (float)dd["endorphins"];
 					}
 					//add to dictionary for reference later, make sure no duplicates
@@ -594,7 +594,7 @@ public class bodyController : worldObject {
 						customItems.Remove(wName);
 					}
 					customItems.Add(wName,w);
-
+					
 					w.GetComponent<SpriteRenderer>().sprite = newSprite;
 					BoxCollider2D b = w.GetComponent<BoxCollider2D>();
 					b.center = newSprite.bounds.center;

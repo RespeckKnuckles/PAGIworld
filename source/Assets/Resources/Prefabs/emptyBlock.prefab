@@ -9,9 +9,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 447566}
   - 212: {fileID: 21247566}
-  - 114: {fileID: 11447566}
   - 50: {fileID: 5047566}
   - 61: {fileID: 6147566}
+  - 114: {fileID: 11488752}
   m_Layer: 8
   m_Name: emptyBlock
   m_TagString: Untagged
@@ -57,7 +57,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_Size: {x: 2.54999995, y: 2.54999995}
   m_Center: {x: 0, y: 0}
---- !u!114 &11447566
+--- !u!114 &11488752
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -65,7 +65,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 147566}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c204d221eada8432aaa7772bb1a87562, type: 3}
+  m_Script: {fileID: 11500000, guid: 6705f3e1f174d42a1a2cb21fb8291ca3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   temperature: 0
@@ -79,10 +79,25 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  objectName: wallBlock
+  objectName: customItem
   objectType: customItem
   canBeDragged: 1
   prefabID: 29
+  disappearAfterTouching: 1
+  endorphins: 0
+  imagePath: 
+  triggerOnBodyEnter: 1
+  triggerOnBodyExit: 1
+  triggerOnLeftHandEnter: 0
+  triggerOnRightHandEnter: 0
+  triggerOnLeftHandExit: 0
+  triggerOnRightHandExit: 0
+  triggerOnLeftHandGrip: 0
+  triggerOnRightHandGrip: 0
+  triggerOnLeftHandRelease: 0
+  triggerOnRightHandRelease: 0
+  triggerOnOtherObjectsEnter: 0
+  triggerOnOtherObjectsExit: 0
 --- !u!212 &21247566
 SpriteRenderer:
   m_ObjectHideFlags: 1
