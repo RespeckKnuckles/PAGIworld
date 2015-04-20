@@ -45,11 +45,15 @@ public class ControlPanel : MonoBehaviour
 	Rect viewControlsTitleBarRect = new Rect(0, 0, 5, 5);
 	//GUIContent clearLabel = new GUIContent("Clear", "Clear the contents of the console.");
 	//GUIContent collapseLabel = new GUIContent("Collapse", "Hide repeated messages.");
+
+	public string lastUsedDirectory = ""; //the last thing typed into the save or load file prompts
 	
 	public static void loadFileDialog(string defaultDir = "")
 	{
 		GlobalVariables.messageDisplay.showTextMessageBox("Type the path to the .TSK file you want to load",
-		                                                  new messageBox.ReturnFromMsgBox(loadFileDialog_callback), defaultDir, "Load File");
+		                                                  new messageBox.ReturnFromMsgBox(loadFileDialog_callback), 
+		                                                  defaultDir, 
+		                                                  "Load File");
 	}
 	
 	/// <summary>
@@ -58,6 +62,7 @@ public class ControlPanel : MonoBehaviour
 	/// <param name="dir">Dir.</param>
 	static void loadFileDialog_callback(string dir)
 	{
+		//lastUsedDirectory = dir;
 		Debug.Log("loaded file " + dir);
 		if (dir=="Cancel_pressed")
 			return;
@@ -68,9 +73,18 @@ public class ControlPanel : MonoBehaviour
 		{
 			if (!doNotRemove.Contains(obj.objectName))
 			{
+				Debug.Log("destroying " + obj.objectName);
 				Destroy(obj.gameObject);
 			}
 		}
+
+		/*customItemController[] goA = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(customItemController)) as customItemController[];
+		foreach (customItemController c in goA)
+		{
+			string wName = c.objectName;
+			Debug.Log("have item " + wName);
+		}*/
+
 		FileSaving g = new FileSaving(dir); //loads the file
 	}
 	
@@ -86,6 +100,7 @@ public class ControlPanel : MonoBehaviour
 	/// <param name="dir">Dir.</param>
 	static void saveFileDialog_callback(string s)
 	{
+		//lastUsedDirectory = s;
 		if (s!="" && s!=null)
 		{
 			if (s=="Cancel_pressed")
@@ -209,10 +224,10 @@ public class ControlPanel : MonoBehaviour
 		GlobalVariables.centerCamera = GUILayout.Toggle(GlobalVariables.centerCamera, "Keep PAGI Guy Centered");
 		GUILayout.EndHorizontal();
 
-		/*GUILayout.BeginHorizontal();
+		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("test")))
 		{
-			AIMessage a = AIMessage.fromString("createItem,myname,bill.jpeg,5,10,1.5,3,0,0,5");
+			AIMessage a = AIMessage.fromString("createItem,myname,bill.jpeg,5,10,1.5,3,3.14,0,5");
 			GlobalVariables.messageQueue.Add(a);
 		}
 		if (GUILayout.Button(new GUIContent("test2")))
@@ -220,7 +235,7 @@ public class ControlPanel : MonoBehaviour
 			AIMessage a = AIMessage.fromString("addForceToItem,myname,0,200,0");
 			GlobalVariables.messageQueue.Add(a);
 		}
-        GUILayout.EndHorizontal();*/
+        GUILayout.EndHorizontal();
 
 		GUI.DragWindow(windowRect);
 	}
@@ -270,10 +285,10 @@ public class ControlPanel : MonoBehaviour
 		
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("Save this task to file"))) {
-			saveFileDialog("myTask.tsk");
+			saveFileDialog();
 		}
 		if (GUILayout.Button(new GUIContent("Load task from file"))) {
-			loadFileDialog("myTask.tsk");
+			loadFileDialog();
 		}
 		GUILayout.EndHorizontal();
 		

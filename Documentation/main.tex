@@ -70,6 +70,27 @@ This document is a partial documentation for getting started with PAGI World. It
 %
 %
 %\section{Advanced Development}
+\section{Getting and Starting Up PAGI World}
+
+PAGI World can be accessed from several places:
+
+\begin{itemize}
+\item \url{http://www.reddit.com/r/PAGIWorld} - Subreddit for discussion about PAGI World
+\item \url{http://rair.cogsci.rpi.edu/projects/pagi-world/} - Official website of PAGI World
+\item \url{https://github.com/RespeckKnuckles/PAGIworld} - Github repository containing full source and downloadable executable files
+\end{itemize}
+
+You can run PAGI World by downloading an executable file, running it through Unity (only recommended for advanced users), or executing it through the command line.
+
+\subsection{Command Line}
+
+If you download the standalone version of PAGI World, as of version 0.1.7 you can execute it with some command line options. Note that if you're using Mac OS, the executable file is in pagi\_mac.app/Contents/MacOS/pagi\_mac. Some are listed below:
+
+\begin{itemize}
+\item \texttt{-p P} Sets the port number which PAGI World is listening on to \texttt{P}. It is 42209 by default. Note that some ports are locked down depending on your network settings, so be sure to check the console after PAGI World opens to see if it started listening on that port successfully, or if there was an error.
+\item \texttt{-popupwindow} Forces PAGI World to start up without a frame.
+\item \texttt{-show-screen-selector} Forces the screen resolution selector to pop up.
+\end{itemize}
 
 \input{commands}
 

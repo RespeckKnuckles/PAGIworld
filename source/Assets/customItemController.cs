@@ -15,7 +15,7 @@ public class customItemController : rewardOrPunishmentController {
 		disappearAfterTouching = false;
 	}
 	
-	public void initialize(string fileName, string name, Vector2 position, float rotation, float endorphins, float mass, int material, int kinematicStyle)
+	public bool initialize(string fileName, string name, Vector2 position, float rotation, float endorphins, float mass, int material, int kinematicStyle)
 	{
 		Texture2D tex = null;
 		byte[] fileData;
@@ -56,7 +56,10 @@ public class customItemController : rewardOrPunishmentController {
 			this.material = material;
 			this.kinematicStyle = kinematicStyle;
 			this.imagePath = fileName;
+			return true;
 		}
+		else
+			return false;
 	}
 	
 	public override void saveVals()
@@ -67,7 +70,9 @@ public class customItemController : rewardOrPunishmentController {
 		newValuesToSave.Add("material", material);
 		newValuesToSave.Add("endorphins", endorphins);
 		newValuesToSave.Add("kinematicStyle", kinematicStyle);
-		
+		newValuesToSave.Add("objectName", this.objectName);
+		//newValuesToSave.Add("name", this.name);
+		//Debug.Log("writing " + this.objectName);
 		
 		valuesToSave = newValuesToSave;
 	}
@@ -80,6 +85,8 @@ public class customItemController : rewardOrPunishmentController {
 		this.material = (int)valuesToSave["material"];
 		this.kinematicStyle = (int)valuesToSave["kinematicStyle"];
 		this.endorphins = (float)valuesToSave["endorphins"];
+		this.objectName = (string)valuesToSave["objectName"];
+		//this.name = (string)valuesToSave["name"];
 		//transform.localScale = new Vector3((float)valuesToSave["scalex"], (float)valuesToSave["scaley"]);
 		initialize(this.imagePath, this.objectName, this.transform.position, this.transform.rotation.z, this.endorphins, this.rigidbody2D.mass, this.material, this.kinematicStyle);
 	}

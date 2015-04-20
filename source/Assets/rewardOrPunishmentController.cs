@@ -21,7 +21,7 @@ public class rewardOrPunishmentController : worldObject {
 	}
 	
 	void OnCollisionEnter2D(Collision2D coll) {
-		if (coll.gameObject.name == "body")
+		if (coll.gameObject.name == "body" && endorphins != 0)
 		{
 			//send message to body about the pain or pleasure caused by this object.
 			//which sensor on the body is it closest to?
@@ -43,7 +43,8 @@ public class rewardOrPunishmentController : worldObject {
 			coll.gameObject.SendMessage("OnTouchedRewardOrPunishment", endorphins, SendMessageOptions.DontRequireReceiver);
 			
 			Screen.showCursor = true;
-			Destroy(gameObject);
+			if (disappearAfterTouching)
+				Destroy(gameObject);
 		}
 	}
 }

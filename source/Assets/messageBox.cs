@@ -6,7 +6,7 @@ public class messageBox : MonoBehaviour
 	Vector2 scrollPosition;
 	public bool show = false;
 	bool collapse = true;
-	int msgWidth = 200, msgHeight = 100;
+	int msgWidth = 600, msgHeight = 100;
 	string displayMsg = "", displayTitle = "";
 	
 	enum msgType {msgBox, msgBoxOptions, textInput, fileLoad, fileSave};
@@ -46,6 +46,7 @@ public class messageBox : MonoBehaviour
 		returnFromMsgBox = r;
 		currMsgType = msgType.msgBox;
 		show = true;
+		Debug.Log("Message: " + msg);
 	}
 	
 	public void showTextMessageBox(string msg, ReturnFromMsgBox r, string defaultTxt="enter text here", string title="Attention")
@@ -83,6 +84,10 @@ public class messageBox : MonoBehaviour
 		if (!show) {
 			return;
 		}
+
+		if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Return))
+			//Screen.fullScreen = false;
+			show = false;
 		
 		windowRect = GUILayout.Window(1222, 
 			new Rect((Screen.width-msgWidth)/2f, (Screen.height-msgHeight)/2f, msgWidth*1f, msgHeight*1f),
@@ -154,7 +159,7 @@ public class messageBox : MonoBehaviour
 		}
 		
 		// Allow the window to be dragged by its title bar.
-		GUI.DragWindow(titleBarRect);
+		GUI.DragWindow(windowRect);
 		
 	}
 }

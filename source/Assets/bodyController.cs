@@ -507,9 +507,40 @@ public class bodyController : worldObject {
 		}
 	}
 
+	/// <summary>
+	/// Called after first loading a file. Goes through all custom items and adds them to the list.
+	/// </summary>
+	public void indexCustomItems()
+	{
+		//for every custom item on the map
+		customItemController[] goArray = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(customItemController)) as customItemController[];
+		Debug.Log(goArray.Length);
+		foreach (customItemController c in goArray)
+		{
+			string wName = c.objectName;
+			/*while (customItems.ContainsKey(wName))
+			{
+				if (customItems[wName] != null)
+				{
+					Destroy(customItems[wName].gameObject);
+				}
+				customItems.Remove(wName);
+				Debug.Log("removing " + wName);
+			}*/
+			if (customItems.ContainsKey(wName))
+			{
+				//Debug.Log("seeing key " + wName + " to " + customItems[wName]);
+			}
+			else
+			{
+				//Debug.Log("adding key " + wName + " (not in dictionary)");
+				customItems.Add(wName,c);
+			}
+		}
+	}
+
 	public Camera mainCamera;
-	public worldObject emptyblock;
-	public rewardOrPunishmentController emptyendorphinblock;
+	public customItemController emptyblock;
 	public Dictionary<string,worldObject> customItems = new Dictionary<string, worldObject>();
 	// Update is called once per frame
 	void Update () {
@@ -557,34 +588,16 @@ public class bodyController : worldObject {
 			case AIMessage.AIMessageType.createItem:
 				Debug.Log("Received command to create item");
 				Dictionary<string,System.Object> dd = (Dictionary<string,System.Object>)firstMsg.detail;
-				//foreach (string k in dd.Keys)
-				//	Debug.Log(k + ": " + dd[k]);
-				//create item
-				Texture2D tex = null;
-				byte[] fileData;
-				string fileName = (string)dd["filePath"];
-				if (File.Exists(fileName))     {
-					fileData = File.ReadAllBytes(fileName);
-					tex = new Texture2D(5, 5);
-					tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
-					
-					Sprite newSprite = new Sprite();
-					newSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0), 50f);
-					//should it be a worldObject, endorphinthing or what?
-					worldObject w;
-					string wName = (string)dd["name"];
-					float e = (float)dd["endorphins"];
-					if (e == 0)
-						w = Instantiate(emptyblock, new Vector3((float)dd["x"],(float)dd["y"]),
-						                new Quaternion(0,0,(float)dd["rotation"],0)) as worldObject;
-					else
-					{
-						w = Instantiate(emptyendorphinblock, 
-						                new Vector3((float)dd["x"],(float)dd["y"]), 
-						                new Quaternion(0,0,(float)dd["rotation"],0)) as rewardOrPunishmentController;
-						((rewardOrPunishmentController)w).endorphins = (float)dd["endorphins"];
-					}
-					//add to dictionary for reference later, make sure no duplicates
+				string wName = (string)dd["name"];
+				customItemController cic = Instantiate(emptyblock, new Vector3(), new Quaternion()) as customItemController;
+				if (!cic.initialize((string)dd["filePath"], wName, new Vector2((float)dd["x"], (float)dd["y"]),
+				               (float)dd["rotation"], (float)dd["endorphins"], (float)dd["mass"], (int)dd["friction"], (int)dd["kinematic"]))
+				{
+					Debug.Log("file " + (string)dd["filePath"] + " not found");
+					outgoingMessages.Add("createItem,"+(string)dd["name"]+",FAILED,fileNotFound\n");
+				}
+				else
+				{
 					while (customItems.ContainsKey(wName))
 					{
 						if (customItems[wName] != null)
@@ -593,34 +606,9 @@ public class bodyController : worldObject {
 						}
 						customItems.Remove(wName);
 					}
-					customItems.Add(wName,w);
+					customItems.Add(wName,cic);
 					
-					w.GetComponent<SpriteRenderer>().sprite = newSprite;
-					BoxCollider2D b = w.GetComponent<BoxCollider2D>();
-					b.center = newSprite.bounds.center;
-					b.size = newSprite.bounds.size;
-					//fill out parameters
-					w.objectName = wName;
-					w.name = wName;
-					w.rigidbody2D.mass = (float)dd["mass"];
-					//set friction
-					b.sharedMaterial = (PhysicsMaterial2D)Resources.Load("PhysicsMaterials2D/pm" + (int)dd["friction"]);
-					//kinematic
-					int k = (int)dd["kinematic"];
-					//kinematic: 0,1
-					w.rigidbody2D.isKinematic = (k==0 || k==1);
-					//backgrounded: 0,2,4
-					int backgroundLayer = LayerMask.NameToLayer("Nonreactive");
-					if (k==0 || k==2 || k==4)
-						w.gameObject.layer = backgroundLayer;
-					//fixed angle: 0,1 (implied), 2, 3
-					w.rigidbody2D.fixedAngle = (k==2 || k==3);
 					outgoingMessages.Add("createItem,"+(string)dd["name"]+",OK\n");
-				}
-				else
-				{
-					Debug.Log("file " + fileName + " not found");
-					outgoingMessages.Add("createItem,"+(string)dd["name"]+",FAILED,fileNotFound\n");
 				}
 				break;
 			case AIMessage.AIMessageType.addForceToItem:

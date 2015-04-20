@@ -50,9 +50,9 @@ public class FileSaving{
 
 	
 	[System.NonSerialized]
-	worldObject mainBody,
-		rightHand,
-		leftHand;
+	bodyController mainBody;
+	[System.NonSerialized]
+	worldObject rightHand, leftHand;
 
 	/// <summary>
 	/// creates an empty instance and automatically saves the current task
@@ -101,7 +101,7 @@ public class FileSaving{
 		foreach (worldObject obj in goArray)
 		{
 			if (obj.objectName == "mainBody")
-				mainBody = obj;
+				mainBody = (bodyController)obj;
 			else if (obj.objectName == "leftHand")
 				leftHand = obj;
 			else if (obj.objectName == "rightHand")
@@ -152,6 +152,9 @@ public class FileSaving{
 		GlobalVariables.centerCamera = centerCamera;
 		GlobalVariables.showDetailedVisionMarkers = showDetailedVisionMarkers;
 		GlobalVariables.showPeripheralVisionMarkers = showPeripheralVisionMarkers;
+		
+		mainBody.customItems = new Dictionary<string, worldObject>();
+		mainBody.indexCustomItems();
 	}
 
 	public void storeCurrentTask()
