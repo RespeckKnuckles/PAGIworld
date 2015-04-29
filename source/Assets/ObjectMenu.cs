@@ -48,6 +48,9 @@ public class ObjectMenu : MonoBehaviour
 	public GameObject lavaBlock; //27
 	public GameObject iceBlock; //28
 
+	public GameObject fluid;
+	public GameObject fDestructor;
+
 	//These have prefab IDs but are not on the object menu
 	public GameObject customItemBlock; //29
 	
@@ -237,6 +240,10 @@ public class ObjectMenu : MonoBehaviour
 		}*/
 		if (GUILayout.Button(new GUIContent("Injured man", "Creates an injured man."))) {
 			Instantiate(injuredMan, new Vector2(15f, 5f), new Quaternion());
+		}
+		if (GUILayout.Button (new GUIContent ("Water", "Creates Water Dispenser."))) {
+			Instantiate (fluid, new Vector2 (-12f, 12f), new Quaternion ());
+			Instantiate (fDestructor, new Vector2(0f, -15f), new Quaternion());
 		}
 		GUILayout.EndHorizontal();
 
