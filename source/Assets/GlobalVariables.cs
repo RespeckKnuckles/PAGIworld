@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 public class GlobalVariables : MonoBehaviour {
 
 	public static bool androidBuild = true;
-	public static string versionNumber = "0.2.0";
+	public static string versionNumber = "0.2.1";
 	
 	public static int portNumber = 42209;
 
@@ -164,7 +164,7 @@ public class GlobalVariables : MonoBehaviour {
 			else
 			{
 				mouseDeleting = true;
-				Cursor.SetCursor(trashTexture, new Vector2(-40f, 10f), CursorMode.ForceSoftware);
+				Cursor.SetCursor(trashTexture, Vector2.zero, CursorMode.ForceSoftware);// new Vector2(-40f, 10f), CursorMode.ForceSoftware);
 				Debug.Log("delete");
 			}
 		}

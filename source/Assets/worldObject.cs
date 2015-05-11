@@ -70,7 +70,11 @@ public class worldObject:MonoBehaviour{ //describes objects in the world
 		{
 			GlobalVariables.mouseDeleting = false;
 			Cursor.SetCursor(null, Vector2.zero, CursorMode.ForceSoftware);
-			Destroy(this.gameObject);
+			List<string> doNotRemove = new List<string>() { "leftHand", "rightHand", "mainBody" };
+			if (!doNotRemove.Contains(this.objectName))
+			{
+				Destroy(this.gameObject);
+			}
 		}
 		//Debug.Log("you clicked " + objectName);
 		/*if (deleteHeld)
