@@ -98,7 +98,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  objectName: redDynamite
+  objectName: blueDynamite
   objectType: object
   canBeDragged: 1
   prefabID: 14
