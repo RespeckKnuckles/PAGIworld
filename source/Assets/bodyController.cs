@@ -257,6 +257,8 @@ public class bodyController : worldObject {
 		//GUI.skin.box.normal.background = texture;
 		if (GlobalVariables.showPeripheralVisionMarkers)
 		{
+			Color oldColor = GUI.color;
+			GUI.color = Color.red;
 			for (int x=0; x<numPeripheralSensorsX; x++)
 			{
 				for (int y=0; y<numPeripheralSensorsY; y++)
@@ -265,10 +267,11 @@ public class bodyController : worldObject {
 					//Debug.Log(Screen.width); 
 					Vector3 v3 = Camera.main.WorldToScreenPoint(new Vector3(v.x, v.y, 0));
 					//GUI.Box(new Rect(v3.x-1,(Screen.height - v3.y)-1, 2, 2), GUIContent.none); //why is this so slow
-					GUI.Label(new Rect(v3.x-3, (Screen.height - v3.y)-3, 14, 18), "o");
+					GUI.Label(new Rect(v3.x-3, (Screen.height - v3.y)-5, 10, 10), "*");
 					//GUI.Box(new Rect(10, 10, 0.5f, 0.5f), GUIContent.none); 
 				}
 			}
+			GUI.color = oldColor;
 		}
 		if (GlobalVariables.showDetailedVisionMarkers)
 		{
@@ -280,7 +283,7 @@ public class bodyController : worldObject {
 					//Debug.Log(Screen.width); 
 					Vector3 v3 = Camera.main.WorldToScreenPoint(new Vector3(v.x, v.y, 0));
 					//GUI.Box(new Rect(v3.x-1,(Screen.height - v3.y)-1, 2, 2), GUIContent.none); //why is this so slow
-					GUI.Label(new Rect(v3.x-3, (Screen.height - v3.y)-3, 10, 10), "*");
+					GUI.Label(new Rect(v3.x-3, (Screen.height - v3.y)-5, 10, 10), "*");
 					//GUI.Box(new Rect(10, 10, 0.5f, 0.5f), GUIContent.none); 
 				}
 			}

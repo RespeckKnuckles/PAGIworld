@@ -290,7 +290,8 @@ public class Control : MonoBehaviour {
 		Debug.Log("restarting server, please wait........");
 		Disconnect();
 		clients = new List<Socket>();
-		Thread.Sleep(1000);
+		Debug.Log("waiting before reconnecting........");
+		Thread.Sleep(2500);
 		Start();	
 		//}
 	}
