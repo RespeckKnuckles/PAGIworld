@@ -218,7 +218,7 @@ The object names are the same identifiers that are returned by sensors, e.g. the
 
 (As of version 0.1.7) It is possible to create your own objects in PAGI World, which you can then control by sending force commands. This is done by calling the command:
 
-\texttt{createItem,name,fp,x,y,m,ph,r,e,d,k} where:
+\texttt{createItem,name,fp,x,y,m,ph,r,e,k} where:
 
 \begin{itemize}
 \item \texttt{fp} - The path to the image to be used. The image must be either a png, jpg, or jpeg. The filename must have no commas or this string will be messed up! Also note that the image file is \textit{not} saved with task files, so if you have a task file that has custom items, use relative directories and always include the image files with your task files. The image will be loaded at a size of 50 pixels per world unit. Also, the size of the bounding box will \textit{always} be rectangular, regardless of the shape of the image. You may load png files if you want partially transparent images, but the bounding box will still be calculated based on the total image size.
@@ -244,6 +244,7 @@ The object names are the same identifiers that are returned by sensors, e.g. the
 	\item 3 - Not kinematic, fixed angle, and not backgrounded.
 	\item 4 - Not kinematic, not fixed angle, and backgrounded.
 	\item 5 - Not kinematic, not fixed angle, and not backgrounded (the vast majority of items in the world will be this setting).
+	\item 6 - Kinematic, and \textit{pseudo-backgrounded} (same as option 0 except this option makes the item visible to vision sensors. Like option 0, the object will not interact with other objects in any other way).
 	\end{itemize}
 \end{itemize}
 

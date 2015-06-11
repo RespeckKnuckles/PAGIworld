@@ -17,9 +17,9 @@ TagManager:
   User Layer 8: Normal Objects
   User Layer 9: Body
   User Layer 10: Hands
-  User Layer 11: Nonreactive
-  User Layer 12: Trigger Boxes
-  User Layer 13: 
+  User Layer 11: VisibleButNonreactive
+  User Layer 12: Nonreactive
+  User Layer 13: Trigger Boxes
   User Layer 14: 
   User Layer 15: 
   User Layer 16: 

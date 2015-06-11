@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  20 APR 2015 02:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  11 JUN 2015 15:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -679,15 +679,14 @@ Overfull \hbox (3.9854pt too wide) in paragraph at lines 241--242
 cally im-plies fixed
  []
 
-[12] [13]
+[12] [13] [14]
 
-LaTeX Warning: Reference `sect:pagiEnvironment' on page 14 undefined on input l
-ine 309.
+LaTeX Warning: Reference `sect:pagiEnvironment' on page 15 undefined on input l
+ine 310.
 
-[14]
 
 LaTeX Warning: Reference `sect:creatingTasks' on page 15 undefined on input lin
-e 313.
+e 314.
 
 ) (./main.bbl
 
@@ -724,7 +723,7 @@ ve/2014/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2014/
 texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2014/texmf-dist
 /fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2014/texmf-dist/fonts/typ
 e1/urw/times/utmri8a.pfb>
-Output written on main.pdf (15 pages, 122481 bytes).
+Output written on main.pdf (15 pages, 122779 bytes).
 PDF statistics:
  280 PDF objects out of 1000 (max. 8388607)
  253 compressed objects within 3 object streams

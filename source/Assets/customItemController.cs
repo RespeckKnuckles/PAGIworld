@@ -33,8 +33,9 @@ public class customItemController : rewardOrPunishmentController {
 				disappearAfterTouching = false;
 			else
 				disappearAfterTouching = true;
-			
-			GetComponent<SpriteRenderer>().sprite = newSprite;
+
+			SpriteRenderer sr = GetComponent<SpriteRenderer>();
+			sr.sprite = newSprite;
 			BoxCollider2D b = GetComponent<BoxCollider2D>();
 			b.center = newSprite.bounds.center;
 			b.size = newSprite.bounds.size;
@@ -45,12 +46,15 @@ public class customItemController : rewardOrPunishmentController {
 			//set friction
 			b.sharedMaterial = (PhysicsMaterial2D)Resources.Load("PhysicsMaterials2D/pm" + material);
 			//kinematic
-			//kinematic: 0,1
-			rigidbody2D.isKinematic = (kinematicStyle==0 || kinematicStyle==1);
+			//kinematic: 0,1,6
+			rigidbody2D.isKinematic = (kinematicStyle==0 || kinematicStyle==1 || kinematicStyle==6);
 			//backgrounded: 0,2,4
 			int backgroundLayer = LayerMask.NameToLayer("Nonreactive");
 			if (kinematicStyle==0 || kinematicStyle==2 || kinematicStyle==4)
 				gameObject.layer = backgroundLayer;
+			//pseudo-backgrounded: 6
+			if (kinematicStyle==6)
+				gameObject.layer = LayerMask.NameToLayer("VisibleButNonreactive");
 			//fixed angle: 0,1 (implied), 2, 3
 			rigidbody2D.fixedAngle = (kinematicStyle==2 || kinematicStyle==3);
 			this.material = material;

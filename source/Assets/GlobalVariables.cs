@@ -745,12 +745,12 @@ public class AIMessage
 					args.Add("mass", float.Parse(clientArgs[5]));
 					args.Add("friction", int.Parse(clientArgs[6]));
 					if (!(new List<String>{"0","1","2","3","4","5"}).Contains(clientArgs[6].Trim()))
-						throw new Exception("Friction must be an integer from 0 to 5");
+						throw new Exception("Physics option must be an integer from 0 to 5, you said " + clientArgs[6].Trim());
 					args.Add("rotation", float.Parse(clientArgs[7]));
 					args.Add("endorphins", float.Parse(clientArgs[8]));
 					args.Add("kinematic", int.Parse(clientArgs[9]));
-					if (!(new List<String>{"0", "1", "2", "3", "4", "5"}).Contains(clientArgs[9].Trim()))
-						throw new Exception("Friction must be an integer from 0 to 5");
+					if (!(new List<String>{"0", "1", "2", "3", "4", "5", "6"}).Contains(clientArgs[9].Trim()))
+						throw new Exception("Kinematic option must be an integer from 0 to 6");
 				}
 				catch(Exception e)
 				{

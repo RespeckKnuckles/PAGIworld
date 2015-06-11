@@ -19,8 +19,9 @@ public abstract class sensor
 		
 		//int layerNum = 8; //Normal objects layer
 		List<int> validLayers = new List<int>();
-		validLayers.Add (0);
-		validLayers.Add (8);
+		validLayers.Add (LayerMask.NameToLayer("Default"));
+		validLayers.Add (LayerMask.NameToLayer("Normal Objects"));
+		validLayers.Add (LayerMask.NameToLayer("VisibleButNonreactive"));
 		//int[] validLayers = new int[]{0,8};
 		worldObject[] goArray = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(worldObject)) as worldObject[];
 		List<System.Object> goList = new List<System.Object>();
