@@ -235,8 +235,7 @@ public class ObjectMenu : MonoBehaviour
 			Instantiate(healthPack, new Vector2(-10f, 5f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Double health pack", "Creates a double health pack."))) {
-			GameObject t = Instantiate(doubleHealthPack) as GameObject;
-			t.rigidbody2D.position = new Vector2(0f, 0f);
+			Instantiate(doubleHealthPack, new Vector2(-10f, 5f), new Quaternion());
 		}
 		if (GUILayout.Button(new GUIContent("Injured man", "Creates an injured man."))) {
 			Instantiate(injuredMan, new Vector2(15f, 5f), new Quaternion());
