@@ -225,8 +225,8 @@ MonoBehaviour:
   beforeSprite: {fileID: 21300000, guid: 39943aa76f8724f629f753a463d50886, type: 3}
   afterSprite: {fileID: 21300000, guid: 5729d7276230c4845bd0763fe6c8f1a4, type: 3}
   isBeforeState: 1
-  beforeType: man_injured
-  afterType: man_healthy
+  beforeType: soldier_injured
+  afterType: soldier_healthy
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GluedObjectController : worldObject {
 
 	//public GameObject remains;
 	public float kE_Requirement = 15;
-	worldObject p;
+	GameObject p;
 	
 	// Use this for initialization
 	void Start () {
-		p = GetComponentInParent<worldObject>();
+		p = transform.parent.gameObject;
+		//Debug.Log(p.name + "," + name);
 	}
 	/*
 	public static float KineticEnergy(Collision2D collision){
@@ -35,16 +37,25 @@ public class GluedObjectController : worldObject {
 				foreach (HingeJoint2D h in w.GetComponents<HingeJoint2D>())
 					Destroy(h);
 		
-		/*	
-		if (collision.collider.name != "apple") {
-			double kE = KineticEnergy (collision);
-			
-			if (kE > kE_Requirement) {
-				GameObject broken_box = (GameObject)Instantiate(remains, transform.position, transform.rotation);
-				DestroyObject (gameObject);
-			}
-		}*/
-		//if (collision.relativeVelocity > 10)
+		//Debug.Log(name + ": " + isConnected().ToString());
+	}
+	
+	/// <summary>
+	/// Checks if this is still connected to something else
+	/// </summary>
+	/// <returns><c>true</c>, if severed was ised, <c>false</c> otherwise.</returns>
+	public bool isConnected()
+	{
+		//Debug.Log("initiator: " + name + p.GetComponentsInChildren<worldObject>().Length.ToString());
+		foreach (worldObject w in p.GetComponentsInChildren<worldObject>())
+		{
+			//Debug.Log("checking " + w.name);
+			if (w.GetComponents<HingeJoint2D>().Length > 0)
+				return true;
+			//else
+			//	Debug.Log("was zero");
+		}
+		return false;
 	}
 	
 	

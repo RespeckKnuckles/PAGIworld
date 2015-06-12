@@ -13,6 +13,7 @@ public class transformingObjectController : worldObject {
 	// Use this for initialization
 	void Start () {
 		objectType = beforeType;
+		objectName = beforeType;
 	}
 	
 	// Update is called once per frame
@@ -28,6 +29,7 @@ public class transformingObjectController : worldObject {
 		isBeforeState = false;
 		GetComponent<SpriteRenderer>().sprite = afterSprite;
 		objectType = afterType;
+		objectName = afterType;
 	}
 	
 	void setToBeforeState()
@@ -46,14 +48,19 @@ public class transformingObjectController : worldObject {
 			
 		if (acceptableTransformers.Contains(collisionObjName))
 		{
-			//find all objects that this object is connected to
-			Transform t = collision.gameObject.transform.parent;
-			if (t)
-			{//it has no parent
+			/*
+			*/
+			GluedObjectController g = collision.gameObject.GetComponent<GluedObjectController>();
+			//Debug.Log("collided with " + g.name);
+			if (g.isConnected())
+			{//find all objects that this object is connected to
+				Transform t = collision.gameObject.transform.parent;
 				GameObject p = t.gameObject;
 				foreach (worldObject c in p.transform.GetComponentsInChildren<worldObject>())
+				{
+					//Debug.Log("destroying " + c.gameObject.name);
 					Destroy(c.gameObject);
-				//Destroy(collision.gameObject);
+				}
 			}
 			else
 				Destroy(collision.gameObject);
