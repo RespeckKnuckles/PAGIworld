@@ -29,13 +29,17 @@ public abstract class sensor
 			if (validLayers.Contains(goArray[i].gameObject.layer)) {
 				//Debug.Log("found: " + goArray[i]);
 				goList.Add(goArray[i]);
-				if (goArray[i].collider2D.OverlapPoint(pos))
-				{//connect it at that point
-					worldObject obj = goArray[i];
-					//Debug.Log("connecting hand to " + obj + " at " + rightHandRigidBody.position);
-					//assuming the object is a rigidbody, you can get the position of pos relative to obj with obj.rigidbody2D.GetVector(pos)
-					if (obj.objectName!="rightHand" && obj.objectName!="leftHand")
-						return obj;
+				//does it have a collider?
+				if (goArray[i].collider2D != null)
+				{
+					if (goArray[i].collider2D.OverlapPoint(pos))
+					{//connect it at that point
+						worldObject obj = goArray[i];
+						//Debug.Log("connecting hand to " + obj + " at " + rightHandRigidBody.position);
+						//assuming the object is a rigidbody, you can get the position of pos relative to obj with obj.rigidbody2D.GetVector(pos)
+						if (obj.objectName!="rightHand" && obj.objectName!="leftHand")
+							return obj;
+					}
 				}
 			}
 		}

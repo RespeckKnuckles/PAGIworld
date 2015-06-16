@@ -213,8 +213,8 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  objectName: unnamedObject
-  objectType: defaultType
+  objectName: medkit
+  objectType: medkit
   canBeDragged: 1
   prefabID: -1
   kE_Requirement: 15
@@ -240,8 +240,8 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  objectName: unnamedObject
-  objectType: defaultType
+  objectName: medkit
+  objectType: medkit
   canBeDragged: 1
   prefabID: -1
   kE_Requirement: 15

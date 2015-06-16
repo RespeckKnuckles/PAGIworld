@@ -34,8 +34,11 @@ public class GluedObjectController : worldObject {
 			}
 		if (destroyAll)
 			foreach (worldObject w in p.GetComponentsInChildren<worldObject>())
+			{
 				foreach (HingeJoint2D h in w.GetComponents<HingeJoint2D>())
 					Destroy(h);
+				w.objectName = w.objectName + "_halved";
+			}
 		
 		//Debug.Log(name + ": " + isConnected().ToString());
 	}
