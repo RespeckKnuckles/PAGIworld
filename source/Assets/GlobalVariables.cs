@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 public class GlobalVariables : MonoBehaviour {
 
 	public static bool androidBuild = true;
-	public static string versionNumber = "0.2.1";
+	public static string versionNumber = "0.2.2";
 	
 	public static int portNumber = 42209;
 
