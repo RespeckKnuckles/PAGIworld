@@ -1070,6 +1070,10 @@ public class bodyController : worldObject {
 						//Debug.Log(tmp[0] + ", " + tmp[1]);
 						int x = int.Parse(tmp[0]);
 						int y = int.Parse(tmp[1]);
+						if (x>=numVisualSensorsX || y>=numVisualSensorsY)
+						{
+							outgoingMessages.Add("sensorRequest," + firstMsg.stringContent + ",ERR:IndexOutOfRange\n");
+						}
 						visualSensor s = visualSensors[x,y];
 						s.updateSensor();
 						string response = firstMsg.stringContent.Trim();
@@ -1083,6 +1087,10 @@ public class bodyController : worldObject {
 						//Debug.Log(tmp[0] + ", " + tmp[1]);
 						x = int.Parse(tmp[0]);
 						y = int.Parse(tmp[1]);
+						if (x>=numPeripheralSensorsX || y>=numPeripheralSensorsY)
+						{
+							outgoingMessages.Add("sensorRequest," + firstMsg.stringContent + ",ERR:IndexOutOfRange\n");
+						}
 						s = peripheralSensors[x,y];
 						s.updateSensor();
 						response = firstMsg.stringContent.Trim();
