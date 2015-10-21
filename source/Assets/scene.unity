@@ -304,6 +304,7 @@ MonoBehaviour:
   triggerBox: {fileID: 100000, guid: 0d28acaadbdaa45eab762143f60489b3, type: 2}
   lavaBlock: {fileID: 188246, guid: 43f9f151721d04d54b08e0b5d41ef43e, type: 2}
   iceBlock: {fileID: 103686, guid: 157387113924d49de98567a4036bae7e, type: 2}
+  bowlingBall: {fileID: 103644, guid: 1c9d30eff1c0440069601c65c28e8c49, type: 2}
   fluid: {fileID: 118514, guid: c3fe2d1460ffd4c5596216dff45fcc24, type: 2}
   fDestructor: {fileID: 199974, guid: 58de4531af3b24914aa19a2700ea1549, type: 2}
   customItemBlock: {fileID: 0}

@@ -47,6 +47,8 @@ public class ObjectMenu : MonoBehaviour
 	public GameObject triggerBox; //26
 	public GameObject lavaBlock; //27
 	public GameObject iceBlock; //28
+	
+	public GameObject bowlingBall; //29
 
 	public GameObject fluid;
 	public GameObject fDestructor;
@@ -239,6 +241,9 @@ public class ObjectMenu : MonoBehaviour
 		}
 		if (GUILayout.Button(new GUIContent("Injured man", "Creates an injured man."))) {
 			Instantiate(injuredMan, new Vector2(15f, 5f), new Quaternion());
+		}
+		if (GUILayout.Button(new GUIContent("Bowling ball", "Creates a heavy bowling ball."))) {
+			Instantiate(bowlingBall, new Vector2(15f, 5f), new Quaternion());
 		}
 		if (GUILayout.Button (new GUIContent ("Water", "Creates Water Dispenser."))) {
 			Instantiate (fluid, new Vector2 (-12f, 12f), new Quaternion ());
