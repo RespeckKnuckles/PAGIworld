@@ -133,12 +133,12 @@ public class Console : MonoBehaviour
 				sw.Close();
 			}
 			catch(IOException I) {
-				GlobalVariables.messageDisplay.showMessage("Error exporting log: " + I.ToString());
+				//GlobalVariables.messageDisplay.showMessage("Error exporting log: " + I.ToString());
 				writeOk = false;
 			}
 			
-			if (writeOk)
-				GlobalVariables.messageDisplay.showMessage("Logs exported to " + logFileName);	
+			//if (writeOk)
+			//	GlobalVariables.messageDisplay.showMessage("Logs exported to " + logFileName);	
 		}
 		
 		collapse = GUILayout.Toggle(collapse, collapseLabel, GUILayout.ExpandWidth(false));

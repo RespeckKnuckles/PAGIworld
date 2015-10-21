@@ -10,7 +10,10 @@ public class GluedObjectController : worldObject {
 	
 	// Use this for initialization
 	void Start () {
-		p = transform.parent.gameObject;
+		if (transform.parent != null)
+			p = transform.parent.gameObject;
+		else
+			p = null;
 		//Debug.Log(p.name + "," + name);
 	}
 	/*
@@ -21,7 +24,10 @@ public class GluedObjectController : worldObject {
 	
 	void OnCollisionEnter2D(Collision2D collision) {
 		bool destroyAll = false;
-		
+
+		if (p == null)
+			return;
+
 		foreach (worldObject w in p.GetComponentsInChildren<worldObject>())
 			foreach (HingeJoint2D h in w.GetComponents<HingeJoint2D>())
 			{
@@ -50,6 +56,8 @@ public class GluedObjectController : worldObject {
 	public bool isConnected()
 	{
 		//Debug.Log("initiator: " + name + p.GetComponentsInChildren<worldObject>().Length.ToString());
+		if (p == null)
+			return false;
 		foreach (worldObject w in p.GetComponentsInChildren<worldObject>())
 		{
 			//Debug.Log("checking " + w.name);

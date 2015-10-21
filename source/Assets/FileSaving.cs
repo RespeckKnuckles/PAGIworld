@@ -22,9 +22,12 @@ public class worldObjectSavedToFile
 	{
 		//store the world object's relevant details
 		prefabID = w.prefabID;
-		positionX = w.rigidbody2D.transform.position.x;
-		positionY = w.rigidbody2D.transform.position.y;
-		rotation = w.rigidbody2D.transform.rotation.z;
+		if (w.GetComponents<Rigidbody2D> ().Length > 0) {
+			positionX = w.rigidbody2D.transform.position.x;
+			positionY = w.rigidbody2D.transform.position.y;
+			rotation = w.rigidbody2D.transform.rotation.eulerAngles.z;
+		}
+		//Debug.Log ("rotation of " + w.objectName + " is saved as " + rotation.ToString ());
 		objName = w.objectName;
 		specialValues = w.valuesToSave;
 	}
@@ -123,6 +126,8 @@ public class FileSaving{
 					 worldObject newObj =  MonoBehaviour.Instantiate(s,//Resources.Load<GameObject>(wo.assetPath) 
 					                          new Vector3(wo.positionX, wo.positionY),
 					                          new Quaternion(0,0,wo.rotation,0)) as worldObject;
+					newObj.transform.rotation = Quaternion.Euler(0, 0, wo.rotation);
+					Debug.Log ("rotation of " + wo.objName + " is loaded as " + wo.rotation.ToString ());
 					newObj.valuesToSave = wo.specialValues;
 					newObj.loadVals();
 					loaded = true;					                     
@@ -139,7 +144,7 @@ public class FileSaving{
 		mainBody.rigidbody2D.transform.position = new Vector2(bodyX, bodyY);
 		mainBody.rigidbody2D.velocity = Vector2.zero;
 		//Debug.Log("x " + bodyX + " Y " + bodyY);
-		mainBody.rigidbody2D.transform.rotation = new Quaternion(0, 0, bodyRotation, 0);
+		mainBody.rigidbody2D.transform.rotation = Quaternion.Euler(0, 0, bodyRotation);
 		rightHand.transform.position = new Vector2(rightHandX, rightHandY);
 		leftHand.transform.position = new Vector2(leftHandX, leftHandY);
 		rightHand.rigidbody2D.transform.rotation = mainBody.rigidbody2D.transform.rotation;

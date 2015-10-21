@@ -63,9 +63,13 @@ public class ControlPanel : MonoBehaviour
 	static void loadFileDialog_callback(string dir)
 	{
 		//lastUsedDirectory = dir;
-		Debug.Log("loaded file " + dir);
+		Debug.Log("loading file " + dir);
 		if (dir=="Cancel_pressed")
 			return;
+		if (!File.Exists (dir)) {
+			GlobalVariables.messageDisplay.showMessage("File not found: " + dir);
+			return;
+		}
 		//remove all world objects currently in scene (except for body/hands)
 		worldObject[] goArray = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(worldObject)) as worldObject[];
 		List<string> doNotRemove = new List<string>() { "leftHand", "rightHand", "mainBody" };

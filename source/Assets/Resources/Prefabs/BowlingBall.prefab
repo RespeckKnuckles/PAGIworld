@@ -12,7 +12,7 @@ GameObject:
   - 50: {fileID: 5003644}
   - 58: {fileID: 5803644}
   - 114: {fileID: 11403644}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BowlingBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
