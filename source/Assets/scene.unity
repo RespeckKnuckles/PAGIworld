@@ -308,6 +308,7 @@ MonoBehaviour:
   fluid: {fileID: 118514, guid: c3fe2d1460ffd4c5596216dff45fcc24, type: 2}
   fDestructor: {fileID: 199974, guid: 58de4531af3b24914aa19a2700ea1549, type: 2}
   customItemBlock: {fileID: 0}
+  speechBubble: {fileID: 0}
 --- !u!114 &153903082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -548,6 +549,7 @@ MonoBehaviour:
   powerMode: 0
   mainCamera: {fileID: 153903074}
   emptyblock: {fileID: 11488752, guid: 87be3a2e74cb84e48b0d55023190a551, type: 2}
+  emptyBubble: {fileID: 11481662, guid: 38668a84c7a1e4f478a4a0195efdb6ab, type: 2}
 --- !u!1 &227506160
 GameObject:
   m_ObjectHideFlags: 0

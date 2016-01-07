@@ -140,7 +140,12 @@ public class visualSensor : sensor
 		type = obj.objectType;
 		name = obj.objectName;
 		for (int i=0; i<vq.Length; i++)
-			vq[i] = obj.visualFeatures[i];
+		{
+			if (i>=obj.visualFeatures.Length)
+				vq[i]=0;
+			else
+				vq[i] = obj.visualFeatures[i];
+		}
 	}
 }
 
@@ -547,8 +552,22 @@ public class bodyController : worldObject {
 		}
 	}
 
+	/// <summary>
+	/// iterate through the customItems, remove any that no longer exist
+	/// </summary>
+	void updateCustomItems()
+	{
+		List<string> toRemove = new List<string> ();
+		foreach (string ky in customItems.Keys)
+			if (customItems [ky] == null)
+				toRemove.Add (ky);
+		foreach (string ky in toRemove)
+			customItems.Remove (ky);
+	}
+
 	public Camera mainCamera;
-	public customItemController emptyblock;
+	public customItemController emptyblock; //used to instantiate custom objects
+	public speechBubbleController emptyBubble; //used to instantiate speech bubbles
 	public Dictionary<string,worldObject> customItems = new Dictionary<string, worldObject>();
 	// Update is called once per frame
 	void Update () {
@@ -587,6 +606,8 @@ public class bodyController : worldObject {
 				Thread.Sleep(100);
 			//process firstMsg
 			firstMsg.stringContent = firstMsg.stringContent.Trim();
+			try
+			{
 			switch (firstMsg.messageType)
 			{
 			case AIMessage.AIMessageType.other:
@@ -619,15 +640,51 @@ public class bodyController : worldObject {
 					outgoingMessages.Add("createItem,"+(string)dd["name"]+",OK\n");
 				}
 				break;
+			case AIMessage.AIMessageType.say:
+				Debug.Log ("Received command to say " + firstMsg.otherStrings[1]);
+				updateCustomItems();
+				//create item
+				speechBubbleController sbc = Instantiate(emptyBubble, new Vector3(), new Quaternion()) as speechBubbleController;
+				string bubbleName;
+				if (firstMsg.otherStrings[0] == "P") //the speaker is PAGI guy, position vector is relative to him
+				{
+					//bubbleName = firstMsg.otherStrings[0] + "_speechBubble";
+					sbc.initialize(firstMsg.otherStrings[1], Convert.ToInt32(firstMsg.floatContent), 
+					                 rigidbody2D.position+firstMsg.vectorContent);
+				}
+				else if (firstMsg.otherStrings[0] == "N") //there is no speaker; use the position given as absolute
+				{
+					sbc.initialize(firstMsg.otherStrings[1], Convert.ToInt32(firstMsg.floatContent), 
+					                           firstMsg.vectorContent);
+				}
+				else //the speaker is a custom object
+				{
+					//find the item to add speech to, add it
+					if (!customItems.ContainsKey(firstMsg.otherStrings[0]))
+					{
+						outgoingMessages.Add("say," + firstMsg.otherStrings[0] + ",ERR:Speaker_Name_Not_Found\n");
+					}
+					else
+					{
+						if (customItems[firstMsg.otherStrings[0]] == null)
+						{
+							customItems.Remove(firstMsg.otherStrings[0]);
+							outgoingMessages.Add("say," + firstMsg.otherStrings[0] + ",ERR:Object_Deleted\n");
+						}
+						else
+						{
+							//create item
+							sbc.initialize(firstMsg.otherStrings[1], Convert.ToInt32(firstMsg.floatContent), 
+								               customItems[firstMsg.otherStrings[0]].rigidbody2D.position+firstMsg.vectorContent);
+						}
+						outgoingMessages.Add("say," + firstMsg.otherStrings[0] + ",OK\n");
+					}
+				}
+				break;
+
 			case AIMessage.AIMessageType.addForceToItem:
 				Debug.Log ("Received command to addForceToItem");
-				//iterate through the customItems, remove any that no longer exist
-				List<string> toRemove = new List<string>();
-				foreach (string ky in customItems.Keys)
-					if (customItems[ky]==null)
-						toRemove.Add(ky);
-				foreach (string ky in toRemove)
-					customItems.Remove(ky);
+				updateCustomItems();
 				//find the item to add force to, add it
 				if (!customItems.ContainsKey(firstMsg.stringContent))
 				{
@@ -1106,7 +1163,6 @@ public class bodyController : worldObject {
 						outgoingMessages.Add("sensorRequest,UNRECOGNIZED_SENSOR_ERROR:"+firstMsg.stringContent.Trim()+"\n");
 					break;
 				}
-				//TODO
 				break;
 			case AIMessage.AIMessageType.establishConnection:
 				break;
@@ -1114,6 +1170,11 @@ public class bodyController : worldObject {
 				break;
 			default:
 				break;	
+				}
+			}
+			catch (Exception e)
+			{
+				outgoingMessages.Add("ERR: While processing message of type " + firstMsg.messageType + " (see log)");
 			}
 		}
 		

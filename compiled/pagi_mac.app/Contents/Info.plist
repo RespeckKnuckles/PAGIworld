@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>pagi_mac</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Unity Player version 4.6.8f1 (583461196f73). (c) 2014 Unity Technologies ApS. All rights reserved.</string>
+	<string>Unity Player version 4.7.0f1 (9c73fd3cda99). (c) 2014 Unity Technologies ApS. All rights reserved.</string>
 	<key>CFBundleIconFile</key>
 	<string>PlayerIcon.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -19,16 +19,16 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>Unity Player version 4.6.8f1</string>
+	<string>Unity Player version 4.7.0f1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>4.6.8f1</string>
+	<string>4.7.0f1</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>PlayerApplication</string>
 	<key>UnityBuildNumber</key>
-	<string>583461196f73</string>
+	<string>9c73fd3cda99</string>
 </dict>
 </plist>

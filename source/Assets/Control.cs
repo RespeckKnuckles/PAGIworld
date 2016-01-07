@@ -213,6 +213,7 @@ public class Control : MonoBehaviour {
 			catch(Exception e)
 			{
 				Debug.Log("Could not parse message due to error. Skipping.");
+				Debug.Log(e);
 				GlobalVariables.outgoingMessages.Add("ERR,formattingError\n");
 				continue;
 			}

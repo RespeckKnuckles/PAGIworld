@@ -215,6 +215,7 @@ Some items can be created during runtime by sending commands from the AI side. S
 The object names are the same identifiers that are returned by sensors, e.g. the \texttt{objName} field in the \texttt{findObj} command.
 
 \subsubsection{Creating and Controlling Custom Objects}
+\label{sect:custom}
 
 (As of version 0.1.7) It is possible to create your own objects in PAGI World, which you can then control by sending force commands. This is done by calling the command:
 
@@ -251,6 +252,8 @@ The object names are the same identifiers that are returned by sensors, e.g. the
 After an item has been created, you can send force commands to it using:
 
 \texttt{addForceToItem,name,fx,fy,fa} where:
+
+\noindent Note that you can only apply \texttt{addForceToItem} to items that you created using \texttt{createItem}!
 
 \begin{itemize}
 \item \texttt{name} - The unique name you gave to this item when you first created it. Errors will be returned if the name is not found (which might happen if the object was destroyed.
@@ -297,6 +300,22 @@ To display text in the PAGI World console (obtained by pressing the ``backquote'
 
 \texttt{AI-side says: this is a test, so is ``this''}
 
+\subsubsection{Saying Things / Creating Speech Bubbles}
+\label{sect:speech}
+
+You can have PAGI guy say things (and have them show up as speech bubbles). You can also create speech bubbles that are spoken by custom items (see Section \ref{sect:custom}), or have a speech bubble not attached to any speaker. Simply call the command:
+
+\texttt{say,speaker,text,duration,posX,posY}
+
+\begin{itemize}
+\item \texttt{speaker} - If you want PAGI guy to be the speaker, this is \texttt{P}. If you want a custom item you created to be the speaker, this is the name of that item. Otherwise, if there is no speaker, use \texttt{N}.
+\item \texttt{text} - The text for the speaker to say. Do not use commas in this text.
+\item \texttt{duration} - The length (in seconds) that this bubble will be visible.
+\item \texttt{posX, posY} - The position of the speech bubble, relative to the speaker. So if you use \texttt{0,10}, and the speaker is PAGI guy, the speech bubble will appear slightly above where PAGI guy is. If you have no speaker, these coordinates are treated as absolute (so that \texttt{0,0} makes the bubble appear in the center of the screen).
+\end{itemize}
+
+You can see speech bubbles using PAGI guy's vision, and the \texttt{name} parameter returned will be the text in the bubble. You cannot otherwise interact with speech bubbles physically.
+
 \subsection{Unprovoked Notifications}
 
 There are many messages that may be sent from PAGI World to the AI side that are related to events that happened in the world which may not have been directly triggered by the AI side. For example, if a \textit{trigger box} is activated, a message will be sent to the user. Likewise if a reflex is activated (see Section \ref{sect:statesAndReflexes} for information on those notifications).
@@ -307,7 +326,9 @@ The basic reward / punishment system utilized by PAGI World is the \textit{endor
 
 \subsubsection{Spoken commands}
 
-PAGI World can also ``hear" commands in plain text which are given to it by the environment. Currently the only way to do this is to type a message in the command box, which can be made visible through one of the menus (see Section \ref{sect:pagiEnvironment}). The command received is of the form \texttt{SC,x}, where \texttt{x} is the string which was sent through the command box.
+PAGI World can also ``hear" commands in plain text which are given to it by the environment. Currently the only way to do this is to type a message in the command box, which can be made visible through one of the menus (see Section \ref{sect:pagiEnvironment}). The command received is of the form \texttt{SC,x}, where \texttt{x} is the string which was sent through the command box. 
+
+An alternate is to have PAGI guy ``hear'' things spoken by custom items in the environment by using speech bubbles (Section \ref{sect:speech}).
 
 \subsubsection{Triggers}
 

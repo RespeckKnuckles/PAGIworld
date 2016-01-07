@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 public class GlobalVariables : MonoBehaviour {
 
 	public static bool androidBuild = true;
-	public static string versionNumber = "0.2.3";
+	public static string versionNumber = "0.2.5";
 	
 	public static int portNumber = 42209;
 
@@ -535,7 +535,7 @@ public class fnNode
 /// </summary>
 public class AIMessage
 {
-	public enum AIMessageType { sensorRequest, addForce, dropItem, print,
+	public enum AIMessageType { sensorRequest, addForce, dropItem, print, say,
 		setState, setReflex, removeReflex, getStates, getReflexes, findObj,
 		createItem, addForceToItem, getInfoAboutItem, destroyItem,
 		establishConnection, removeConnection, loadTask, other }
@@ -556,13 +556,25 @@ public class AIMessage
 	public System.Object detail;
 	public DateTime timeCreated;
 	public fnNode function1=null,function2=null;
-	
-	public AIMessage() //used for testing purposes only
+	public List<Vector2> vectors = new List<Vector2>();
+	public List<string> otherStrings = new List<string> ();
+
+	/// <summary>
+	/// if this value is passed in an AIMessage, it means that the bodyController needs to treat it
+	/// as if the user didn't specify this vector.
+	/// </summary>
+	public static Vector2 reservedVector = new Vector2(0.0121f, 0.0212f);
+
+	/// <summary>
+	/// constructor used for testing purposes only. Do not call!
+	/// </summary>
+	public AIMessage()
 	{
 		messageType = AIMessageType.other;
 		stringContent = "";
 		floatContent = 0;
-		//vectorContent = Vector2.zero;
+		List<Vector2> vectors = new List<Vector2> ();
+		List<string> otherStrings = new List<string> ();
 		detail = null;
 		timeCreated = DateTime.Now;
 	}
@@ -576,13 +588,46 @@ public class AIMessage
 		string[] clientArgs = s.Split(',');
 		AIMessage a = new AIMessage(AIMessage.AIMessageType.other, "ERR: Unrecognized Command. Received string:\"" + s + "\"\n", 100f, "");
 		clientArgs[0] = clientArgs[0].Trim();
-		if (clientArgs[0]== "sensorRequest")
-		{
+		if (clientArgs [0] == "sensorRequest") {
 			a.messageType = AIMessage.AIMessageType.sensorRequest;
-			if (clientArgs.Length==2)
-				a.stringContent = clientArgs[1];
+			if (clientArgs.Length == 2)
+				a.stringContent = clientArgs [1];
 			else
+				throw new Exception ("Incorrect # of arguments given in client message: " + s);
+		} 
+		else if (clientArgs [0] == "say") 
+		{
+			a.messageType = AIMessageType.say;
+			if (clientArgs.Length != 6)
+			{
 				throw new Exception("Incorrect # of arguments given in client message: " + s);
+			}
+			else
+			{
+				//index 1: speaker name (or D for pagi guy). Stored in otherStrings[0]
+				a.otherStrings.Add(clientArgs[1]);
+				//index 2: text to say. Stored in otherStrings[1]
+				a.otherStrings.Add(clientArgs[2]);
+				//index 3: duration. Stored in floatContent
+				try { a.floatContent = (float.Parse(clientArgs[3]));}
+				catch(Exception e)
+				{
+					throw new Exception("Error parsing duration in client message: " + s);
+				}
+				//index 4,5: box relative position (or absolute position, if no speaker is given). Stored in vectors[0]
+				/*if (clientArgs[4].Trim()=="D" && clientArgs[5].Trim()=="D")
+				{
+					a.vectorContent = (reservedVector);
+				}
+				else
+				{*/
+				try { a.vectorContent = new Vector2(float.Parse(clientArgs[4]), float.Parse(clientArgs[5])); }
+				catch(Exception e)
+				{
+					throw new Exception("Error parsing position vector in client message: " + s);
+				}
+				//}
+			}
 		}
 		else if (clientArgs[0]=="print")
 		{

@@ -55,6 +55,7 @@ public class ObjectMenu : MonoBehaviour
 
 	//These have prefab IDs but are not on the object menu
 	public GameObject customItemBlock; //29
+	public GameObject speechBubble; //30
 	
 	Vector2 scrollPosition;
 	bool show;
