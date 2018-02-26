@@ -29,7 +29,7 @@ public class WirePieceScript : MonoBehaviour {
 				if (other.gameObject.name != "rightHand" || other.gameObject.name != "leftHand") {
 
 					float elasticity = GameObject.Find("Small Wire").GetComponent<WireScript>().Elasticity;
-					float angle = Vector2.Angle(gameObject.rigidbody2D.velocity, -other.contacts[0].normal);
+					float angle = Vector2.Angle(gameObject.GetComponent<Rigidbody2D>().velocity, -other.contacts[0].normal);
 
 					if(other.relativeVelocity.magnitude >= elasticity && other.gameObject.name != "lava") {
 						Debug.Log(gameObject.name + " touched " + other.gameObject.name + " with velocity " + other.relativeVelocity.magnitude + " ands angle " + angle);

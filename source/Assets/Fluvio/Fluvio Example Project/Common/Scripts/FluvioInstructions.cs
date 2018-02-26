@@ -41,7 +41,7 @@ public class FluvioInstructions : MonoBehaviour {
 		
 		string tog = showToggleInterface ? " | X - Toggle Interface" : "";
 		
-		guiText.text = 
+		GetComponent<GUIText>().text = 
 			cam +
 			"Space - Slow motion | " +
 			"L - Debug Information" +

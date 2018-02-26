@@ -25,7 +25,7 @@ public class rewardOrPunishmentController : worldObject {
 		{
 			//send message to body about the pain or pleasure caused by this object.
 			//which sensor on the body is it closest to?
-			Vector2 touchedAt = coll.gameObject.rigidbody2D.GetPoint(coll.contacts[0].point);
+			Vector2 touchedAt = coll.gameObject.GetComponent<Rigidbody2D>().GetPoint(coll.contacts[0].point);
 			//Debug.Log(touchedAt);
 			Vector2[] sensorPositions = new Vector2[]{
 				new Vector2(0, 1.2f), new Vector2(0.9f, 0.9f), new Vector2(1.2f, 0), new Vector2(0.9f, -0.9f),
@@ -42,7 +42,7 @@ public class rewardOrPunishmentController : worldObject {
 			GlobalVariables.outgoingMessages.Add("RD," + endorphins.ToString() + "," + sensorNum.ToString() + "\n");
 			coll.gameObject.SendMessage("OnTouchedRewardOrPunishment", endorphins, SendMessageOptions.DontRequireReceiver);
 			
-			Screen.showCursor = true;
+			Cursor.visible = true;
 			if (disappearAfterTouching)
 				Destroy(gameObject);
 		}

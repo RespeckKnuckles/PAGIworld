@@ -37,17 +37,17 @@ public class customItemController : rewardOrPunishmentController {
 			SpriteRenderer sr = GetComponent<SpriteRenderer>();
 			sr.sprite = newSprite;
 			BoxCollider2D b = GetComponent<BoxCollider2D>();
-			b.center = newSprite.bounds.center;
+			b.offset = newSprite.bounds.center;
 			b.size = newSprite.bounds.size;
 			//fill out parameters
 			objectName = name;
 			name = name;
-			rigidbody2D.mass = mass;
+			GetComponent<Rigidbody2D>().mass = mass;
 			//set friction
 			b.sharedMaterial = (PhysicsMaterial2D)Resources.Load("PhysicsMaterials2D/pm" + material);
 			//kinematic
 			//kinematic: 0,1,6
-			rigidbody2D.isKinematic = (kinematicStyle==0 || kinematicStyle==1 || kinematicStyle==6);
+			GetComponent<Rigidbody2D>().isKinematic = (kinematicStyle==0 || kinematicStyle==1 || kinematicStyle==6);
 			//backgrounded: 0,2,4
 			int backgroundLayer = LayerMask.NameToLayer("Nonreactive");
 			if (kinematicStyle==0 || kinematicStyle==2 || kinematicStyle==4)
@@ -56,7 +56,7 @@ public class customItemController : rewardOrPunishmentController {
 			if (kinematicStyle==6)
 				gameObject.layer = LayerMask.NameToLayer("VisibleButNonreactive");
 			//fixed angle: 0,1 (implied), 2, 3
-			rigidbody2D.fixedAngle = (kinematicStyle==2 || kinematicStyle==3);
+			GetComponent<Rigidbody2D>().fixedAngle = (kinematicStyle==2 || kinematicStyle==3);
 			this.material = material;
 			this.kinematicStyle = kinematicStyle;
 			this.imagePath = fileName;
@@ -92,7 +92,7 @@ public class customItemController : rewardOrPunishmentController {
 		this.objectName = (string)valuesToSave["objectName"];
 		//this.name = (string)valuesToSave["name"];
 		//transform.localScale = new Vector3((float)valuesToSave["scalex"], (float)valuesToSave["scaley"]);
-		initialize(this.imagePath, this.objectName, this.transform.position, this.transform.rotation.z, this.endorphins, this.rigidbody2D.mass, this.material, this.kinematicStyle);
+		initialize(this.imagePath, this.objectName, this.transform.position, this.transform.rotation.z, this.endorphins, this.GetComponent<Rigidbody2D>().mass, this.material, this.kinematicStyle);
 	}
 	
 }

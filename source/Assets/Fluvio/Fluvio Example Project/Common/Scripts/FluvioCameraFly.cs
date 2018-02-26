@@ -13,7 +13,7 @@ public class FluvioCameraFly : MonoBehaviour
 	void Start()
 	{
 		Screen.lockCursor = true;
-		Screen.showCursor = false;
+		Cursor.visible = false;
 		initialized = true;
 	}
 
@@ -22,14 +22,14 @@ public class FluvioCameraFly : MonoBehaviour
 		if (initialized)
 		{
 			Screen.lockCursor = true;
-			Screen.showCursor = false;
+			Cursor.visible = false;
 		}
 	}
 
 	void OnDisable()
 	{
 		Screen.lockCursor = false;
-		Screen.showCursor = true;
+		Cursor.visible = true;
 	}
 
 	void Update ()

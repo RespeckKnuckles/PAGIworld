@@ -8,7 +8,9 @@ using System.IO;
 
 public abstract class sensor
 {
+	[NonSerialized]
 	public Rigidbody2D anchorBody = new Rigidbody2D();
+	[NonSerialized]
 	public Vector2 relativePosition = new Vector2();
 	public abstract void updateSensor();
 	
@@ -30,9 +32,9 @@ public abstract class sensor
 				//Debug.Log("found: " + goArray[i]);
 				goList.Add(goArray[i]);
 				//does it have a collider?
-				if (goArray[i].collider2D != null)
+				if (goArray[i].GetComponent<Collider2D>() != null)
 				{
-					if (goArray[i].collider2D.OverlapPoint(pos))
+					if (goArray[i].GetComponent<Collider2D>().OverlapPoint(pos))
 					{//connect it at that point
 						worldObject obj = goArray[i];
 						//Debug.Log("connecting hand to " + obj + " at " + rightHandRigidBody.position);
@@ -59,11 +61,15 @@ public abstract class sensor
 	}
 }
 
+[System.Serializable]
 public class touchSensor : sensor
 {
+	public string sensorCode;
+	public int p;
 	public float temp = 0f;
 	public float[] texture = new float[3];
-	public worldObject objectTouched = new worldObject();
+	[NonSerialized]
+	public worldObject objectTouched;// = new worldObject();
 	public float endorphins = 0f;
 	
 	public touchSensor(Rigidbody2D anchrBdy, Vector2 relPos)
@@ -84,6 +90,12 @@ public class touchSensor : sensor
 		texture = new float[objectTouched.texture.Length];
 		for (int i=0; i<texture.Length; i++)
 			texture[i] = objectTouched.texture[i]; 
+		if (objectTouched.objectName == "Background")
+		{
+			p = 0;
+		} else {
+			p = 1;
+		}
 	}
 	
 	/// <summary>
@@ -110,8 +122,10 @@ public class touchSensor : sensor
 	}
 }
 
+[System.Serializable]
 public class visualSensor : sensor
 {
+	public string sensorCode;
 	public float[] vq = new float[4];
 	/// <summary>
 	/// the type/category of the object this sensor is sensing, or background
@@ -121,7 +135,9 @@ public class visualSensor : sensor
 	/// the name/unique id of the object this sensor is sensing, or background
 	/// </summary>
 	public string name = "";
+	[NonSerialized]
 	public int indexX;
+	[NonSerialized]
 	public int indexY;
 	
 	public visualSensor(Rigidbody2D anchrBdy, Vector2 relPos, int indexX, int indexY)
@@ -189,8 +205,8 @@ public class bodyController : worldObject {
 		Application.runInBackground = true;
 		//Debug.Log(System.IO.Directory.GetCurrentDirectory());
 		
-		leftHandRigidBody = leftHand.rigidbody2D;
-		rightHandRigidBody = rightHand.rigidbody2D;
+		leftHandRigidBody = leftHand.GetComponent<Rigidbody2D>();
+		rightHandRigidBody = rightHand.GetComponent<Rigidbody2D>();
 		leftHand.objectName = "leftHand";
 		rightHand.objectName = "rightHand";
 		
@@ -205,22 +221,22 @@ public class bodyController : worldObject {
 		rightHandSensor[2] = new touchSensor(rightHandRigidBody, new Vector2(0, -.65f));
 		rightHandSensor[3] = new touchSensor(rightHandRigidBody, new Vector2(-0.6f, 0));
 		rightHandSensor[4] = new touchSensor(rightHandRigidBody, new Vector2(0, 0));
-		bodySensor[0] = new touchSensor(rigidbody2D, new Vector2(0, 1.2f));
-		bodySensor[1] = new touchSensor(rigidbody2D, new Vector2(0.9f, 0.9f));
-		bodySensor[2] = new touchSensor(rigidbody2D, new Vector2(1.2f, 0));
-		bodySensor[3] = new touchSensor(rigidbody2D, new Vector2(0.9f, -0.9f));
-		bodySensor[4] = new touchSensor(rigidbody2D, new Vector2(0, -1.2f));
-		bodySensor[5] = new touchSensor(rigidbody2D, new Vector2(-0.9f, -0.9f));
-		bodySensor[6] = new touchSensor(rigidbody2D, new Vector2(-1.2f, 0));
-		bodySensor[7] = new touchSensor(rigidbody2D, new Vector2(-0.9f, 0.9f));
+		bodySensor[0] = new touchSensor(GetComponent<Rigidbody2D>(), new Vector2(0, 1.2f));
+		bodySensor[1] = new touchSensor(GetComponent<Rigidbody2D>(), new Vector2(0.9f, 0.9f));
+		bodySensor[2] = new touchSensor(GetComponent<Rigidbody2D>(), new Vector2(1.2f, 0));
+		bodySensor[3] = new touchSensor(GetComponent<Rigidbody2D>(), new Vector2(0.9f, -0.9f));
+		bodySensor[4] = new touchSensor(GetComponent<Rigidbody2D>(), new Vector2(0, -1.2f));
+		bodySensor[5] = new touchSensor(GetComponent<Rigidbody2D>(), new Vector2(-0.9f, -0.9f));
+		bodySensor[6] = new touchSensor(GetComponent<Rigidbody2D>(), new Vector2(-1.2f, 0));
+		bodySensor[7] = new touchSensor(GetComponent<Rigidbody2D>(), new Vector2(-0.9f, 0.9f));
 		Vector2 blCorner = new Vector2(-2.25f,1.65f); //the distance the bottom left corner of the visual field is from the body's center
 		for (int x=0; x<numVisualSensorsX; x++)
 			for (int y=0; y<numVisualSensorsY; y++)
-				visualSensors[x,y] = new visualSensor(rigidbody2D, blCorner + new Vector2(x*0.148f, y*0.1475f), x, y);
+				visualSensors[x,y] = new visualSensor(GetComponent<Rigidbody2D>(), blCorner + new Vector2(x*0.148f, y*0.1475f), x, y);
 		blCorner = new Vector2(-14.5f,0.5f); //the distance the bottom left corner of the peripheral field is from the body's center
 		for (int x=0; x<numPeripheralSensorsX; x++)
 			for (int y=0; y<numPeripheralSensorsY; y++)
-				peripheralSensors[x,y] = new visualSensor(rigidbody2D, blCorner + new Vector2(x*2f, y*2f), x, y);
+				peripheralSensors[x,y] = new visualSensor(GetComponent<Rigidbody2D>(), blCorner + new Vector2(x*2f, y*2f), x, y);
 	
 		/*//connect each sensor to a lookup key
 		for (int i=0; i<5; i++)
@@ -299,6 +315,80 @@ public class bodyController : worldObject {
 			}
 		}
 	}
+
+	/// <summary>>
+	/// formats the detailed visual sensor map into a json object for sending back to the connected agent
+	/// </summary>
+	/// <returns> A string containing the JSON obj</returns>
+	public string MDNtoJSON(){
+		StringBuilder sb = new StringBuilder("");//("{ \"sensorType\":\"MDN\", \"sensorMap\":");
+		for (int y=0; y<numVisualSensorsY; y++)
+		{
+			for (int x=0; x<numVisualSensorsX; x++)
+			{
+				visualSensor s = visualSensors[x,y];
+				s.updateSensor();
+				//string sensorString = JsonUtility.ToJson (s);
+				//Debug.Log (sensorString);
+
+				string sName = s.name;
+				if (sName=="Background")
+					sName = "";
+				sb.Append(sName + ",");
+			}
+		}
+		//sb.Append (" }");
+		//sb[sb.Length-1] = '\n';
+		//Debug.Log("msg is " + sb.ToString());
+		//outgoingMessages.Add(sb.ToString());
+		MsgToAgent newMsg = new MsgToAgent("MDN",sb.ToString());
+		string finalMsg = JsonUtility.ToJson(newMsg);
+		Debug.Log (finalMsg);
+		return finalMsg;
+	}
+
+	/// <summary>>
+	/// formats the detailed visual sensor map into a json object for sending back to the connected agent
+	/// </summary>
+	/// <returns> A string containing the JSON obj</returns>
+	public string MPNtoJSON(){
+		StringBuilder sb = new StringBuilder(""); //("{ \"type\":\"MDN\", \"sensorMap\":");
+		for (int y=0; y<numPeripheralSensorsY; y++)
+		{
+			for (int x=0; x<numPeripheralSensorsX; x++)
+			{
+				visualSensor s = peripheralSensors[x,y];
+				s.updateSensor();
+				string sName = s.name;
+				if (sName=="Background")
+					sName = "";
+				sb.Append(sName + ",");
+			}
+		}
+		//sb.Append (" }");
+		//sb[sb.Length-1] = '\n';
+		//Debug.Log("msg is " + sb.ToString());
+		//outgoingMessages.Add(sb.ToString());
+
+		MsgToAgent newMsg = new MsgToAgent("MPN",sb.ToString());
+		string finalMsg = JsonUtility.ToJson(newMsg);
+		Debug.Log (finalMsg);
+		return finalMsg;
+	}
+
+	public string ErrorToJSON(string msg)
+	{
+		MsgToAgent newMsg = new MsgToAgent ("errorMsg", msg);
+		string jsonMsg = JsonUtility.ToJson(newMsg);
+		return jsonMsg;
+	}
+
+	public string UpdateToJSON(string msg)
+	{
+		MsgToAgent newMsg = new MsgToAgent ("update", msg);
+		string jsonMsg = JsonUtility.ToJson (newMsg);
+		return jsonMsg;
+	}
 	
 	/// <summary>
 	/// interprets the sensor aspect code and checks the current value of the sensor
@@ -313,39 +403,39 @@ public class bodyController : worldObject {
 		switch (sensorAspectCode)
 		{
 			case "Sx":
-			sensorVal = rigidbody2D.velocity.x;
+			sensorVal = GetComponent<Rigidbody2D>().velocity.x;
 			break;
 			case "Sy":
-			sensorVal = rigidbody2D.velocity.y;
+			sensorVal = GetComponent<Rigidbody2D>().velocity.y;
 			break;
 			case "BPx":
-			sensorVal = rigidbody2D.position.x;
+			sensorVal = GetComponent<Rigidbody2D>().position.x;
 			break;
 			case "BPy":
-			sensorVal = rigidbody2D.position.y;
+			sensorVal = GetComponent<Rigidbody2D>().position.y;
 			break;
 			case "LPx":
 			leftHandSensor[4].updateSensor(); //recall sensor 4 is right in the middle of the hand
-			Vector2 relativePoint = rigidbody2D.GetPoint(leftHandSensor[4].getPosition());
+			Vector2 relativePoint = GetComponent<Rigidbody2D>().GetPoint(leftHandSensor[4].getPosition());
 			sensorVal = relativePoint.x;
 			break;
 			case "LPy":
 			leftHandSensor[4].updateSensor(); //recall sensor 4 is right in the middle of the hand
-			relativePoint = rigidbody2D.GetPoint(leftHandSensor[4].getPosition());
+			relativePoint = GetComponent<Rigidbody2D>().GetPoint(leftHandSensor[4].getPosition());
 			sensorVal = relativePoint.y;
 			break;
 			case "RPx":
 			rightHandSensor[4].updateSensor(); //recall sensor 4 is right in the middle of the hand
-			relativePoint = rigidbody2D.GetPoint(rightHandSensor[4].getPosition());
+			relativePoint = GetComponent<Rigidbody2D>().GetPoint(rightHandSensor[4].getPosition());
 			sensorVal = relativePoint.x;
 			break;
 			case "RPy":
 			rightHandSensor[4].updateSensor(); //recall sensor 4 is right in the middle of the hand
-			relativePoint = rigidbody2D.GetPoint(rightHandSensor[4].getPosition());
+			relativePoint = GetComponent<Rigidbody2D>().GetPoint(rightHandSensor[4].getPosition());
 			sensorVal = relativePoint.y;
 			break;
 			case "A":
-			sensorVal = rigidbody2D.rotation;
+			sensorVal = GetComponent<Rigidbody2D>().rotation;
 			break;
 			default:
 			isStandardSensor = true;
@@ -512,8 +602,10 @@ public class bodyController : worldObject {
 			if (allSatisfied)
 			{
 				//Debug.Log("all good");
-				if (GlobalVariables.sendNotificationOnReflexFirings)
-					outgoingMessages.Add("reflexFired," + r.reflexName + "\n");
+				if (GlobalVariables.sendNotificationOnReflexFirings) {
+					string s = UpdateToJSON ("reflexFired," + r.reflexName);
+					outgoingMessages.Add (s);
+				}
 				foreach (AIMessage a in r.actions)
 					messageQueue.Add (a);
 			}
@@ -592,6 +684,7 @@ public class bodyController : worldObject {
 		while (messageQueue.Count() > 0)
 		{
 			AIMessage firstMsg;
+			string strToReturn;
 			while (!messageQueue.TryGet(0, out firstMsg)) 
 				Thread.Sleep(100);
 			/*Debug.Log (messageQueue.Count() + " MESSAGES IN QUEUE: " + firstMsg.ToString());
@@ -608,583 +701,676 @@ public class bodyController : worldObject {
 			firstMsg.stringContent = firstMsg.stringContent.Trim();
 			try
 			{
-			switch (firstMsg.messageType)
-			{
-			case AIMessage.AIMessageType.other:
-				Debug.Log("received unrecognized command from client connection " + firstMsg.stringContent);
-				outgoingMessages.Add("UnrecognizedCommandError:" + firstMsg.stringContent.Trim() + "\n");
-				break;
-			case AIMessage.AIMessageType.createItem:
-				Debug.Log("Received command to create item");
-				Dictionary<string,System.Object> dd = (Dictionary<string,System.Object>)firstMsg.detail;
-				string wName = (string)dd["name"];
-				customItemController cic = Instantiate(emptyblock, new Vector3(), new Quaternion()) as customItemController;
-				if (!cic.initialize((string)dd["filePath"], wName, new Vector2((float)dd["x"], (float)dd["y"]),
-				               (float)dd["rotation"], (float)dd["endorphins"], (float)dd["mass"], (int)dd["friction"], (int)dd["kinematic"]))
-				{
-					Debug.Log("file " + (string)dd["filePath"] + " not found");
-					outgoingMessages.Add("createItem,"+(string)dd["name"]+",FAILED,fileNotFound\n");
+			//switch (firstMsg.messageType)
+			//{
+				if( firstMsg.messageType.CompareTo("other") == 0 ){
+					//AIMessage.AIMessageType.other:
+					Debug.Log("received unrecognized command from client connection " + firstMsg.stringContent);
+					strToReturn = ErrorToJSON("UnrecognizedCommandError" + firstMsg.stringContent.Trim());
+					outgoingMessages.Add(strToReturn);
 				}
-				else
-				{
-					while (customItems.ContainsKey(wName))
-					{
-						if (customItems[wName] != null)
-						{
-							Destroy(customItems[wName].gameObject);
-						}
-						customItems.Remove(wName);
-					}
-					customItems.Add(wName,cic);
-					
-					outgoingMessages.Add("createItem,"+(string)dd["name"]+",OK\n");
-				}
-				break;
-			case AIMessage.AIMessageType.say:
-				Debug.Log ("Received command to say " + firstMsg.otherStrings[1]);
-				updateCustomItems();
-				//create item
-				speechBubbleController sbc = Instantiate(emptyBubble, new Vector3(), new Quaternion()) as speechBubbleController;
-				string bubbleName;
-				if (firstMsg.otherStrings[0] == "P") //the speaker is PAGI guy, position vector is relative to him
-				{
-					//bubbleName = firstMsg.otherStrings[0] + "_speechBubble";
-					sbc.initialize(firstMsg.otherStrings[1], Convert.ToInt32(firstMsg.floatContent), 
-					                 rigidbody2D.position+firstMsg.vectorContent);
-				}
-				else if (firstMsg.otherStrings[0] == "N") //there is no speaker; use the position given as absolute
-				{
-					sbc.initialize(firstMsg.otherStrings[1], Convert.ToInt32(firstMsg.floatContent), 
-					                           firstMsg.vectorContent);
-				}
-				else //the speaker is a custom object
-				{
-					//find the item to add speech to, add it
-					if (!customItems.ContainsKey(firstMsg.otherStrings[0]))
-					{
-						outgoingMessages.Add("say," + firstMsg.otherStrings[0] + ",ERR:Speaker_Name_Not_Found\n");
-					}
-					else
-					{
-						if (customItems[firstMsg.otherStrings[0]] == null)
-						{
-							customItems.Remove(firstMsg.otherStrings[0]);
-							outgoingMessages.Add("say," + firstMsg.otherStrings[0] + ",ERR:Object_Deleted\n");
-						}
-						else
-						{
-							//create item
-							sbc.initialize(firstMsg.otherStrings[1], Convert.ToInt32(firstMsg.floatContent), 
-								               customItems[firstMsg.otherStrings[0]].rigidbody2D.position+firstMsg.vectorContent);
-						}
-						outgoingMessages.Add("say," + firstMsg.otherStrings[0] + ",OK\n");
-					}
-				}
-				break;
+				else if( firstMsg.messageType.CompareTo("createItem") == 0){
+					Debug.Log("Received command to create item");
 
-			case AIMessage.AIMessageType.addForceToItem:
-				Debug.Log ("Received command to addForceToItem");
-				updateCustomItems();
-				//find the item to add force to, add it
-				if (!customItems.ContainsKey(firstMsg.stringContent))
-				{
-					outgoingMessages.Add("addForceToItem," + firstMsg.stringContent + ",ERR:Item_Name_Not_Found\n");
-				}
-				else
-				{
-					if (customItems[firstMsg.stringContent] == null)
+					Dictionary<string,System.Object> dd = (Dictionary<string,System.Object>)firstMsg.detail;
+					string wName = (string)dd["name"]; //firstMsg.otherStrings[0]; 
+					customItemController cic = Instantiate(emptyblock, new Vector3(), new Quaternion()) as customItemController;
+
+					//Debug.Log("MADE IT to bodyController func");
+					//if (!cic.initialize(firstMsg.stringContent, firstMsg.otherStrings[0], firstMsg.vectorContent, float.Parse(firstMsg.otherStrings[2]), 
+					//	float.Parse(firstMsg.otherStrings[3]), firstMsg.floatContent,
+					//	int.Parse(firstMsg.otherStrings[1]), int.Parse(firstMsg.otherStrings[4]) ))
+					if (!cic.initialize((string)dd["filePath"], wName, new Vector2((float)dd["x"], (float)dd["y"]),
+					               (float)dd["rotation"], (float)dd["endorphins"], (float)dd["mass"], (int)dd["friction"], (int)dd["kinematic"]))
 					{
-						customItems.Remove(firstMsg.stringContent);
-						outgoingMessages.Add("addForceToItem," + firstMsg.stringContent + ",ERR:Object_Deleted\n");
+						Debug.Log("file " + firstMsg.stringContent + " not found");
+						strToReturn = ErrorToJSON("createItem,"+wName+",FAILED,fileNotFound");
+						outgoingMessages.Add(strToReturn);
 					}
 					else
 					{
-						customItems[firstMsg.stringContent].rigidbody2D.AddForce(firstMsg.vectorContent);
-						customItems[firstMsg.stringContent].rigidbody2D.AddTorque(firstMsg.floatContent);
-						outgoingMessages.Add("addForceToItem," + firstMsg.stringContent + ",OK\n");
+						while (customItems.ContainsKey(wName))
+						{
+							if (customItems[wName] != null)
+							{
+								Destroy(customItems[wName].gameObject);
+							}
+							customItems.Remove(wName);
+						}
+						customItems.Add(wName,cic);
+						strToReturn = UpdateToJSON("createItem,"+wName+",OK\n");
+						outgoingMessages.Add(strToReturn);
+						//outgoingMessages.Add("createItem,"+(string)dd["name"]+",OK\n");
+					}
+
+					//Debug.Log("DONE in BodyController");
+				}
+				else if( firstMsg.messageType.CompareTo("say") == 0 ){//AIMessage.AIMessageType.say:
+					Debug.Log ("Received command to say " + firstMsg.stringContent);
+					updateCustomItems();
+					//create item
+					speechBubbleController sbc = Instantiate(emptyBubble, new Vector3(), new Quaternion()) as speechBubbleController;
+					//string bubbleName;
+					if (firstMsg.otherStrings[0] == "P") //the speaker is PAGI guy, position vector is relative to him
+					{
+						//bubbleName = firstMsg.otherStrings[0] + "_speechBubble";
+						sbc.initialize(firstMsg.stringContent, Convert.ToInt32(firstMsg.floatContent), 
+					                 GetComponent<Rigidbody2D>().position+firstMsg.vectorContent);
+					}
+					else if (firstMsg.otherStrings[0] == "N") //there is no speaker; use the position given as absolute
+					{
+						sbc.initialize(firstMsg.stringContent, Convert.ToInt32(firstMsg.floatContent), 
+					                           firstMsg.vectorContent);
+					}
+					else //the speaker is a custom object
+					{
+						//find the item to add speech to, add it
+						if (!customItems.ContainsKey(firstMsg.otherStrings[0]))
+						{
+							strToReturn = ErrorToJSON("say," + firstMsg.otherStrings[0] + ",ERR:Speaker_Name_Not_Found");
+							outgoingMessages.Add(strToReturn);
+							//outgoingMessages.Add("say," + firstMsg.otherStrings[0] + ",ERR:Speaker_Name_Not_Found\n");
+						}
+						else
+						{
+							if (customItems[firstMsg.otherStrings[0]] == null)
+							{
+								customItems.Remove(firstMsg.otherStrings[0]);
+								strToReturn = ErrorToJSON("say," + firstMsg.otherStrings[0] + ",ERR:Object_Deleted");
+								outgoingMessages.Add(strToReturn);
+								//outgoingMessages.Add("say," + firstMsg.otherStrings[0] + ",ERR:Object_Deleted\n");
+							}
+							else
+							{
+								//create item
+								sbc.initialize(firstMsg.stringContent, Convert.ToInt32(firstMsg.floatContent), 
+									               customItems[firstMsg.otherStrings[0]].GetComponent<Rigidbody2D>().position+firstMsg.vectorContent);
+							}
+							strToReturn = UpdateToJSON("say," + firstMsg.otherStrings[0] + ",OK");
+							outgoingMessages.Add(strToReturn);
+							//outgoingMessages.Add("say," + firstMsg.otherStrings[0] + ",OK\n");
+						}
 					}
 				}
-				break;
-			case AIMessage.AIMessageType.getInfoAboutItem:
-				Debug.Log ("Received command to getInfoAboutItem");
-				//find the item to add force to, add it
-				if (!customItems.ContainsKey(firstMsg.stringContent))
-				{
-					outgoingMessages.Add("getInfoAboutItem," + firstMsg.stringContent + ",ERR:Item_Name_Not_Found\n");
-				}
-				else
-				{
-					if (customItems[firstMsg.stringContent] == null)
+
+
+				else if( firstMsg.messageType.CompareTo("addForceToItem") == 0){//AIMessage.AIMessageType.addForceToItem:
+					Debug.Log ("Received command to addForceToItem");
+					updateCustomItems();
+					//find the item to add force to, add it
+					if (!customItems.ContainsKey(firstMsg.stringContent))
 					{
-						customItems.Remove(firstMsg.stringContent);
-						outgoingMessages.Add("getInfoAboutItem," + firstMsg.stringContent + ",ERR:Object_Deleted\n");
+						strToReturn = ErrorToJSON("addForceToItem," + firstMsg.stringContent + ",ERR:Item_Name_Not_Found");
+						outgoingMessages.Add(strToReturn);
+						//outgoingMessages.Add("addForceToItem," + firstMsg.stringContent + ",ERR:Item_Name_Not_Found\n");
 					}
 					else
 					{
-						worldObject wo = customItems[firstMsg.stringContent];
-						string toReturn = "getInfoAboutItem," + firstMsg.stringContent + ",";
-						toReturn = toReturn + wo.transform.position.x.ToString() + "," + wo.transform.position.y.ToString() + ",";
-						toReturn = toReturn + wo.rigidbody2D.velocity.x.ToString() + "," + wo.rigidbody2D.velocity.y.ToString() + "\n";
-						outgoingMessages.Add(toReturn);
+						if (customItems[firstMsg.stringContent] == null)
+						{
+							customItems.Remove(firstMsg.stringContent);
+							strToReturn = ErrorToJSON("addForceToItem," + firstMsg.stringContent + ",ERR:Object_Deleted");
+							outgoingMessages.Add(strToReturn);
+							//outgoingMessages.Add("addForceToItem," + firstMsg.stringContent + ",ERR:Object_Deleted\n");
+						}
+						else
+						{
+							customItems[firstMsg.stringContent].GetComponent<Rigidbody2D>().AddForce(firstMsg.vectorContent);
+							customItems[firstMsg.stringContent].GetComponent<Rigidbody2D>().AddTorque(firstMsg.floatContent);
+							strToReturn = UpdateToJSON("addForceToItem," + firstMsg.stringContent + ",OK");
+							outgoingMessages.Add(strToReturn);
+							//outgoingMessages.Add("addForceToItem," + firstMsg.stringContent + ",OK\n");
+						}
 					}
 				}
-				break;
-			case AIMessage.AIMessageType.destroyItem:
-				Debug.Log ("Received command to destroyItem");
-				//find the item to add force to, add it
-				if (!customItems.ContainsKey(firstMsg.stringContent))
-				{
-					outgoingMessages.Add("destroyItem," + firstMsg.stringContent + ",ERR:Item_Name_Not_Found\n");
-				}
-				else
-				{
-					if (customItems[firstMsg.stringContent] == null)
-					{
-						customItems.Remove(firstMsg.stringContent);
-						outgoingMessages.Add("destroyItem," + firstMsg.stringContent + ",WARNING:Object_Already_Deleted\n");
-					}
-					else
-					{
-						Destroy(customItems[firstMsg.stringContent].gameObject);
-						customItems.Remove(firstMsg.stringContent);
-						outgoingMessages.Add("destroyItem," + firstMsg.stringContent + ",OK\n");
-					}
-				}
-				break;
-			case AIMessage.AIMessageType.print:
-				Debug.Log("received command to print message");
-				Debug.Log("AI-side says: " + firstMsg.stringContent);
-				outgoingMessages.Add("print,OK\n");
-				break;
-			case AIMessage.AIMessageType.findObj:
-				Debug.Log("received message to find object: " + firstMsg.stringContent);
-				string toReturn = "findObj," + firstMsg.stringContent;
-				string searchType = ((string)firstMsg.detail).Trim();
-				//Debug.Log(searchType);
-				if (searchType == "D" || searchType == "PD")
-				{
-					//Debug.Log("Checking detailed sensor");
-					foreach (visualSensor v in visualSensors)
-					{
-						v.updateSensor();
-						if (v.name.Trim() == firstMsg.stringContent.Trim())
-							toReturn += ",V" + v.indexX.ToString() + "." + v.indexY.ToString();
-					}
-				}
-				if (searchType == "P" || searchType == "PD")
-				{
-					foreach (visualSensor p in peripheralSensors)
-					{
-						p.updateSensor();
-						if (p.name.Trim() == firstMsg.stringContent.Trim())
-							toReturn += ",P" + p.indexX.ToString() + "." + p.indexY.ToString();
-					}
-				}
-				outgoingMessages.Add(toReturn + "\n");
-				break;
-				
-			case AIMessage.AIMessageType.loadTask:
-				Debug.Log("received message to load new task");
-				toReturn = "loadTask," + firstMsg.stringContent.Trim();
-				//remove all world objects currently in scene (except for body/hands)
-				worldObject[] goArray = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(worldObject)) as worldObject[];
-				List<string> doNotRemove = new List<string>() { "leftHand", "rightHand", "mainBody" };
-				foreach (worldObject obj in goArray)
-				{
-					if (!doNotRemove.Contains(obj.objectName))
-					{
-						Destroy(obj.gameObject);
-					}
-				}
-				bool loadedOk = true;
-				try
-				{
-					FileSaving fs = new FileSaving(firstMsg.stringContent);
-				}
-				catch(Exception e)
-				{
-					string errDesc = e.ToString().Replace('\n',';');
-					errDesc = errDesc.Replace('\r',' ');
-					outgoingMessages.Add(toReturn + ",ERR," + errDesc + "\n");
-					loadedOk = false;
-				}
-				if (loadedOk)
-					outgoingMessages.Add(toReturn + ",OK\n");
-				break;
-			
-			case AIMessage.AIMessageType.setState:
-				//is the state already active? If so, replace the time
-				State foundState = null;
-				foreach (State st in GlobalVariables.activeStates.getCopy())
-				{
-					if (st.stateName == firstMsg.stringContent)
-					{
-						foundState = st;
-						break;
-					}
-				}
-				//Debug.Log("foundstate for " + firstMsg.stringContent + " " + (foundState!=null).ToString());
-				if (foundState!=null)
-				{
-					//replace state
-					GlobalVariables.activeStates.TryRemove(foundState);
-				}
-				if (((State)firstMsg.detail).lifeTime != TimeSpan.Zero)
-					GlobalVariables.activeStates.Add((State)firstMsg.detail);
-				outgoingMessages.Add("stateUpdated," + firstMsg.stringContent.Trim() + "\n");
-				break;
-				
-			case AIMessage.AIMessageType.getReflexes:
-				string toR = "activeReflexes";
-				foreach (Reflex r in GlobalVariables.activeReflexes.getCopy())
-				{
-					toR += "," + r.reflexName;
-				}
-				outgoingMessages.Add(toR + "\n");
-				break;
-				
-			case AIMessage.AIMessageType.getStates:
-				toR = "activeStates:";
-				List<State> allStates = GlobalVariables.activeStates.getCopy();
-				foreach (State sta in allStates)
-				{
-					toR += sta.stateName + ",";
-				}
-				if (allStates.Count == 0)
-					toR += "(none)";
-				else
-					toR = toR.Substring(0, toR.Length-1);
-				outgoingMessages.Add(toR + "\n");
-				break;
-			case AIMessage.AIMessageType.removeReflex:
-				Reflex re = null;
-				foreach (Reflex R in GlobalVariables.activeReflexes.getCopy())
-				{
-					Debug.Log("comparing " + R.reflexName + " to " + firstMsg.stringContent);
-					if (R.reflexName.Trim() == firstMsg.stringContent.Trim())
-					{
-						re = R;
-						break;
-					}
-				}
-				if (re!=null)
-				{
-					GlobalVariables.activeReflexes.TryRemove(re);
-					outgoingMessages.Add("removedReflex," + firstMsg.stringContent.Trim() + ",OK\n");
-				}
-				else
-					outgoingMessages.Add("removedReflexFAILED" + firstMsg.stringContent.Trim() + ",FAILED\n");
-				
-				break;
-			case AIMessage.AIMessageType.setReflex:
-				//does a reflex with this name already exist? If so, replace it
-				re = null;
-				foreach (Reflex R in GlobalVariables.activeReflexes.getCopy())
-				{
-					if (R.reflexName.Trim() == firstMsg.stringContent.Trim())
-					{
-						re = R;
-						break;
-					}
-				}
-				if (re!=null)
-					GlobalVariables.activeReflexes.TryRemove(re);
-				GlobalVariables.activeReflexes.Add((Reflex)firstMsg.detail);
-				outgoingMessages.Add("reflexUpdated," + firstMsg.stringContent + "\n");
-				break;
-			
-			case AIMessage.AIMessageType.dropItem:
-				Debug.Log("received command to create " + firstMsg.stringContent + " at " + firstMsg.vectorContent);
-				//if required, there is additional content at firstMsg.detail
-				//find the asset that matches the name
-				bool loaded = false;
-				foreach (worldObject s in Resources.LoadAll<worldObject>("Prefabs"))
-				{
-					if (s.objectName==firstMsg.stringContent.Trim())
-					{
-						worldObject newObj =  MonoBehaviour.Instantiate(s,//Resources.Load<GameObject>(wo.assetPath) 
-						                                                new Vector3(firstMsg.vectorContent.x, firstMsg.vectorContent.y),
-						                                                new Quaternion()) as worldObject;
-						loaded = true;					                     
-						break;
-					}
-				}
-				if (!loaded)
-					outgoingMessages.Add("dropItem," + firstMsg.stringContent + ",FAILED:obj_not_found\n");
-				else
-					outgoingMessages.Add("dropItem," + firstMsg.stringContent + ",OK\n");
-				break;
-			case AIMessage.AIMessageType.addForce:
-				Debug.Log("executing addForce command: " + firstMsg.messageType.ToString());
-				//do we need to evaluate the force value, e.g. if there is a function?
-				switch (firstMsg.stringContent)
-				{
-					case "TEST":
-						/*string s = "";
-						int numToSend = int.Parse(firstMsg.floatContent.ToString());
-						Debug.Log("creating string ("+numToSend.ToString()+")");
-						for (int i=0; i<numToSend; i++)
-							s += "X";*/
-						Debug.Log("got TEST msg: " + firstMsg.function1.evaluate(getSensorAspectValue));
-						//outgoingMessages.Add(s+'\n');
-						break;
-					/*LHV,LHH - Left hand vertical and horizontal. v is the amount of force (positive or negative) to add in each dimension.
-					RHV,RHH - Right hand vertical and horizontal. v is the amount of force (positive or negative) to add in each dimension.
-					BMV,BMH - Body vertical and horizontal. v is the amount of force (positive or negative) to add in each dimension.
-					BR - Body rotation right or left. v is the amount of torque to use to rotate the body (can be positive or negative).
-					RHG,RHR - Right hand grip and release. v is required, but ignored here. A hand is either in a state of gripping or it isn't.
-					LHG,LHR - Left hand grip and release. v is required, but ignored here. A hand is either in a state of gripping or it isn't.*/
-					case "LHH":
-						Vector2 f = rigidbody2D.transform.rotation*new Vector2(firstMsg.function1.evaluate(getSensorAspectValue),0);//new Vector2(Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
-						leftHandRigidBody.AddForce(f);
-						rigidbody2D.AddForce(-f);
-						//rigidbody2D.AddForce(new Vector2(0, 10000));
-						outgoingMessages.Add("LHH,1\n");
-					break;
-					case "LHV":
-						f = rigidbody2D.transform.rotation*new Vector2(0,firstMsg.function1.evaluate(getSensorAspectValue));//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
-						leftHandRigidBody.AddForce(f);//, ForceMode2D.Impulse);
-						rigidbody2D.AddForce(-f);
-						outgoingMessages.Add("LHV,1\n");
-					break;
-					case "LHvec":
-						f = rigidbody2D.transform.rotation*
-							(new Vector2(firstMsg.function1.evaluate(getSensorAspectValue), firstMsg.function2.evaluate(getSensorAspectValue)));
-						leftHandRigidBody.AddForce(f);//, ForceMode2D.Impulse);
-						rigidbody2D.AddForce(-f);
-						outgoingMessages.Add("LHvec,1\n");
-						break;
-					case "RHH":
-						f = rigidbody2D.transform.rotation*new Vector2(firstMsg.function1.evaluate(getSensorAspectValue),0);//new Vector2(Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
-						rightHandRigidBody.AddForce(f);
-						rigidbody2D.AddForce(-f);
-						//rigidbody2D.AddForce(new Vector2(0, 10000));
-						outgoingMessages.Add("RHH,1\n");
-					break;
-					case "RHV":
-						f = rigidbody2D.transform.rotation*new Vector2(0,firstMsg.function1.evaluate(getSensorAspectValue));//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
-						rightHandRigidBody.AddForce(f);//, ForceMode2D.Impulse);
-						rigidbody2D.AddForce(-f);
-						outgoingMessages.Add("RHV,1\n");
-					break;
-					case "RHvec":
-						f = rigidbody2D.transform.rotation*
-							(new Vector2(firstMsg.function1.evaluate(getSensorAspectValue), firstMsg.function2.evaluate(getSensorAspectValue)));;
-						rigidbody2D.AddForce(-f);
-						rightHandRigidBody.AddForce(f);
-						outgoingMessages.Add("RHvec,1\n");
-						break;
-					case "BMH":
-						f = rigidbody2D.transform.rotation*new Vector2(firstMsg.function1.evaluate(getSensorAspectValue),0);//new Vector2(Mathf.Cos(Mathf.Deg2Rad*rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Sin(Mathf.Deg2Rad*rigidbody2D.rotation)*firstMsg.floatContent);
-						rigidbody2D.AddForce(f);
-						outgoingMessages.Add("BMH,1\n");
-					break;
-					case "BMV":
-						f = rigidbody2D.transform.rotation*new Vector2(0,firstMsg.function1.evaluate(getSensorAspectValue));//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
-						rigidbody2D.AddForce(f);
-						Debug.Log("added f: " + f.y);
-						outgoingMessages.Add("BMV,1\n");
-					break;
-					case "BMvec":
-						f = rigidbody2D.transform.rotation*
-							(new Vector2(firstMsg.function1.evaluate(getSensorAspectValue), firstMsg.function2.evaluate(getSensorAspectValue)));
-						rigidbody2D.AddForce(f);
-						outgoingMessages.Add("BMvec,1\n");
-						break;
 					
-					case "J": //jump
-						bool foundGround = jump(30000f);
-						if (foundGround)
-							outgoingMessages.Add("J,1\n");
+				else if( firstMsg.messageType.CompareTo("getInfoAboutItem") == 0){//AIMessage.AIMessageType.getInfoAboutItem:
+					Debug.Log ("Received command to getInfoAboutItem");
+					//find the item to add force to, add it
+					if (!customItems.ContainsKey(firstMsg.stringContent))
+					{
+						strToReturn = ErrorToJSON("getInfoAboutItem," + firstMsg.stringContent + ",ERR:Item_Name_Not_Found");
+						outgoingMessages.Add(strToReturn);
+						//outgoingMessages.Add("getInfoAboutItem," + firstMsg.stringContent + ",ERR:Item_Name_Not_Found\n");
+					}
+					else
+					{
+						if (customItems[firstMsg.stringContent] == null)
+						{
+							customItems.Remove(firstMsg.stringContent);
+							strToReturn = ErrorToJSON("getInfoAboutItem," + firstMsg.stringContent + ",ERR:Object_Deleted");
+							outgoingMessages.Add(strToReturn);
+							//outgoingMessages.Add("getInfoAboutItem," + firstMsg.stringContent + ",ERR:Object_Deleted\n");
+						}
 						else
-							outgoingMessages.Add("J,0\n");
-						break;
-					case "BR":
-						rigidbody2D.rotation += firstMsg.function1.evaluate(getSensorAspectValue);
-						leftHand.rigidbody2D.rotation = rigidbody2D.rotation;
-						rightHand.rigidbody2D.rotation = rigidbody2D.rotation;
-						rigidbody2D.AddForce(Vector2.zero); //forces update of rotation
-						outgoingMessages.Add ("BR,1\n");
-					break;
-					case "RHG":
-						setGrip(false, true);
-						outgoingMessages.Add ("RHG,1\n");
-						break;
-					case "RHR":
-						setGrip(false, false);
-						outgoingMessages.Add ("RHR,1\n");
-						break;
-					case "LHG":
-						setGrip(true, true);
-						outgoingMessages.Add ("LHG,1\n");
-						break;
-					case "LHR":
-						setGrip(true, false);
-						outgoingMessages.Add ("LHR,1\n");
-						break;
+						{
+							worldObject wo = customItems[firstMsg.stringContent];
+							//string toReturn = "getInfoAboutItem," + firstMsg.stringContent + ",";
+							//toReturn = toReturn + wo.transform.position.x.ToString() + "," + wo.transform.position.y.ToString() + ",";
+							//toReturn = toReturn + wo.GetComponent<Rigidbody2D>().velocity.x.ToString() + "," + wo.GetComponent<Rigidbody2D>().velocity.y.ToString() + "\n";
+							ItemInfoToAgent itm = new ItemInfoToAgent(firstMsg.stringContent,wo.transform.position.x,wo.transform.position.y,
+								wo.GetComponent<Rigidbody2D>().velocity.x, wo.GetComponent<Rigidbody2D>().velocity.y);
+							strToReturn = JsonUtility.ToJson(itm);
+							outgoingMessages.Add(strToReturn);
+							//outgoingMessages.Add(toReturn);
+						}
+					}
 				}
-				break;
-			case AIMessage.AIMessageType.sensorRequest:
-				Debug.Log("checking sensor value " + firstMsg.ToString());
-				switch (firstMsg.stringContent[0])
-				{
-					case 'M': //a full map of the visual field
-						if (firstMsg.stringContent.Trim() == "MDN") //detailed visual field (names only)
+				else if( firstMsg.messageType.CompareTo("destroyItem") == 0){//AIMessage.AIMessageType.destroyItem:
+					Debug.Log ("Received command to destroyItem");
+					//find the item to add force to, add it
+					if (!customItems.ContainsKey(firstMsg.stringContent))
+					{
+						strToReturn = ErrorToJSON("destroyItem," + firstMsg.stringContent + ",ERR:Item_Name_Not_Found");
+						outgoingMessages.Add(strToReturn);
+						//outgoingMessages.Add("destroyItem," + firstMsg.stringContent + ",ERR:Item_Name_Not_Found\n");
+					}
+					else
+					{
+						if (customItems[firstMsg.stringContent] == null)
 						{
-							StringBuilder sb = new StringBuilder("MDN,");
-							//string toReturn = "MDN,";
-							for (int y=0; y<numVisualSensorsY; y++)
-							{
-								for (int x=0; x<numVisualSensorsX; x++)
-								{
-									visualSensor s = visualSensors[x,y];
-									s.updateSensor();
-									string sName = s.name;
-									if (sName=="Background")
-										sName = "";
-									sb.Append(sName + ",");
-								}
-							}
-							sb[sb.Length-1] = '\n';
-							Debug.Log("msg is " + sb.ToString());
-							outgoingMessages.Add(sb.ToString());
-						}
-						else if (firstMsg.stringContent.Trim() == "MPN") //peripheral visual field (names only)
-						{
-							StringBuilder sb = new StringBuilder("MPN,");
-							int count = 0;
-							for (int y=0; y<numPeripheralSensorsY; y++)
-							{
-								for (int x=0; x<numPeripheralSensorsX; x++)
-								{
-									visualSensor s = peripheralSensors[x,y];
-									s.updateSensor();
-									string sName = s.name;
-									if (sName=="Background")
-										sName = "";
-									sb.Append(sName + ",");
-									count++;
-								}
-							}
-							Debug.Log(count);
-							sb[sb.Length-1] = '\n';
-							outgoingMessages.Add(sb.ToString());
+							customItems.Remove(firstMsg.stringContent);
+							strToReturn = ErrorToJSON("destroyItem," + firstMsg.stringContent + ",WARNING:Object_Already_Deleted");
+							outgoingMessages.Add(strToReturn);
+							//outgoingMessages.Add("destroyItem," + firstMsg.stringContent + ",WARNING:Object_Already_Deleted\n");
 						}
 						else
-							outgoingMessages.Add("sensorRequest,UNRECOGNIZED_SENSOR_ERROR:"+firstMsg.stringContent.Trim()+"\n");
-					break;
-					case 'B': //body touch sensor B0-B7
-						if (firstMsg.stringContent[1]=='P') //body position
 						{
-							Vector2 v = rigidbody2D.position;
-							outgoingMessages.Add("BP," + v.x.ToString() + "," + v.y.ToString() + "\n");
+							Destroy(customItems[firstMsg.stringContent].gameObject);
+							customItems.Remove(firstMsg.stringContent);
+							strToReturn = UpdateToJSON("destroyItem," + firstMsg.stringContent + ",OK");
+							outgoingMessages.Add(strToReturn);
+							//outgoingMessages.Add("destroyItem," + firstMsg.stringContent + ",OK\n");
 						}
-						else
-						{	
-							int sensorNum = int.Parse(firstMsg.stringContent[1].ToString());
-							touchSensor sensor = bodySensor[sensorNum];
-							sensor.updateSensor();
-							outgoingMessages.Add("B" + sensorNum.ToString() + "," + sensor.getReport() + "\n");
+					}	
+				}
+				else if( firstMsg.messageType.CompareTo("print") == 0){//AIMessage.AIMessageType.print:
+					Debug.Log("received command to print message");
+					Debug.Log("AI-side says: " + firstMsg.stringContent);
+					strToReturn = UpdateToJSON("print,OK");
+					outgoingMessages.Add(strToReturn);
+					//outgoingMessages.Add("print,OK\n");
+				}
+				else if( firstMsg.messageType.CompareTo("findObj") == 0){//AIMessage.AIMessageType.findObj:
+					Debug.Log("received message to find object: " + firstMsg.stringContent);
+					//strToReturn = "findObj," + firstMsg.stringContent;
+					strToReturn = "";
+					string searchType = firstMsg.otherStrings[0];//((string)firstMsg.detail).Trim();
+					//Debug.Log(searchType);
+					int count = 0;
+					if (searchType == "D" || searchType == "PD")
+					{
+						//Debug.Log("Checking detailed sensor");
+						foreach (visualSensor v in visualSensors)
+						{
+							v.updateSensor();
+							if (v.name.Trim() == firstMsg.stringContent.Trim() && count != 0 ){
+								strToReturn += ",V" + v.indexX.ToString() + "." + v.indexY.ToString();
+							}
+							else if( v.name.Trim() == firstMsg.stringContent.Trim() ){
+								count = 1;
+								strToReturn += "V" + v.indexX.ToString() + "." + v.indexY.ToString();
+							}
 						}
-					break;
-					case 'S': //speed sensor
-						Vector2 v = rigidbody2D.GetRelativePointVelocity(Vector2.zero);
-						outgoingMessages.Add ("S," + v.x.ToString () + "," + v.y.ToString() + "\n");
+					}
+					if (searchType == "P" || searchType == "PD")
+					{
+						foreach (visualSensor p in peripheralSensors)
+						{
+							p.updateSensor();
+							if (p.name.Trim() == firstMsg.stringContent.Trim() && count != 0 )
+								strToReturn += ",P" + p.indexX.ToString() + "." + p.indexY.ToString();
+							else if(p.name.Trim() == firstMsg.stringContent.Trim() ){
+								count = 1;
+								strToReturn += "P" + p.indexX.ToString() + "." + p.indexY.ToString();
+							}
+						}
+					}
+					else if( searchType != "D" )
+						throw new Exception("ERR: Invalid sensor type in FindObj command");
+
+					MsgToAgent m = new MsgToAgent(firstMsg.stringContent, strToReturn);
+					string finalMsg = JsonUtility.ToJson(m);
+					outgoingMessages.Add(finalMsg);
+					//outgoingMessages.Add(strToReturn + "\n");
+				}
+				
+				else if( firstMsg.messageType.CompareTo("loadTask") == 0 ){//AIMessage.AIMessageType.loadTask:
+					Debug.Log("received message to load new task");
+					string finalMsg;
+					strToReturn = "loadTask," + firstMsg.stringContent.Trim();
+					//remove all world objects currently in scene (except for body/hands)
+					worldObject[] goArray = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(worldObject)) as worldObject[];
+					List<string> doNotRemove = new List<string>() { "leftHand", "rightHand", "mainBody" };
+					foreach (worldObject obj in goArray)
+					{
+						if (!doNotRemove.Contains(obj.objectName))
+						{
+							Destroy(obj.gameObject);
+						}
+					}
+					bool loadedOk = true;
+					try
+					{
+						FileSaving fs = new FileSaving(firstMsg.stringContent);
+					}
+					catch(Exception e)
+					{
+						string errDesc = e.ToString().Replace('\n',';');
+						errDesc = errDesc.Replace('\r',' ');
+						finalMsg = ErrorToJSON(strToReturn + ",ERR," + errDesc);
+						outgoingMessages.Add(finalMsg);
+						//outgoingMessages.Add(strToReturn + ",ERR," + errDesc + "\n");
+						loadedOk = false;
+					}
+					if (loadedOk){
+						finalMsg = UpdateToJSON(strToReturn + ",OK");
+						outgoingMessages.Add(finalMsg);
+						//outgoingMessages.Add(strToReturn + ",OK\n");
+					}
+				}
+				
+				else if( firstMsg.messageType.CompareTo("setState") == 0 ){//AIMessage.AIMessageType.setState:
+					//is the state already active? If so, replace the time
+					State foundState = null;
+					foreach (State st in GlobalVariables.activeStates.getCopy())
+					{
+						if (st.stateName == firstMsg.stringContent)
+						{
+							foundState = st;
+							break;
+						}
+					}	
+					//Debug.Log("foundstate for " + firstMsg.stringContent + " " + (foundState!=null).ToString());
+					if (foundState!=null)
+					{
+						//replace state
+						GlobalVariables.activeStates.TryRemove(foundState);
+					}
+					if (((State)firstMsg.detail).lifeTime != TimeSpan.Zero)
+						GlobalVariables.activeStates.Add((State)firstMsg.detail);
+					strToReturn = UpdateToJSON("stateUpdated," + firstMsg.stringContent.Trim());
+					outgoingMessages.Add(strToReturn);
+					//outgoingMessages.Add("stateUpdated," + firstMsg.stringContent.Trim() + "\n");
+				}
+
+				else if( firstMsg.messageType.CompareTo("getReflexes") == 0 ){//AIMessage.AIMessageType.getReflexes:
+					string toR = "";
+					int count = 0;
+					foreach (Reflex r in GlobalVariables.activeReflexes.getCopy())
+					{
+						if( count != 0 )
+							toR += "," + r.reflexName;
+						else{
+							count = 1;
+							toR += r.reflexName;
+						}
+					}
+					MsgToAgent m = new MsgToAgent("activeReflexes", toR);
+					strToReturn = JsonUtility.ToJson(m);
+					outgoingMessages.Add(strToReturn);
+					//outgoingMessages.Add(toR + "\n");
+				}
+				
+				else if( firstMsg.messageType.CompareTo("getStates") == 0 ){//AIMessage.AIMessageType.getStates:
+					strToReturn = "activeStates:";
+					List<State> allStates = GlobalVariables.activeStates.getCopy();
+					foreach (State sta in allStates)
+					{
+						strToReturn += sta.stateName + ",";
+					}
+					if (allStates.Count == 0)
+						strToReturn += "(none)";
+					else
+						strToReturn = strToReturn.Substring(0, strToReturn.Length-1);
+					MsgToAgent m = new MsgToAgent("activeStates",strToReturn);
+					string s = JsonUtility.ToJson(m);
+					outgoingMessages.Add(s);
+					//outgoingMessages.Add(strToReturn + "\n");
+				}
+				else if( firstMsg.messageType.CompareTo("removeReflex") == 0){//AIMessage.AIMessageType.removeReflex:
+					Reflex re = null;
+					foreach (Reflex R in GlobalVariables.activeReflexes.getCopy())
+					{
+						Debug.Log("comparing " + R.reflexName + " to " + firstMsg.stringContent);
+						if (R.reflexName.Trim() == firstMsg.stringContent.Trim())
+						{
+							re = R;
+							break;
+						}
+					}
+					if (re!=null)
+					{
+						GlobalVariables.activeReflexes.TryRemove(re);
+						strToReturn = UpdateToJSON("removedReflex," + firstMsg.stringContent.Trim() + ",OK");
+						outgoingMessages.Add(strToReturn);
+					}
+					else{
+						strToReturn = ErrorToJSON("removedReflexFAILED" + firstMsg.stringContent.Trim() + ",FAILED");
+						outgoingMessages.Add(strToReturn);
+					}
+					
+				}
+				else if( firstMsg.messageType.CompareTo("setReflex") == 0 ){//AIMessage.AIMessageType.setReflex:
+					//does a reflex with this name already exist? If so, replace it
+					Reflex re = null;
+					foreach (Reflex R in GlobalVariables.activeReflexes.getCopy())
+					{
+						if (R.reflexName.Trim() == firstMsg.stringContent.Trim())
+						{
+							re = R;
+							break;
+						}
+					}
+					if (re!=null)
+						GlobalVariables.activeReflexes.TryRemove(re);
+					GlobalVariables.activeReflexes.Add((Reflex)firstMsg.detail);
+					strToReturn = UpdateToJSON("reflexUpdated," + firstMsg.stringContent);
+					outgoingMessages.Add(strToReturn);
+				}
+			
+				else if( firstMsg.messageType.CompareTo("dropItem") == 0){//AIMessage.AIMessageType.dropItem:
+					Debug.Log("received command to create " + firstMsg.stringContent + " at " + firstMsg.vectorContent);
+					//if required, there is additional content at firstMsg.detail
+					//find the asset that matches the name
+					bool loaded = false;
+					foreach (worldObject s in Resources.LoadAll<worldObject>("Prefabs"))
+					{
+						if (s.objectName==firstMsg.stringContent.Trim())
+						{
+							worldObject newObj =  MonoBehaviour.Instantiate(s,//Resources.Load<GameObject>(wo.assetPath) 
+							                                                new Vector3(firstMsg.vectorContent.x, firstMsg.vectorContent.y),
+							                                                new Quaternion()) as worldObject;
+							loaded = true;					                     
+							break;
+						}
+					}
+					if (!loaded){
+						strToReturn = ErrorToJSON("dropItem," + firstMsg.stringContent + ",FAILED:obj_not_found");
+						outgoingMessages.Add(strToReturn);
+					}
+					else{
+						strToReturn = UpdateToJSON("dropItem," + firstMsg.stringContent + ",OK");
+						outgoingMessages.Add(strToReturn);
+					}
+				}
+				else if( firstMsg.messageType.CompareTo("addForce") == 0 ){//AIMessage.AIMessageType.addForce:
+					Debug.Log("executing addForce command: " + firstMsg.messageType.ToString());
+					//do we need to evaluate the force value, e.g. if there is a function?
+					switch (firstMsg.stringContent)
+					{
+						case "TEST":
+							/*string s = "";
+							int numToSend = int.Parse(firstMsg.floatContent.ToString());
+							Debug.Log("creating string ("+numToSend.ToString()+")");
+							for (int i=0; i<numToSend; i++)
+								s += "X";*/
+							Debug.Log("got TEST msg: " + firstMsg.function1.evaluate(getSensorAspectValue));
+							//outgoingMessages.Add(s+'\n');
+							break;
+						/*LHV,LHH - Left hand vertical and horizontal. v is the amount of force (positive or negative) to add in each dimension.
+						RHV,RHH - Right hand vertical and horizontal. v is the amount of force (positive or negative) to add in each dimension.
+						BMV,BMH - Body vertical and horizontal. v is the amount of force (positive or negative) to add in each dimension.
+						BR - Body rotation right or left. v is the amount of torque to use to rotate the body (can be positive or negative).
+						RHG,RHR - Right hand grip and release. v is required, but ignored here. A hand is either in a state of gripping or it isn't.
+						LHG,LHR - Left hand grip and release. v is required, but ignored here. A hand is either in a state of gripping or it isn't.*/
+						case "LHH":
+							Vector2 f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(firstMsg.function1.evaluate(getSensorAspectValue),0);//new Vector2(Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+							leftHandRigidBody.AddForce(f);
+							GetComponent<Rigidbody2D>().AddForce(-f);
+							//rigidbody2D.AddForce(new Vector2(0, 10000));
+							strToReturn = UpdateToJSON("LHH,1");
+							outgoingMessages.Add(strToReturn);
 						break;
-					case 'L': //L0-L4, or LP
-						if (firstMsg.stringContent[1]=='P')
-						{//proprioception; get sensor position relative to body
-							leftHandSensor[4].updateSensor(); //recall sensor 4 is right in the middle of the hand
-							Vector2 relativePoint = rigidbody2D.GetPoint(leftHandSensor[4].getPosition());
-							outgoingMessages.Add("LP," + relativePoint.x.ToString () + "," + relativePoint.y.ToString() + "\n");
-	
-						}
-						else
-						{
-							int sensorNum = int.Parse(firstMsg.stringContent[1].ToString());
-							touchSensor sensor = leftHandSensor[sensorNum];
-							sensor.updateSensor();
-							outgoingMessages.Add("L" + sensorNum.ToString() + "," + sensor.getReport() + "\n");
-						}//test
-					break; 
-					case 'R': //R0-R4, or RP
-						if (firstMsg.stringContent[1]=='P')
-						{//proprioception; get sensor position relative to body
-							rightHandSensor[4].updateSensor();
-						Vector2 relativePoint = rigidbody2D.GetPoint(rightHandSensor[4].getPosition());
-							outgoingMessages.Add("RP," + relativePoint.x.ToString () + "," + relativePoint.y.ToString() + "\n");
-						}
-						else
-						{
-							int sensorNum = int.Parse(firstMsg.stringContent[1].ToString());
-							touchSensor sensor = rightHandSensor[sensorNum];
-							sensor.updateSensor();
-							outgoingMessages.Add("R" + sensorNum.ToString() + "," + sensor.getReport() + "\n");
-						}
-					break;
-					case 'V': //visual sensor V0.0 - V30.20
-						string[] tmp = firstMsg.stringContent.Substring(1).Split('.');
-						//Debug.Log(tmp[0] + ", " + tmp[1]);
-						int x = int.Parse(tmp[0]);
-						int y = int.Parse(tmp[1]);
-						if (x>=numVisualSensorsX || y>=numVisualSensorsY)
-						{
-							outgoingMessages.Add("sensorRequest," + firstMsg.stringContent + ",ERR:IndexOutOfRange\n");
-						}
-						visualSensor s = visualSensors[x,y];
-						s.updateSensor();
-						string response = firstMsg.stringContent.Trim();
-						for (int i=0; i<s.vq.Length; i++)
-							response += "," + s.vq[i].ToString();
-						response += "," + s.type + "," + s.name + "\n";
-						outgoingMessages.Add(response);
-					break;
-					case 'P': //peripheral sensor V0.0 - V15.10
-						tmp = firstMsg.stringContent.Substring(1).Split('.');
-						//Debug.Log(tmp[0] + ", " + tmp[1]);
-						x = int.Parse(tmp[0]);
-						y = int.Parse(tmp[1]);
-						if (x>=numPeripheralSensorsX || y>=numPeripheralSensorsY)
-						{
-							outgoingMessages.Add("sensorRequest," + firstMsg.stringContent + ",ERR:IndexOutOfRange\n");
-						}
-						s = peripheralSensors[x,y];
-						s.updateSensor();
-						response = firstMsg.stringContent.Trim();
-						for (int i=0; i<s.vq.Length; i++)
-							response += "," + s.vq[i].ToString();
-						response += "," + s.type + "," + s.name + "\n";
-						outgoingMessages.Add(response);
-					break;
-					case 'A': //rotation sensor
-						outgoingMessages.Add("A," + (Mathf.Deg2Rad*rigidbody2D.rotation).ToString() + "\n");
-					break;
-					default:
-						outgoingMessages.Add("sensorRequest,UNRECOGNIZED_SENSOR_ERROR:"+firstMsg.stringContent.Trim()+"\n");
+						case "LHV":
+							f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0,firstMsg.function1.evaluate(getSensorAspectValue));//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+							leftHandRigidBody.AddForce(f);//, ForceMode2D.Impulse);
+							GetComponent<Rigidbody2D>().AddForce(-f);
+							strToReturn = UpdateToJSON("LHV,1");
+							outgoingMessages.Add(strToReturn);
+						break;
+						case "LHvec":
+							f = GetComponent<Rigidbody2D>().transform.rotation*
+								(new Vector2(firstMsg.function1.evaluate(getSensorAspectValue), firstMsg.function2.evaluate(getSensorAspectValue)));
+							leftHandRigidBody.AddForce(f);//, ForceMode2D.Impulse);
+							GetComponent<Rigidbody2D>().AddForce(-f);
+							strToReturn = UpdateToJSON("LHvec,1");
+							outgoingMessages.Add(strToReturn);
+							break;
+						case "RHH":
+							f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(firstMsg.function1.evaluate(getSensorAspectValue),0);//new Vector2(Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+							rightHandRigidBody.AddForce(f);
+							GetComponent<Rigidbody2D>().AddForce(-f);
+							//rigidbody2D.AddForce(new Vector2(0, 10000));
+							strToReturn = UpdateToJSON("RHH,1");
+							outgoingMessages.Add(strToReturn);
+						break;
+						case "RHV":
+							f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0,firstMsg.function1.evaluate(getSensorAspectValue));//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+							rightHandRigidBody.AddForce(f);//, ForceMode2D.Impulse);
+							GetComponent<Rigidbody2D>().AddForce(-f);
+							strToReturn = UpdateToJSON("RHV,1");
+							outgoingMessages.Add(strToReturn);
+						break;
+						case "RHvec":
+							f = GetComponent<Rigidbody2D>().transform.rotation*
+								(new Vector2(firstMsg.function1.evaluate(getSensorAspectValue), firstMsg.function2.evaluate(getSensorAspectValue)));;
+							GetComponent<Rigidbody2D>().AddForce(-f);
+							rightHandRigidBody.AddForce(f);
+							strToReturn = UpdateToJSON("RHvec,1");
+							outgoingMessages.Add(strToReturn);
+							break;
+						case "BMH":
+							f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(firstMsg.function1.evaluate(getSensorAspectValue),0);
+						//new Vector2(Mathf.Cos(Mathf.Deg2Rad*rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Sin(Mathf.Deg2Rad*rigidbody2D.rotation)*firstMsg.floatContent);
+							GetComponent<Rigidbody2D>().AddForce(f);
+							strToReturn = UpdateToJSON("BMH,1");
+							outgoingMessages.Add(strToReturn);
+						break;
+						case "BMV":
+							f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0,firstMsg.function1.evaluate(getSensorAspectValue));//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+							GetComponent<Rigidbody2D>().AddForce(f);
+							Debug.Log("added f: " + f.y);
+							strToReturn = UpdateToJSON("BMV,1");
+							outgoingMessages.Add(strToReturn);
+						break;
+						case "BMvec":
+							f = GetComponent<Rigidbody2D>().transform.rotation*
+								(new Vector2(firstMsg.function1.evaluate(getSensorAspectValue), firstMsg.function2.evaluate(getSensorAspectValue)));
+							GetComponent<Rigidbody2D>().AddForce(f);
+							strToReturn = UpdateToJSON("BMvec,1");
+							outgoingMessages.Add(strToReturn);
+							break;
+						
+						case "J": //jump
+							bool foundGround = jump(30000f);
+							if (foundGround){
+								strToReturn = UpdateToJSON("J,1");
+								outgoingMessages.Add(strToReturn);
+							}
+							else{
+								strToReturn = UpdateToJSON("J,0");
+								outgoingMessages.Add(strToReturn);
+							}
+							break;
+						case "BR":
+							GetComponent<Rigidbody2D>().rotation += firstMsg.function1.evaluate(getSensorAspectValue);
+							leftHand.GetComponent<Rigidbody2D>().rotation = GetComponent<Rigidbody2D>().rotation;
+							rightHand.GetComponent<Rigidbody2D>().rotation = GetComponent<Rigidbody2D>().rotation;
+							GetComponent<Rigidbody2D>().AddForce(Vector2.zero); //forces update of rotation
+							strToReturn = UpdateToJSON("BR,1");
+							outgoingMessages.Add(strToReturn);
+						break;
+						case "RHG":
+							setGrip(false, true);
+							strToReturn = UpdateToJSON("RHG,1");
+							outgoingMessages.Add(strToReturn);
+							break;
+						case "RHR":
+							setGrip(false, false);
+							strToReturn = UpdateToJSON("RHR,1");
+							outgoingMessages.Add(strToReturn);
+							break;
+						case "LHG":
+							setGrip(true, true);
+							strToReturn = UpdateToJSON("LHG,1");
+							outgoingMessages.Add(strToReturn);
+							break;
+						case "LHR":
+							setGrip(true, false);
+							strToReturn = UpdateToJSON("LHR,1");
+							outgoingMessages.Add(strToReturn);
+							break;
+					}	
+				}
+				else if( firstMsg.messageType.CompareTo("sensorRequest") == 0){//AIMessage.AIMessageType.sensorRequest:
+					Debug.Log("checking sensor value " + firstMsg.ToString());
+					switch (firstMsg.stringContent[0])
+					{
+						case 'M': //a full map of the visual field
+							if (firstMsg.stringContent.Trim() == "MDN") //detailed visual field (names only)
+							{
+								outgoingMessages.Add(MDNtoJSON());
+							}
+							else if (firstMsg.stringContent.Trim() == "MPN") //peripheral visual field (names only)
+							{
+								outgoingMessages.Add(MPNtoJSON());
+							}
+							else
+							{
+								//outgoingMessages.Add("sensorRequest,UNRECOGNIZED_SENSOR_ERROR:"+firstMsg.stringContent.Trim()+"\n");
+								string errorMsg = ErrorToJSON("sensorRequest error: UNRECOGNIZED_SENSOR_ERROR");
+								outgoingMessages.Add(errorMsg);
+							}
+						break;
+						case 'B': //body touch sensor B0-B7
+							if (firstMsg.stringContent[1]=='P') //body position
+							{
+								Vector2 v = GetComponent<Rigidbody2D>().position;
+								BasicSensorToAgent b = new BasicSensorToAgent("BP",v.x,v.y);
+								string msg = JsonUtility.ToJson(b);
+								outgoingMessages.Add(msg);
+							}
+							else
+							{	
+								int sensorNum = int.Parse(firstMsg.stringContent[1].ToString());
+								touchSensor sensor = bodySensor[sensorNum];
+								sensor.updateSensor();
+								sensor.sensorCode = firstMsg.stringContent;
+								string msg = JsonUtility.ToJson(sensor);
+								outgoingMessages.Add(msg);
+							}
+							break;
+						case 'S': //speed sensor
+							Vector2 vec = GetComponent<Rigidbody2D>().GetRelativePointVelocity(Vector2.zero);
+							BasicSensorToAgent bMsg = new BasicSensorToAgent("S",vec.x,vec.y);
+							string msgStr = JsonUtility.ToJson(bMsg);
+							outgoingMessages.Add(msgStr);
+							break;
+						case 'L': //L0-L4, or LP
+							if (firstMsg.stringContent[1]=='P')
+							{//proprioception; get sensor position relative to body
+								leftHandSensor[4].updateSensor(); //recall sensor 4 is right in the middle of the hand
+								Vector2 relativePoint = GetComponent<Rigidbody2D>().GetPoint(leftHandSensor[4].getPosition());
+								BasicSensorToAgent b = new BasicSensorToAgent("LP",relativePoint.x,relativePoint.y);
+								string msg = JsonUtility.ToJson(b);
+								outgoingMessages.Add(msg);		
+							}
+							else
+							{
+								int sensorNum = int.Parse(firstMsg.stringContent[1].ToString());
+								touchSensor sensor = leftHandSensor[sensorNum];
+								sensor.updateSensor();
+								string msg = JsonUtility.ToJson(sensor);
+								outgoingMessages.Add(msg);
+							}
+						break; 
+						case 'R': //R0-R4, or RP
+							if (firstMsg.stringContent[1]=='P')
+							{	//proprioception; get sensor position relative to body
+								rightHandSensor[4].updateSensor();
+								Vector2 relativePoint = GetComponent<Rigidbody2D>().GetPoint(rightHandSensor[4].getPosition());
+								BasicSensorToAgent b = new BasicSensorToAgent("RP",relativePoint.x, relativePoint.y);
+								string msg = JsonUtility.ToJson(b);
+								outgoingMessages.Add(msg);
+							}
+							else
+							{
+								int sensorNum = int.Parse(firstMsg.stringContent[1].ToString());
+								touchSensor sensor = rightHandSensor[sensorNum];
+								sensor.updateSensor();
+								string msg = JsonUtility.ToJson(sensor);
+								outgoingMessages.Add(msg);
+							}
+						break;
+						case 'V': //visual sensor V0.0 - V30.20
+							string[] tmp = firstMsg.stringContent.Substring(1).Split('.');
+							int xCoord = int.Parse(tmp[0]);
+							int yCoord = int.Parse(tmp[1]);
+							string m;
+							if (xCoord>=numVisualSensorsX || yCoord>=numVisualSensorsY)
+							{
+								m = ErrorToJSON("In SensorRequest V, ERR:IndexOutOfRange");
+								outgoingMessages.Add(m);
+							}
+							visualSensor sen = visualSensors[xCoord,yCoord];
+							sen.updateSensor();
+							sen.sensorCode = firstMsg.stringContent;
+							m = JsonUtility.ToJson(sen);
+							outgoingMessages.Add(m);
+						break;
+						case 'P': //peripheral sensor V0.0 - V15.10
+							tmp = firstMsg.stringContent.Substring(1).Split('.');
+							xCoord = int.Parse(tmp[0]);
+							yCoord = int.Parse(tmp[1]);
+							string messageP;
+							if (xCoord>=numPeripheralSensorsX || yCoord>=numPeripheralSensorsY)
+							{
+								messageP = ErrorToJSON("In SensorRequest P, ERR:IndexOutOfRange");
+								outgoingMessages.Add(messageP);
+							}
+							sen = peripheralSensors[xCoord,yCoord];
+							sen.updateSensor();
+							sen.sensorCode = firstMsg.stringContent;
+							messageP = JsonUtility.ToJson(sen);
+							outgoingMessages.Add(messageP);
+						break;
+						case 'A': //rotation sensor
+							BasicSensorToAgent bSen = new BasicSensorToAgent("A",Mathf.Deg2Rad*GetComponent<Rigidbody2D>().rotation,0.0f);
+							string myMsg = JsonUtility.ToJson(bSen);
+							outgoingMessages.Add(myMsg);
+							//outgoingMessages.Add("A," + (Mathf.Deg2Rad*GetComponent<Rigidbody2D>().rotation).ToString() + "\n");
+						break;
+						default:
+							string s = ErrorToJSON("In SensorRequest, ERR:Unrecognized_Sensor_Error");
+							outgoingMessages.Add(s);
+						break;
+					}
+				}
+				else if( firstMsg.messageType.CompareTo("establishConnection") == 0){//AIMessage.AIMessageType.establishConnection:
 					break;
 				}
-				break;
-			case AIMessage.AIMessageType.establishConnection:
-				break;
-			case AIMessage.AIMessageType.removeConnection:
-				break;
-			default:
-				break;	
+				else if( firstMsg.messageType.CompareTo("removeConnection") == 0){//AIMessage.AIMessageType.removeConnection:
+					break;
+				}
+				else{
+					throw new Exception("Err: invalid command type specified " + firstMsg.messageType );	
 				}
 			}
 			catch (Exception e)
 			{
-				outgoingMessages.Add("ERR: While processing message of type " + firstMsg.messageType + " (see log)");
+				strToReturn = UpdateToJSON("ERR: While processing message of type " + firstMsg.messageType + " (see log)");
+				outgoingMessages.Add(strToReturn);
 			}
 		}
 		
 		//update arm positions
 		//leftHand.objectName = "hi";
-		Vector2 leftRelativePoint = gameObject.rigidbody2D.GetRelativePoint(leftHand.GetComponent<DistanceJoint2D>().connectedAnchor);
+		Vector2 leftRelativePoint = gameObject.GetComponent<Rigidbody2D>().GetRelativePoint(leftHand.GetComponent<DistanceJoint2D>().connectedAnchor);
 		Vector3 leftAnchor = new Vector3(leftRelativePoint.x, leftRelativePoint.y);
 		leftArm[0].transform.position = (leftHand.transform.position*1/3 + leftAnchor*2/3);
 		leftArm[1].transform.position = (leftHand.transform.position*2/3 + leftAnchor*1/3);
-		Vector2 rightRelativePoint = gameObject.rigidbody2D.GetRelativePoint(rightHand.GetComponent<DistanceJoint2D>().connectedAnchor);
+		Vector2 rightRelativePoint = gameObject.GetComponent<Rigidbody2D>().GetRelativePoint(rightHand.GetComponent<DistanceJoint2D>().connectedAnchor);
 		Vector3 rightAnchor = new Vector3(rightRelativePoint.x, rightRelativePoint.y);
 		rightArm[0].transform.position = (rightHand.transform.position*1/3 + rightAnchor*2/3);
 		rightArm[1].transform.position = (rightHand.transform.position*2/3 + rightAnchor*1/3);
@@ -1213,50 +1399,50 @@ public class bodyController : worldObject {
 		//right hand
 		if (Input.GetKey(KeyCode.UpArrow)) {//GetKeyDown is one-time press only
 			//transform.Translate(new Vector3(1,0,0));
-			Vector2 f = rigidbody2D.transform.rotation*new Vector2(0,handMoveForce);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+			Vector2 f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0,handMoveForce);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
 			rightHandRigidBody.AddForce(f);//, ForceMode2D.Impulse);
-			rigidbody2D.AddForce(-f);
+			GetComponent<Rigidbody2D>().AddForce(-f);
 		}
 		if (Input.GetKey (KeyCode.DownArrow)) {
-			Vector2 f = rigidbody2D.transform.rotation*new Vector2(0,-handMoveForce);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+			Vector2 f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0,-handMoveForce);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
 			rightHandRigidBody.AddForce(f);//, ForceMode2D.Impulse);
-			rigidbody2D.AddForce(-f);
+			GetComponent<Rigidbody2D>().AddForce(-f);
 		}
 		if (Input.GetKey(KeyCode.LeftArrow))
 		{
-			Vector2 f = rigidbody2D.transform.rotation*new Vector2(-handMoveForce,0);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+			Vector2 f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(-handMoveForce,0);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
 			rightHandRigidBody.AddForce(f);//, ForceMode2D.Impulse);
-			rigidbody2D.AddForce(-f);
+			GetComponent<Rigidbody2D>().AddForce(-f);
 		}
 		if (Input.GetKey(KeyCode.RightArrow))
 		{
-			Vector2 f = rigidbody2D.transform.rotation*new Vector2(handMoveForce,0);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+			Vector2 f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(handMoveForce,0);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
 			rightHandRigidBody.AddForce(f);//, ForceMode2D.Impulse);
-			rigidbody2D.AddForce(-f);
+			GetComponent<Rigidbody2D>().AddForce(-f);
 		}		
 		//left hand
 		if (Input.GetKey (KeyCode.W)) {//GetKeyDown is one-time press only
 			//transform.Translate(new Vector3(1,0,0));
-			Vector2 f = rigidbody2D.transform.rotation*new Vector2(0,handMoveForce);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+			Vector2 f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0,handMoveForce);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
 			leftHandRigidBody.AddForce(f);
-			rigidbody2D.AddForce(-f);
+			GetComponent<Rigidbody2D>().AddForce(-f);
 		}
 		if (Input.GetKey (KeyCode.S)) {
-			Vector2 f = rigidbody2D.transform.rotation*new Vector2(0,-handMoveForce);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+			Vector2 f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0,-handMoveForce);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
 			leftHandRigidBody.AddForce(f);
-			rigidbody2D.AddForce(-f);
+			GetComponent<Rigidbody2D>().AddForce(-f);
 		}
 		if (Input.GetKey(KeyCode.A))
 		{
-			Vector2 f = rigidbody2D.transform.rotation*new Vector2(-handMoveForce,0);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+			Vector2 f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(-handMoveForce,0);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
 			leftHandRigidBody.AddForce(f);
-			rigidbody2D.AddForce(-f);
+			GetComponent<Rigidbody2D>().AddForce(-f);
 		}
 		if (Input.GetKey(KeyCode.D))
 		{
-			Vector2 f = rigidbody2D.transform.rotation*new Vector2(handMoveForce,0);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+			Vector2 f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(handMoveForce,0);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
 			leftHandRigidBody.AddForce(f);
-			rigidbody2D.AddForce(-f);
+			GetComponent<Rigidbody2D>().AddForce(-f);
 		}
 		
 		
@@ -1283,38 +1469,38 @@ public class bodyController : worldObject {
 		//Rotate
 		if (Input.GetKey(KeyCode.R))
 		{
-			rigidbody2D.rotation += 1.0f;
-			rigidbody2D.rotation %= 360f;
-			leftHandRigidBody.rotation = rigidbody2D.rotation;
-			rightHandRigidBody.rotation = rigidbody2D.rotation;
+			GetComponent<Rigidbody2D>().rotation += 1.0f;
+			GetComponent<Rigidbody2D>().rotation %= 360f;
+			leftHandRigidBody.rotation = GetComponent<Rigidbody2D>().rotation;
+			rightHandRigidBody.rotation = GetComponent<Rigidbody2D>().rotation;
 			//Debug.Log (rigidbody2D.GetRelativePoint(rightAnchor));
-			rigidbody2D.AddForce(new Vector2(0,0)); //this forces the screen to update his rotation
+			GetComponent<Rigidbody2D>().AddForce(new Vector2(0,0)); //this forces the screen to update his rotation
 		}
 		if (Input.GetKey(KeyCode.T))
 		{
-			rigidbody2D.rotation -= 1.0f;
-			rigidbody2D.rotation %= 360f;
-			leftHandRigidBody.rotation = rigidbody2D.rotation;
-			rightHandRigidBody.rotation = rigidbody2D.rotation;
+			GetComponent<Rigidbody2D>().rotation -= 1.0f;
+			GetComponent<Rigidbody2D>().rotation %= 360f;
+			leftHandRigidBody.rotation = GetComponent<Rigidbody2D>().rotation;
+			rightHandRigidBody.rotation = GetComponent<Rigidbody2D>().rotation;
 			//Debug.Log (rigidbody2D.GetRelativePoint(rightAnchor));
-			rigidbody2D.AddForce(new Vector2(0,0)); //this forces the screen to update his rotation
+			GetComponent<Rigidbody2D>().AddForce(new Vector2(0,0)); //this forces the screen to update his rotation
 		}
 		
 		//Move
 		if (Input.GetKey(KeyCode.F))
-			rigidbody2D.AddForce(rigidbody2D.transform.rotation*(new Vector2(-500f,0)));
+			GetComponent<Rigidbody2D>().AddForce(GetComponent<Rigidbody2D>().transform.rotation*(new Vector2(-500f,0)));
 		if (Input.GetKey(KeyCode.G))
-			rigidbody2D.AddForce(transform.rotation*new Vector2(500f,0));
+			GetComponent<Rigidbody2D>().AddForce(transform.rotation*new Vector2(500f,0));
 	}
 	
 	bool jump(float amt)
 	{
 		//is he touching anything on the ground? Calculate five contact points between bodySensors 3 and 5.
-		Vector2[] bottom = new Vector2[]{rigidbody2D.GetRelativePoint(new Vector2(0.9f, -0.9f)),
-			rigidbody2D.GetRelativePoint(new Vector2(0.5f, -1.2f)),
-			rigidbody2D.GetRelativePoint(new Vector2(0, -1.2f)),
-			rigidbody2D.GetRelativePoint(new Vector2(-0.5f, -1.2f)),
-			rigidbody2D.GetRelativePoint(new Vector2(-0.9f, -0.9f))};
+		Vector2[] bottom = new Vector2[]{GetComponent<Rigidbody2D>().GetRelativePoint(new Vector2(0.9f, -0.9f)),
+			GetComponent<Rigidbody2D>().GetRelativePoint(new Vector2(0.5f, -1.2f)),
+			GetComponent<Rigidbody2D>().GetRelativePoint(new Vector2(0, -1.2f)),
+			GetComponent<Rigidbody2D>().GetRelativePoint(new Vector2(-0.5f, -1.2f)),
+			GetComponent<Rigidbody2D>().GetRelativePoint(new Vector2(-0.9f, -0.9f))};
 		//Debug.Log(bodySensor[4].objectTouched);
 		//int layerNum = 8; //Normal objects layer
 		Rigidbody2D[] goArray = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(Rigidbody2D)) as Rigidbody2D[];
@@ -1330,12 +1516,12 @@ public class bodyController : worldObject {
 					continue;
 				//Debug.Log("found: " + goArray[i]);
 				//goList.Add(goArray[i]);
-				if (goArray[i].collider2D.OverlapPoint(bottom[n]))
+				if (goArray[i].GetComponent<Collider2D>().OverlapPoint(bottom[n]))
 				{//connect it at that point
 					//Debug.Log("jump found: " + goArray[i]);
 					Rigidbody2D obj = goArray[i];
-					Vector2 jumpForce = rigidbody2D.transform.rotation*new Vector2(0f,amt);
-					rigidbody2D.AddForce(jumpForce);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*30000f,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*30000f));
+					Vector2 jumpForce = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0f,amt);
+					GetComponent<Rigidbody2D>().AddForce(jumpForce);//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*30000f,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*30000f));
 					obj.AddForce(-jumpForce);//-new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*30000f,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*30000f));
 					foundGround = true;
 					break;
@@ -1380,7 +1566,7 @@ public class bodyController : worldObject {
 		triggerBoxController[] w = FindObjectsOfType<triggerBoxController>();
 		foreach (triggerBoxController o in w)
 		{
-			if (o.collider2D.OverlapPoint(handRigidBody.position))
+			if (o.GetComponent<Collider2D>().OverlapPoint(handRigidBody.position))
 				o.GripOrReleaseHandler(isGrasp, forLeftHand);
 		}
 		
@@ -1402,14 +1588,14 @@ public class bodyController : worldObject {
 					if (goArray[i].gameObject.layer == layerNum) {
 						//Debug.Log("found: " + goArray[i].collider2D);
 						//goList.Add(goArray[i]);
-						if (goArray[i].collider2D.OverlapPoint(handRigidBody.position))
+						if (goArray[i].GetComponent<Collider2D>().OverlapPoint(handRigidBody.position))
 							
 						{
 							//connect it at that point
 							worldObject obj = goArray[i];
 							Debug.Log("connecting hand to " + obj + " at " + handRigidBody.position);
 							handJoint[handIndex] = obj.gameObject.AddComponent<DistanceJoint2D>();
-							handJoint[handIndex].anchor = obj.rigidbody2D.GetPoint(handRigidBody.position);
+							handJoint[handIndex].anchor = obj.GetComponent<Rigidbody2D>().GetPoint(handRigidBody.position);
 							//Debug.Log(obj.rigidbody2D.GetPoint(rightHandRigidBody.position));
 							handJoint[handIndex].connectedBody = handRigidBody;
 							handJoint[handIndex].connectedAnchor = new Vector2(0,0);//Vector2.zero; //the position on the hand that grabs it

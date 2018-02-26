@@ -24,7 +24,7 @@ public class Control : MonoBehaviour {
 	
 	static Control instance;
 	
-	
+
 	string message = "Awake";
 	Socket socket = null;
 	IPAddress ip;
@@ -190,36 +190,33 @@ public class Control : MonoBehaviour {
 			toPrint = toPrint + ((int)clientSaid[i]).ToString() + ",";
 		Debug.Log(toPrint);*/
 
-		string message = "Client " + clients.IndexOf (read.Socket) + " says: " + clientSaid;
+		string message = "Client " + clients.IndexOf (read.Socket) + " says: " + bufferUnfinished + clientSaid;
 		Debug.Log (message);
 		//process the incoming text and store in the message queue
 		clientSaid = bufferUnfinished + clientSaid;
 		//Debug.Log("new message is " + clientSaid);
 		bufferUnfinished = "";
-		//did it end in a return?
-		List<string> allCommands = new List<string>(clientSaid.Split(new char[]{'\n'}, StringSplitOptions.RemoveEmptyEntries));
-		if (message[message.Length-1] != '\n')
-		{
-			bufferUnfinished = allCommands[allCommands.Count-1];
-			allCommands.RemoveAt((allCommands.Count)-1);
-			Debug.Log (allCommands.Count);
-		}		
-		foreach (String cmd in allCommands)
-		{
-			AIMessage a;
+
+		// check for '}' followed by newline as the end of the string
+		// if its there, the packet is whole
+		if (clientSaid [clientSaid.Length - 1] != '\n' || clientSaid [clientSaid.Length - 2] != '}') {
+			bufferUnfinished = clientSaid;
+		} else {
+			//Debug.Log ("IN ELSE");
+			AIMessage a = new AIMessage ("other", "UNINITIALIZED AIMESSAGE");
 			try {
-				a = AIMessage.fromString(cmd);
+				a = AIMessage.createFromJSON (clientSaid);
+			} catch (Exception e) {
+				Debug.Log ("Could not parse message due to error. Skipping.");
+				Debug.Log (e);
+				MsgToAgent m = new MsgToAgent ("Error", "ERR,formattingError");
+				string str = JsonUtility.ToJson (m);
+				GlobalVariables.outgoingMessages.Add (str);
+				//GlobalVariables.outgoingMessages.Add("ERR,formattingError\n");
 			}
-			catch(Exception e)
-			{
-				Debug.Log("Could not parse message due to error. Skipping.");
-				Debug.Log(e);
-				GlobalVariables.outgoingMessages.Add("ERR,formattingError\n");
-				continue;
-			}
-			bodyInterface.messageQueue.Add(a);
-			//Debug.Log("added to message queue: " + a.messageType.ToString() + ", " + a.stringContent);
+			bodyInterface.messageQueue.Add (a);
 		}
+		// end of new JSON update code
 	}
 	
 	
@@ -232,16 +229,18 @@ public class Control : MonoBehaviour {
 	
 	void OnClientConnect (System.IAsyncResult result)
 	{
-		Debug.Log ("Handling client connecting");
+		if( socket != null )
+			Debug.Log ("Handling client connecting");
 		
 		try
 		{
-			
 			//gameObject.SendMessage ("OnClientConnected", socket.EndAccept (result));
-			Debug.Log ("Client connected");
-			Socket client = socket.EndAccept(result);
-			clients.Add (client);
-			SocketRead.Begin (client, OnReceive, OnReceiveError);
+			if( socket != null ){
+				Debug.Log ("Client connected");
+				Socket client = socket.EndAccept(result);
+				clients.Add (client);
+				SocketRead.Begin (client, OnReceive, OnReceiveError);
+			}
 		}
 		catch (System.Exception e)
 		{
@@ -251,7 +250,8 @@ public class Control : MonoBehaviour {
 		
 		try
 		{
-			socket.BeginAccept (new System.AsyncCallback (OnClientConnect), socket);
+			if( socket != null )
+				socket.BeginAccept (new System.AsyncCallback (OnClientConnect), socket);
 		}
 		catch (System.Exception e)
 		{

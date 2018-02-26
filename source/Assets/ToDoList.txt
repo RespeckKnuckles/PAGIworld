@@ -1,0 +1,96 @@
+﻿JSON Message Format:
+MessageType(enum), stringContent, floatContent, vectorContent, detail, timeCreated, f1, f2, vectors, otherstrings
+
+{   "messageType": "command",
+	"stringContent": "blah",
+	"floatContent": 0.0f,
+	"vectorContent": [0.0f, 0.0f],
+	"detail": "blah",
+	//"timeCreated": time,
+	"f1": null,
+	"f2": null,
+	"vectors": ???,
+	"otherString": ["butts","cheese","stuff"]
+}
+
+
+//=============================================================================================================================
+	//=============================================================================================================================
+
+0 sensorRequest,s in stringContent 
+1 addForce, take a string for f1-2
+2 dropItem, item name in stringContent, x and y in vectorContent
+3 print, text in stringContent
+4 say, msg in stringContent, actor in otherStrings[0] (P,N,custom), duration in floatContent, position in VectorContent x and y
+5 setState, stringConent: name of state, floatContent: duration of state (-1 for indef)
+
+6 setReflex, stringContent: name of reflex, 
+	otherStrings[0]: the state-conditions(separated by semicolons, 
+	messages[0-n]: commands to exectute(as AIMessage objs)
+
+7 removeReflex, stringContent: name of reflex
+8 getStates, (no params)
+9 getReflexes, (no params)
+	RETURNS - MsgToAgent(activeReflexes,string list of reflexes) converted to JSON and sent
+
+10 findObj, name in stringContent, searchmode("P"|"D"|"PD") in otherStrings[0]==============================================
+	RETURNS - a list of sensors that the object was found in
+	Uses MsgToAgent formatted to JSON and sent over
+
+11 createItem, fileP in stringContent, xy in vector content, m in floatContent, 
+	"name,phy,r,e,k" all in otherStrings[0] (which gets converted to a dict)
+	NOTE r and e are floats, phy and k are ints
+
+
+12 addForceToItem, name in stringContent, vectorContent[x,y], floatContent[rotationalForce] OR 
+	otherStrings[0-1] (if expression) THEN parse v
+13 getInfoAboutItem, name in stringCOntent
+	RETURNS - ItemInfoToAgent class converted to JSON - name, x, y, vx, vy
+14 destroyItem, stringContent: item name
+15 establishConnection, no args
+16 removeConnection,  no args
+17 loadTask, stringContent: task name with '.tsk' 
+18 other (nothing)
+
+//=============================================================================================================================
+//=============================================================================================================================
+ERRORS AND UPDATES
+Errors sent to the agent are created using ErrorToJSON() in bodyController. which sends a JSON formatted MsgToAgent class to the agent.
+Updates are sent similarly using UpdateToJSON(), which sends a JSON formatted MsgToAgent class to the agent.
+
+//=============================================================================================================================
+//=============================================================================================================================
+SENSOR REQUESTS
+
+Body Tactile Sensors - Convert TouchSensor class to JSON and send
+Hand Tactile Sensors - same as above
+Velocity Sensors - convert BasicSensorToAgent(type,x,y) class to JSON and send
+Position - same as above
+Proprioception - same as above
+rotation - same as above, but ignore y value
+vision sensors - Convert VisionSensor class to JSON and send
+MDN/MPN - Convert MsgToAgent(type,content) to JSON and send
+
+//=============================================================================================================================
+	//=============================================================================================================================
+
+ADD/FIX - 
+	Positioning of say messages within speech bubble?
+
+WARNINGS - removed initializations on the following:
+	bodycontroller 66, 47
+	worldObject 25
+
+TODO:
+	tidy up unity->agent sensor data
+		Vision Sensors
+		Touch Sensors
+		Map Sensors
+	UPDATE ALL DOCUMENTATION TO SUPPORT WHAT WE HAVE
+		Add in and double check return formats (unity->AI) for each command
+	test-test-test
+
+
+TEST THIS:
+	{"messageType":"setReflex","stringContent":"myCustomReflex","floatContent":0.0, 
+	"vectorContent":\{"x":0.0,"y":0.0\},"otherStrings":["testState;Sx|>|100"],"messages":[]\}}

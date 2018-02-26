@@ -17,6 +17,6 @@ public class FluvioDisplayVersion : MonoBehaviour {
 
 	void Awake()
 	{
-		guiText.text = "Fluvio v. " + VersionInfo.version;
+		GetComponent<GUIText>().text = "Fluvio v. " + VersionInfo.version;
 	}
 }

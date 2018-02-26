@@ -41,7 +41,7 @@ public class FluvioUnderwaterEffects : MonoBehaviour {
 		
 		if (bubbles)
 		{
-			bubbles.renderer.enabled = true;
+			bubbles.GetComponent<Renderer>().enabled = true;
 		}
 		
 		foreach(Projector p in projectors)
@@ -94,7 +94,7 @@ public class FluvioUnderwaterEffects : MonoBehaviour {
 		
 		if (bubbles)
 		{
-			bubbles.renderer.enabled = false;
+			bubbles.GetComponent<Renderer>().enabled = false;
 		}
 		
 		foreach(Projector p in projectors)

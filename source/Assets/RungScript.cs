@@ -10,15 +10,15 @@ public class RungScript : MonoBehaviour {
 
 	void setRungs() {
 		GameObject body = GameObject.Find ("body");
-		float x_min = gameObject.collider2D.bounds.center.x - gameObject.collider2D.bounds.extents.x;
-		float x_max = gameObject.collider2D.bounds.center.x + gameObject.collider2D.bounds.extents.x;
+		float x_min = gameObject.GetComponent<Collider2D>().bounds.center.x - gameObject.GetComponent<Collider2D>().bounds.extents.x;
+		float x_max = gameObject.GetComponent<Collider2D>().bounds.center.x + gameObject.GetComponent<Collider2D>().bounds.extents.x;
 		if (body.transform.position.x > x_min && body.transform.position.x < x_max) {
 
 			foreach (Transform child in transform) {
 				if (child.name == "apple") { continue; }
 
 				if (body.transform.position.y > child.transform.position.y) {
-					child.collider2D.isTrigger = false;
+					child.GetComponent<Collider2D>().isTrigger = false;
 					if (child.name != "base") {
 						child.GetComponent<HingeJoint2D> ().useLimits = true;
 						//COMMENT FOR HARD MODE
@@ -32,24 +32,24 @@ public class RungScript : MonoBehaviour {
 							}
 						}*/
 						//-------------------------------------------------------------------------------
-					} else { GameObject.Find ("apple").rigidbody2D.isKinematic = false; }
+					} else { GameObject.Find ("apple").GetComponent<Rigidbody2D>().isKinematic = false; }
 					break;
 				}
 				if (body.transform.position.y < child.transform.position.y) {
-					child.collider2D.isTrigger = true;
+					child.GetComponent<Collider2D>().isTrigger = true;
 					if (child.name != "base") {
 						child.GetComponent<HingeJoint2D> ().useLimits = false;
-					} else { GameObject.Find ("apple").rigidbody2D.isKinematic = true; }
+					} else { GameObject.Find ("apple").GetComponent<Rigidbody2D>().isKinematic = true; }
 				}
 			}
 		}
 		else { 
 			foreach (Transform child in transform) {
 				if (child.name == "apple") { continue; }
-				child.collider2D.isTrigger = true;
+				child.GetComponent<Collider2D>().isTrigger = true;
 				if (child.name != "base") {
 					child.GetComponent<HingeJoint2D> ().useLimits = false;
-				} else { GameObject.Find ("apple").rigidbody2D.isKinematic = true; }
+				} else { GameObject.Find ("apple").GetComponent<Rigidbody2D>().isKinematic = true; }
 			}
 		}
 	}

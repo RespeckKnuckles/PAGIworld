@@ -90,7 +90,7 @@ public class FluvioQualitySettings : MonoBehaviour {
 #if UNITY_3_5
 				go.GetComponent<ParticleSystem>().renderer.enabled = toggle;
 #else				
-				go.particleSystem.renderer.enabled = toggle;
+				go.GetComponent<ParticleSystem>().GetComponent<Renderer>().enabled = toggle;
 #endif
 			else
 #if UNITY_3_5
@@ -112,13 +112,13 @@ public class FluvioQualitySettings : MonoBehaviour {
 		foreach(Light l in lights)
 			l.shadows = LightShadows.None;
 		
-		LightmapSettings.lightmapsMode = LightmapsMode.Single;
+		LightmapSettings.lightmapsMode = LightmapsMode.NonDirectional;
 	}
 	
 	void SetShadows(ShadowSettings setting)
 	{
-		if (LightmapSettings.lightmapsMode == LightmapsMode.Single)
-			LightmapSettings.lightmapsMode = LightmapsMode.Dual;
+		if (LightmapSettings.lightmapsMode == LightmapsMode.NonDirectional)
+			LightmapSettings.lightmapsMode = LightmapsMode.CombinedDirectional;
 		
 		foreach(Light l in lights)
 			l.shadows = setting.shadows;
