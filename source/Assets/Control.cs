@@ -191,32 +191,47 @@ public class Control : MonoBehaviour {
 		Debug.Log(toPrint);*/
 
 		string message = "Client " + clients.IndexOf (read.Socket) + " says: " + bufferUnfinished + clientSaid;
-		Debug.Log (message);
+
 		//process the incoming text and store in the message queue
 		clientSaid = bufferUnfinished + clientSaid;
 		//Debug.Log("new message is " + clientSaid);
 		bufferUnfinished = "";
+		bool foundPacket = false;
+
+		// look for the sequence }\n which marks the end of one packet
+		for (int i = 0; i < clientSaid.Length; i++) {
+			if (i > 0) {
+				if (clientSaid [i] == '\n' && clientSaid [i - 1] == '}') {
+					// we may have found the end of the packet, so split the string at this location
+					if (i < clientSaid.Length - 1) {
+						if (clientSaid [i + 1] == ',' || clientSaid [i+1] == ']')
+							continue; // this is a part of the message[] component, and is not the end of the packet
+						bufferUnfinished = clientSaid.Substring (i + 1);
+					}
+					clientSaid = clientSaid.Substring (0, i);
+					foundPacket = true;
+					break;
+				}
+			}
+		}
 
 		// check for '}' followed by newline as the end of the string
 		// if its there, the packet is whole
-		if (clientSaid [clientSaid.Length - 1] != '\n' || clientSaid [clientSaid.Length - 2] != '}') {
-			bufferUnfinished = clientSaid;
-		} else {
-			//Debug.Log ("IN ELSE");
+		if (foundPacket) {
 			AIMessage a = new AIMessage ("other", "UNINITIALIZED AIMESSAGE");
 			try {
 				a = AIMessage.createFromJSON (clientSaid);
+				Debug.Log ("Client says: " + clientSaid);
 			} catch (Exception e) {
 				Debug.Log ("Could not parse message due to error. Skipping.");
 				Debug.Log (e);
 				MsgToAgent m = new MsgToAgent ("Error", "ERR,formattingError");
 				string str = JsonUtility.ToJson (m);
 				GlobalVariables.outgoingMessages.Add (str);
-				//GlobalVariables.outgoingMessages.Add("ERR,formattingError\n");
 			}
 			bodyInterface.messageQueue.Add (a);
-		}
-		// end of new JSON update code
+		} else
+			bufferUnfinished = clientSaid;
 	}
 	
 	

@@ -1013,7 +1013,7 @@ public class bodyController : worldObject {
 				}
 				
 				else if( firstMsg.messageType.CompareTo("getStates") == 0 ){//AIMessage.AIMessageType.getStates:
-					strToReturn = "activeStates:";
+					strToReturn = "";
 					List<State> allStates = GlobalVariables.activeStates.getCopy();
 					foreach (State sta in allStates)
 					{
@@ -1123,7 +1123,7 @@ public class bodyController : worldObject {
 							outgoingMessages.Add(strToReturn);
 						break;
 						case "LHV":
-							f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0,firstMsg.function1.evaluate(getSensorAspectValue));//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+							f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0,firstMsg.function2.evaluate(getSensorAspectValue));//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
 							leftHandRigidBody.AddForce(f);//, ForceMode2D.Impulse);
 							GetComponent<Rigidbody2D>().AddForce(-f);
 							strToReturn = UpdateToJSON("LHV,1");
@@ -1146,7 +1146,7 @@ public class bodyController : worldObject {
 							outgoingMessages.Add(strToReturn);
 						break;
 						case "RHV":
-							f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0,firstMsg.function1.evaluate(getSensorAspectValue));//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+							f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0,firstMsg.function2.evaluate(getSensorAspectValue));//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
 							rightHandRigidBody.AddForce(f);//, ForceMode2D.Impulse);
 							GetComponent<Rigidbody2D>().AddForce(-f);
 							strToReturn = UpdateToJSON("RHV,1");
@@ -1168,7 +1168,7 @@ public class bodyController : worldObject {
 							outgoingMessages.Add(strToReturn);
 						break;
 						case "BMV":
-							f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0,firstMsg.function1.evaluate(getSensorAspectValue));//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
+							f = GetComponent<Rigidbody2D>().transform.rotation*new Vector2(0,firstMsg.function2.evaluate(getSensorAspectValue));//new Vector2(Mathf.Sin(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent,Mathf.Cos(Mathf.Deg2Rad*-rigidbody2D.rotation)*firstMsg.floatContent);
 							GetComponent<Rigidbody2D>().AddForce(f);
 							Debug.Log("added f: " + f.y);
 							strToReturn = UpdateToJSON("BMV,1");
@@ -1281,6 +1281,7 @@ public class bodyController : worldObject {
 								int sensorNum = int.Parse(firstMsg.stringContent[1].ToString());
 								touchSensor sensor = leftHandSensor[sensorNum];
 								sensor.updateSensor();
+								sensor.sensorCode = "L" + sensorNum.ToString();
 								string msg = JsonUtility.ToJson(sensor);
 								outgoingMessages.Add(msg);
 							}
@@ -1299,6 +1300,7 @@ public class bodyController : worldObject {
 								int sensorNum = int.Parse(firstMsg.stringContent[1].ToString());
 								touchSensor sensor = rightHandSensor[sensorNum];
 								sensor.updateSensor();
+								sensor.sensorCode = "R" + sensorNum.ToString();
 								string msg = JsonUtility.ToJson(sensor);
 								outgoingMessages.Add(msg);
 							}

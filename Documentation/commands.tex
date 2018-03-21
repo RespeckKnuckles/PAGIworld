@@ -98,7 +98,7 @@ The peripheral visual sensors, whose sensor codes are \texttt{P0.0 - P15.10}, ar
 
 Sometimes you will find it too slow to request single sensor values at a time, and will need to download the entire visual field in one shot. There are two commands available for this. Sensor code \texttt{MDN} returns the data from the detailed sensors, and \texttt{MPN} does the same for the peripheral sensors. \\
 
-\noindent \textbf{Returns:} A string of the form \texttt{"type":"s","content":"n0.0,n1.0,..."} where \texttt{s} is either \texttt{MDN} or \texttt{MPN}, depending on which command you sent. Each \texttt{nx,y} is the name/unique id of the object seen by the sensor. If no object was seen by that sensor, then it is an empty string (so you'll see two commas with nothing in between). The values are sent in row-major order, so for example with detailed visual sensors the order will be \texttt{n0.0, n1.0, n2.0, \ldots, n30.0, n0.1, n1.1, \ldots, n30.20}.
+\noindent \textbf{Returns:} A string of the form \texttt{\{"type":"s","content":"n0.0,n1.0,..."\}} where \texttt{s} is either \texttt{MDN} or \texttt{MPN}, depending on which command you sent. Each \texttt{"nx.y"} is the name/unique id of the object seen by the sensor. If no object was seen by that sensor, then it is an empty string (so you'll see two commas with nothing in between). The values are sent in row-major order, so for example with detailed visual sensors the order will be \texttt{n0.0, n1.0, n2.0, \ldots, n30.0, n0.1, n1.1, \ldots, n30.20}.
 
 \subsubsection{Object searches}
 
@@ -108,11 +108,11 @@ Although it is not quite low-level, the option is also provided to do a search w
 \end{center}
  where \texttt{objName} is the name of the object you are searching for. \texttt{searchMode} describes the options for the search, which are either \texttt{P} for peripheral visual sensors only, \texttt{D} for detailed visual sensors only, and \texttt{PD} for both.\\
 
-\noindent \textbf{Returns:} A string of the form \texttt{findObj,objName[,s1][,s2]...} where:
+\noindent \textbf{Returns:} A string of the form: \scriptsize{\{"type":"objName","content":"s0,s1,...,si"\}} where:
 
 \begin{itemize}
 \item \texttt{objName} - the name of the object being searched for (see below)
-\item \texttt{si} - the visual sensor at which the object was found. 
+\item \texttt{si} - a list of visual sensors, separated by commas, at which the object was found. 
 \end{itemize}
 
 Although this is not a complete list of all the possible \texttt{objName} values (since it will be updated frequently), let this serve as a partial guide:
@@ -130,7 +130,7 @@ Although this is not a complete list of all the possible \texttt{objName} values
 
 Force effectors allow you to essentially control PAGI guy's movement. In keeping with the philosophy of PAGI World, you don't move PAGI guy directly; rather you can send forces in particular directions. For example, to move one of his hands downwards, you send a downward force to the hand, and this will exert an equal and opposite force on his body. With enough force, you can even get him to push downwards with his hands to get him to ``stand up" using his arms as legs!
 
-All force effector commands are of the form displayed below. In messageType we have "addForce", in stringContent is \texttt{e}, the effector code that the force is being applied to, and in otherStrings is \texttt{v}, the expression to evaluate for the amount of force (this is necessary for all but ignored by some effector codes, see the descriptions that follow). If using direct values, v can be plugged into the vectorContent x parameter (Note that the x parameter is used even if the force being applied is in the vertical direction). ll effector codes return a string of the form: \begin{center}\scriptsize{\{"type":"Update","content":"e,1"\}}\end{center} 
+All force effector commands are of the form displayed below. In messageType we have "addForce", in stringContent is \texttt{e}, the effector code that the force is being applied to, and in otherStrings is \texttt{v}, the expression to evaluate for the amount of force (this is necessary for all but ignored by some effector codes, see the descriptions that follow). If using direct values, v can be plugged into the vectorContent x or y parameter (whichever is appropriate for the force to be applied). Effector codes return a string of the form: \begin{center}\scriptsize{\{"type":"Update","content":"e,1"\}}\end{center} 
 if the force was successfully applied, or:
 \begin{center}\scriptsize{\{"type":"Update","content":"e,0"\}}\end{center}
   if there was an error, where \texttt{e} is the effector code that was sent.
@@ -140,7 +140,7 @@ if the force was successfully applied, or:
 	"vectorContent":\{"x":3.14,"y":0.0\},otherStrings":["v"],"messages":[]\}}
 \end{center}
 
-You can replace \texttt{v} with a basic arithmetic expression. To do this, wrap it in square brackets, and insert the expression as a string in otherStrings. Expressions can contain the basic arithmetic operators ($+$, $-$, $/$, and $*$), float values, and sensor aspect codes (Section \ref{sect:sensorAspectCodes}). So for example, if you want to send a force to the body to move vertically, where the force is equal to twice the y coordinate of the body, you would use:
+You can replace \texttt{v} with a basic arithmetic expression. To do this, wrap it in square brackets, and insert the expression as a string in otherStrings. Expressions can contain the basic arithmetic operators ($+$, $-$, $/$, and $*$), float values, and sensor aspect codes (See section \ref{sect:sensorAspectCodes}). So for example, if you want to send a force to the body to move vertically, where the force is equal to twice the y coordinate of the body, you would use:
 
 \begin{center}
 \scriptsize{\{"messageType":"addForce","stringContent":"BMV","floatContent":0.0, "vectorContent":\{"x":0.0,"y":0.0\},"otherStrings":["[2*BPy]"],"messages":[]\}}
@@ -159,7 +159,7 @@ You also have the option of sending vertical and horizontal movements in one com
 Similarly, if you wanted to specify this command but with expressions, you would insert the expressions into the otherStrings parameter, as shown below. 
 
 \begin{center}
-\scriptsize{\{"messageType":"addForce","stringContent":"RHvec","floatContent":0.0, "vectorContent":\{"x":0.0,"y":0.0\}, "otherStrings":["[3.1*BMV]","[2.0/BMH]"],"messages":[]\}}
+\scriptsize{\{"messageType":"addForce","stringContent":"RHvec","floatContent":0.0, "vectorContent":\{"x":0.0,"y":0.0\}, "otherStrings":["[3.1*BPx]","[2.0/BPy]"],"messages":[]\}}
 \end{center}
 
 \subsubsection{Jumping}
@@ -192,7 +192,7 @@ A \textit{reflex} in PAGI World allows PAGI guy to automatically respond to a ce
 \begin{center}
 	\scriptsize{\{"messageType":"setReflex","stringContent":"n","floatContent":0.0, "vectorContent":\{"x":0.0,"y":0.0\},"otherStrings":["C"],"messages":[A]\}}
 \end{center}
- \texttt{setReflex,n,C[,A]} where:
+ where:
 
 \begin{itemize}
 \item \texttt{stringContent: n} - The unique name of this reflex. If a reflex with this name already exists, this will replace the older reflex.
@@ -200,7 +200,7 @@ A \textit{reflex} in PAGI World allows PAGI guy to automatically respond to a ce
 	\begin{itemize}
 	\item \textbf{State conditions} simply are used to check if a state is active or not. Each state condition is of the form \texttt{[-]s} where \texttt{s} is simply the name of the state. The hyphen, which is optional, makes it so that the condition is only satisfied if the state \texttt{s} is \textit{not} active.
 	\item \textbf{Sensory conditions} are met if a particular sensor aspect has a value that is above, below, or equal to a certain value. Sensor aspects are the float values that are associated with each sensor. For example, each of the hand sensors checks for temperature, a four-dimensional texture vector, and endorphins. Here the temperature value, the endorphin value, and each of the four floats making up the texture vector are all sensor aspects. Each of these sensor aspects has a unique code which is listed below.\\
-	Each sensory condition is of the form \texttt{q|o|v} where \texttt{q} is the code of the sensor aspect (see Section \ref{sect:sensorAspectCodes}), \texttt{o} is the operator to use to compare (which is either $<, >, =,$ \{ for $\leq$, \} for $\geq$, or ! for $\neq$) and \texttt{v} is the value to use. For example, \texttt{L0\_tx1|\{|0.1} means that we want to check the first float of the texture vector detected by left hand sensor 0. If it is less than or equal to 0.1, then this sensory condition is satisfied. For the equality operator ($=$), there is a tolerance of 0.01, so that for the expression \texttt{L0\_tx1|$=$|5.0}, any values of \texttt{L0\_tx1} from 4.9 to 5.1 will be accepted.
+	Each sensory condition is of the form \texttt{q|o|v} where \texttt{q} is the code of the sensor aspect (see Section \ref{sect:sensorAspectCodes} ), \texttt{o} is the operator used to compare (which is either $<, >, =,$\{  for $\leq$, \} for $\geq$, or ! for $\neq$) and \texttt{v} is the value to use. For example, \texttt{L0\_tx1|\{|0.1} means that we want to check the first float of the texture vector detected by left hand sensor 0. If it is less than or equal to 0.1, then this sensory condition is satisfied. For the equality operator ($=$), there is a tolerance of 0.01, so that for the expression \texttt{L0\_tx1|$=$|5.0}, any values of \texttt{L0\_tx1} from 4.9 to 5.1 will be accepted.
 	\end{itemize}
 \item \texttt{messages[]: A} - (optional) A JSON array of messages to be sent to PAGI world that contain the actions to be made when a reflex is fired. The reflex is fired when every condition in \texttt{C} is met. Each action is another command, except for another reflex command. For example, to create a reflex named 'myCustomReflex' that makes the PAGI World guy say 'hello world' when the world state changes to a previously defined state called 'myCustomState', the following command would need to be sent:
 
@@ -220,7 +220,7 @@ Here's another example which makes use of the states and reflexes system. Let's 
 Now let's say you wanted to add another reflex that has two conditions: the downward velocity of PAGI guy's body has to be greater than 100 (\texttt{Sx|>|100}), and the state \texttt{testState} must be active. You want it to have zero actions (this is sometimes useful when you only want the notification that the conditions were met). You would use the command:
 
 \begin{center}
-	\scriptsize{\{"messageType":"setReflex","stringContent":"myCustomReflex","floatContent":0.0, "vectorContent":\{"x":0.0,"y":0.0\},"otherStrings":["testState;Sx|>|100"],"messages":[]\}}
+	\scriptsize{\{"messageType":"setReflex","stringContent":"myCustomReflex","floatContent":0.0, "vectorContent":\{"x":0.0,"y":0.0\},"otherStrings":["testState;Sx$|>|$100"],"messages":[]\}}
 \end{center}
 
 \subsubsection{Other state and reflex commands}
@@ -241,13 +241,13 @@ You can get a listing of all active states with the command:
 \begin{center}
 	\scriptsize{\{"messageType":"getStates","stringContent":"","floatContent":0.0, "vectorContent":\{"x":0.0,"y":0.0\},"otherStrings":[],"messages":[]\}}
 \end{center}
- It returns a string of the form \texttt{activeStates,s1,s2,...} where each \texttt{si} is the name of a state that is currently active. 
+ It returns a string of the form \texttt{\{"type":"activeStates","content":"s1,s2,..."\}} where each \texttt{si} is the name of a state that is currently active. 
 
 To get a listing of all active reflexes, use the command:
 \begin{center}
 	\scriptsize{\{"messageType":"getReflexes","stringContent":"","floatContent":0.0, "vectorContent":\{"x":0.0,"y":0.0\},"otherStrings":[],"messages":[]\}}
 \end{center}
-It returns a string of the form \texttt{activeReflexes,r1,r2,...} where each \texttt{ri} is the name of a reflex that is currently active.
+It returns a string of the form \texttt{\{"type":"activeReflexes","content":"r1,r2,..."\}} where each \texttt{ri} is the name of a reflex that is currently active.
 
 \subsubsection{All sensor aspect codes}
 \label{sect:sensorAspectCodes}
@@ -358,12 +358,12 @@ To get information about an item, call:
 \end{center}
 Where \texttt{name} is the unique name of this item. This will return an error message if the item was deleted or the name was not found. Otherwise, this command will return:
 
-\noindent \textbf{Returns:} A string of the form \texttt{getInfoAboutItem,name,px,py,vx,vy} where:
+\noindent \textbf{Returns:} A string of the form \scriptsize{\{"name":"name","x":"px","y":"py","vx":xvel","vy":"yvel"\}} where:
 
 \begin{itemize}
 \item \texttt{name} - The name of the item
 \item \texttt{px,py} - The x and y coordinates of the item
-\item \texttt{vx,vy} - The x and y velocities of the item
+\item \texttt{xvel,yvel} - The x and y velocities of the item
 \end{itemize}
 
 Frequent use of \texttt{getInfoAboutItem} is \textbf{strongly discouraged}, as using any sort of perceptual input about things in the world that are not obtained through PAGI guy's sensors is against the intention of PAGI World. Do not get too attached to this command---future versions may severely limit its use somehow or remove it entirely!

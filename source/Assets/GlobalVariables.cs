@@ -621,7 +621,10 @@ public class AIMessage
 					//the arguments at indices 2 and 3 can be either float values, or 
 					//if they are in square brackets, a function that evaluates to one
 					//a.function1 = fnNode.parseFloat(clientArgs[2]);
-				} else if (otherStrings.Count > 1) {
+				} else if (otherStrings.Count == 1) {
+					function1 = fnNode.parseFloat (otherStrings [0]);
+				}
+				else if (otherStrings.Count > 1) {
 					function1 = fnNode.parseFloat (otherStrings [0]);
 					function2 = fnNode.parseFloat (otherStrings [1]);
 					//a.stringContent = clientArgs[1];
