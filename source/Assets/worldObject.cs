@@ -22,7 +22,7 @@ public class worldObject:MonoBehaviour{ //describes objects in the world
 	//public bool deleteObject = false; //determines if the object is being held over the trash can
 	
 	//used if the worldObject has special data values that need to be saved or restored when loading/saving to file
-	public Dictionary<string,System.Object> valuesToSave = new Dictionary<string, System.Object>(); 
+	public Dictionary<string,System.Object> valuesToSave;// = new Dictionary<string, System.Object>(); 
 	/// <summary>
 	/// Called when saving to file. All non-standard data values need to be written to "valuesToSave".
 	/// </summary>
@@ -38,7 +38,7 @@ public class worldObject:MonoBehaviour{ //describes objects in the world
 	//very basic mouse dragging code:
 	void OnMouseDrag()
 	{
-		if (canBeDragged && gameObject.rigidbody2D != null)	
+		if (canBeDragged && gameObject.GetComponent<Rigidbody2D>() != null)	
 		{
 			
 			Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition); //convert mouse location to world coordinates
@@ -52,9 +52,9 @@ public class worldObject:MonoBehaviour{ //describes objects in the world
 			//rigidbody2D.position = startRelativePos + new Vector2(point.x, point.y);
 			//Screen.showCursor = false;
 			
-			rigidbody2D.velocity = Vector2.zero;//.Set(10,100);
-			rigidbody2D.angularVelocity = 0;
-			rigidbody2D.transform.rotation = startAngle;
+			GetComponent<Rigidbody2D>().velocity = Vector2.zero;//.Set(10,100);
+			GetComponent<Rigidbody2D>().angularVelocity = 0;
+			GetComponent<Rigidbody2D>().transform.rotation = startAngle;
 			//rigidbody2D.isKinematic = false;
 			
 		}
@@ -62,9 +62,9 @@ public class worldObject:MonoBehaviour{ //describes objects in the world
 	
 	void OnMouseDown()
 	{
-		startAngle = rigidbody2D.transform.rotation;
+		startAngle = GetComponent<Rigidbody2D>().transform.rotation;
 		Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		startRelativePos = rigidbody2D.GetPoint(new Vector2(mousePos.x, mousePos.y));
+		startRelativePos = GetComponent<Rigidbody2D>().GetPoint(new Vector2(mousePos.x, mousePos.y));
 		
 		if (GlobalVariables.mouseDeleting)
 		{
@@ -89,7 +89,7 @@ public class worldObject:MonoBehaviour{ //describes objects in the world
 	
 	void OnMouseUp()
 	{
-		Screen.showCursor = true;
+		Cursor.visible = true;
 	}
 	
 	/*public bool deleteHeld = false;

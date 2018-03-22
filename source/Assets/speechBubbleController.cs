@@ -25,7 +25,7 @@ public class speechBubbleController : worldObject {
 
 		//update top-left position
 		this.position = position + new Vector2(0, scale*2.5f); //shift upwards so bottom edge is at the position. 4.2?
-		gameObject.rigidbody2D.position = this.position;
+		gameObject.GetComponent<Rigidbody2D>().position = this.position;
 		topLeftPosition = Camera.main.WorldToScreenPoint (this.position) - new Vector3 (size.x / 2, size.y / -2, 0);
 		Debug.Log (topLeftPosition);
 

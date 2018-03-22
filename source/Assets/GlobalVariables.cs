@@ -126,7 +126,7 @@ public class GlobalVariables : MonoBehaviour {
 					}
 					else
 					{
-						obj.rigidbody2D.velocity = new Vector2(0,0);
+						obj.GetComponent<Rigidbody2D>().velocity = new Vector2(0,0);
 					}
 				}
 				obj.transform.hasChanged = false;
@@ -533,13 +533,17 @@ public class fnNode
 /// <summary>
 /// describes the message sent from the external AI controller to control the agent
 /// </summary>
+[System.Serializable]
 public class AIMessage
 {
 	public enum AIMessageType { sensorRequest, addForce, dropItem, print, say,
 		setState, setReflex, removeReflex, getStates, getReflexes, findObj,
 		createItem, addForceToItem, getInfoAboutItem, destroyItem,
 		establishConnection, removeConnection, loadTask, other }
-	public AIMessageType messageType;
+	//[JSONItem("messageType",typeof(AIMessageType))]
+	//public AIMessageType messageType;
+	public string messageType;
+
 	/// <summary>
 	/// For different values of messageType:
 	/// sensorRequest, triggerAdd, triggerRemove, addForce - this is the identifier of the sensor or force output to use
@@ -555,9 +559,12 @@ public class AIMessage
 	public Vector2 vectorContent;
 	public System.Object detail;
 	public DateTime timeCreated;
-	public fnNode function1=null,function2=null;
+	public fnNode function1 = null;
+	public fnNode function2 = null;
+	[NonSerialized]
 	public List<Vector2> vectors = new List<Vector2>();
-	public List<string> otherStrings = new List<string> ();
+	public List<string> otherStrings = new List<string> (); 
+	public List<AIMessage> messages = new List<AIMessage> ();
 
 	/// <summary>
 	/// if this value is passed in an AIMessage, it means that the bodyController needs to treat it
@@ -570,7 +577,7 @@ public class AIMessage
 	/// </summary>
 	public AIMessage()
 	{
-		messageType = AIMessageType.other;
+		messageType = "other";//AIMessageType.other;
 		stringContent = "";
 		floatContent = 0;
 		List<Vector2> vectors = new List<Vector2> ();
@@ -579,8 +586,176 @@ public class AIMessage
 		timeCreated = DateTime.Now;
 	}
 	
-	
-	public static AIMessage fromString(string s)
+	/// <summary>
+	///  constructor that creates an AIMessage object from a JSON formatted string
+	/// </summary>
+	/// <returns>A new AIMessage object formatted using parameters in the JSON string</returns>
+	public static AIMessage createFromJSON(string jstr)
+	{
+		AIMessage msg = new AIMessage("other","UNINITIALIZED");
+		try{
+			msg = JsonUtility.FromJson<AIMessage> (jstr);
+			msg.checkJSON ();
+		}
+		catch(Exception e){
+			Debug.LogError ("Exception when creating AIMessage from JSON string: " + e);
+		}
+		return msg;
+	}
+
+	// After deserializing the json string, this function should be called to check for errors
+	// it will be similar to the below fromString()
+	private void checkJSON(){
+		if (this.messageType.Equals ("sensorRequest") && this.stringContent.Equals ("")) // case of sensorRequest
+			throw new Exception ("ERR: invalid format for sensor request!");
+		else if (this.messageType.Equals ("addForce")) {
+			if (stringContent.Equals (""))
+				throw new Exception ("ERR: no effector specified following addForce command");
+			else {
+
+				if (otherStrings.Count < 1) {
+					// there are no string expressions listed, so the force values are in the vectorContent
+					function1 = fnNode.parseFloat (vectorContent.x.ToString ());
+					function2 = fnNode.parseFloat (vectorContent.y.ToString ());
+					//a.stringContent = clientArgs[1];
+					//the arguments at indices 2 and 3 can be either float values, or 
+					//if they are in square brackets, a function that evaluates to one
+					//a.function1 = fnNode.parseFloat(clientArgs[2]);
+				} else if (otherStrings.Count == 1) {
+					function1 = fnNode.parseFloat (otherStrings [0]);
+				}
+				else if (otherStrings.Count > 1) {
+					function1 = fnNode.parseFloat (otherStrings [0]);
+					function2 = fnNode.parseFloat (otherStrings [1]);
+					//a.stringContent = clientArgs[1];
+					//a.function1 = fnNode.parseFloat(clientArgs[2]);
+					//a.function2 = fnNode.parseFloat(clientArgs[3]);
+					//a.vectorContent = new Vector2(evaluateFloat(clientArgs[2]), evaluateFloat(clientArgs[3]));
+				}
+			}
+		}
+		// NOTE - this may need to look at the vectorContent as well
+		else if (this.messageType.Equals ("dropItem") && stringContent.Equals (""))
+			throw new Exception ("ERR: no item listed following dropItem command");
+		else if (this.messageType.Equals ("print") && stringContent.Equals (""))
+			throw new Exception ("ERR: no string given following print command!");
+		// NOTE - this may need to check for the time, x, and y
+		else if (this.messageType.Equals ("say") && (stringContent.Equals("") || (otherStrings.Count != 1) ))
+			throw new Exception ("ERR: invalid format for say command. Count is " + otherStrings.Count.ToString());
+		else if (this.messageType.Equals ("setState")) {
+			if (stringContent.Equals (""))
+				throw new Exception ("ERR: no string given following setState command!");
+			else {
+				int stateLife = Mathf.RoundToInt (floatContent);//int.Parse (floatContent);//int.Parse(clientArgs[2]);
+				State st;
+				if (stateLife == 0) //this is actually a command to kill the state
+					st = new State (stringContent, TimeSpan.Zero);//(clientArgs[1], TimeSpan.Zero);
+				else if (stateLife < 0)
+					st = new State (stringContent, new TimeSpan(Int64.MaxValue));//(clientArgs[1], new TimeSpan(Int64.MaxValue));
+				else
+					st = new State (stringContent, new TimeSpan(0,0,0,0,stateLife));//(clientArgs[1], new TimeSpan(0,0,0,0,stateLife));
+				this.detail = st;	
+			}
+		} else if (this.messageType.Equals ("setReflex")) {
+			if (stringContent.Equals ("") || otherStrings.Count == 0)
+				throw new Exception ("Err: invalid format following setReflex command");
+			else {
+				Reflex r = new Reflex (stringContent);
+				//parse conditions
+				foreach (string strCon in otherStrings[0].Split(new char[]{';'})) {	
+					//clientArgs[2].Split(new char[]{';'}))
+					//each condition is either sensory (sensorAspectCode|operator|value) or state ([-]s)
+					if (strCon.Contains ("|")) { //treat it as sensory condition
+						string[] args = strCon.Split (new char[]{ '|' });
+						if (args.Length != 3)
+							throw new Exception ("Incorrect # of arguments in sensory condition " + strCon);
+						r.addCondition (args [0], args [1] [0], float.Parse (args [2])); 
+					} else {//treat it as state condition
+						if (strCon.StartsWith ("-"))
+							r.addCondition (strCon.Substring (1), true);
+						else
+							r.addCondition (strCon, false);
+					}
+				}
+				//parse actions, if specified
+				for (int i = 0; i < messages.Count; i++) {
+					r.addAction (messages [i]);
+				}
+				/*if (vectorContent.x == otherStrings.Count - 1) {//clientArgs.Length > 3)
+					int nCommands = Mathf.RoundToInt (vectorContent.x);
+					for (int i = 0; i < nCommands; i++) {
+						// create an AIMessage for each json obj listed
+						AIMessage newMessage = AIMessage.createFromJSON (otherStrings [i + 1]);
+						r.addAction (newMessage);
+					}
+						
+				} else
+					throw new Exception ("ERR: number of commands expected differs from number of commands given follwing setReflex command");
+				*/
+				this.detail = r;
+			}
+		} else if (this.messageType.Equals ("removeReflex") && stringContent.Equals (""))
+			throw new Exception ("ERR: no name listed following removeReflex command");
+		else if (this.messageType.Equals ("getStates"))
+			detail = "";
+		else if (this.messageType.Equals ("getReflexes"))
+			// do nothing
+			;
+		else if (this.messageType.Equals ("findObj") && (stringContent.Equals ("") || otherStrings.Count < 1))
+			throw new Exception ("Err: no object name or search type listed following findObj command");
+		else if (this.messageType.Equals ("createItem")) {
+			if (stringContent.Equals ("") || otherStrings.Count != 1 )
+				throw new Exception ("Err: invalid format following createItem command, " + otherStrings.Count + " strings in otherStrings[]");
+			else {
+				Dictionary<string,System.Object> args = new Dictionary<string,System.Object> ();
+				string[] clientArgs = otherStrings [0].Split (',');
+				//Debug.Log ("length of clientArgs: " + clientArgs.Length);
+				try {
+					//name,phy,r,e,k
+					args.Add ("name", clientArgs [0]);
+					args.Add ("filePath", stringContent);
+					args.Add ("x", vectorContent.x);
+					args.Add ("y", vectorContent.y);
+					args.Add ("mass", floatContent);
+					args.Add ("friction", int.Parse (clientArgs [1]));
+					if (!(new List<String>{ "0", "1", "2", "3", "4", "5" }).Contains (clientArgs [1].Trim ()))
+						throw new Exception ("Physics option must be an integer from 0 to 5, you said " + clientArgs [1].Trim ());
+					args.Add ("rotation", float.Parse (clientArgs [2]));
+					args.Add ("endorphins", float.Parse (clientArgs [3]));
+					args.Add ("kinematic", int.Parse (clientArgs [4]));
+					if (!(new List<String>{ "0", "1", "2", "3", "4", "5", "6" }).Contains (clientArgs [4].Trim ()))
+						throw new Exception ("Kinematic option must be an integer from 0 to 6");
+				} catch (Exception e) {
+					messageType = "other";
+					stringContent = "ERROR: Error parsing one or more values in command: \""
+					+ "\" (" + e.Message + ")\n";
+					//throw e;
+					//return ;
+				}
+				this.detail = args;
+			}
+		} else if (this.messageType.Equals ("addForceToItem") && stringContent.Equals (""))
+			throw new Exception ("Err: no item named following addForceToItem command");
+		else if (this.messageType.Equals ("getInfoAboutItem") && stringContent.Equals (""))
+			throw new Exception ("Err: no item named following getInfoAboutItem command");
+		else if (this.messageType.Equals ("destroyItem") && stringContent.Equals (""))
+			throw new Exception ("Err: no item named following destroyItem command");
+		else if (this.messageType.Equals ("establishConnection")) {
+			// do nothing
+		} else if (this.messageType.Equals ("removeConnection")) {
+			// do nothing
+		} else if (this.messageType.Equals ("loadTask") && stringContent.Equals (""))
+			throw new Exception ("Err: no task file specified following loadTask command");
+		else if (this.messageType.Equals ("other")) {
+			// do nothing
+		} 
+		// not needed as we are only checking speecial cases
+		//else {
+		//	throw new Exception ("Err: invalid command specified, check PAGI documentation for list of valid commands.");
+		//}
+	} //
+
+	/*public static AIMessage fromString(string s)
 	{
 		if (s.Trim()=="")
 			throw new Exception("ERR: Received string that was nothing but whitespace!");
@@ -620,7 +795,7 @@ public class AIMessage
 					a.vectorContent = (reservedVector);
 				}
 				else
-				{*/
+				{*//*
 				try { a.vectorContent = new Vector2(float.Parse(clientArgs[4]), float.Parse(clientArgs[5])); }
 				catch(Exception e)
 				{
@@ -629,13 +804,13 @@ public class AIMessage
 				//}
 			}
 		}
-		else if (clientArgs[0]=="print")
+		else if (clientArgs[0]=="print") 
 		{
 			a.messageType = AIMessageType.print;
 			//the content should be everything following the print, command"
 			a.stringContent = s.Substring(s.IndexOf(',')+1);
 		}
-		else if (clientArgs[0]=="loadTask")
+		else if (clientArgs[0]=="loadTask") 
 		{
 			//FileSaving f = new FileSaving(clientArgs[1]);
 			a.messageType = AIMessage.AIMessageType.loadTask;
@@ -656,11 +831,11 @@ public class AIMessage
 			else
 				throw new Exception("Incorrect # of arguments given in client message: " + s);
 		}
-		else if (clientArgs[0] == "addForce")
+else if (clientArgs[0] == "addForce")
 		{
 			/*addForce,e,v
 					e - The code of the effector to send force to.
-					v - The amount of force to add to the effector.*/
+					v - The amount of force to add to the effector.*//*
 			a.messageType = AIMessage.AIMessageType.addForce;
 			if (clientArgs.Length==3)
 			{
@@ -692,6 +867,7 @@ public class AIMessage
 			else
 				throw new Exception("Incorrect # of arguments given in client message: " + s);
 		}
+
 		else if (clientArgs[0] == "setState")
 		{
 			a.messageType = AIMessageType.setState;
@@ -712,6 +888,7 @@ public class AIMessage
 			else
 				throw new Exception("Incorrect # of arguments given in client message: " + s);
 		}
+
 		else if (clientArgs[0] == "setReflex")
 		{
 			a.messageType = AIMessageType.setReflex;
@@ -774,7 +951,7 @@ public class AIMessage
 		}
 		else if (clientArgs[0] == "getActiveReflexes")
 			a.messageType = AIMessageType.getReflexes;
-		else if (clientArgs[0] == "createItem")
+else if (clientArgs[0] == "createItem")//===================================================
 		{
 			//createItem,name,filePath,x,y,mass,friction,rotation,endorphins,disappear,kinematic
 			a.messageType = AIMessageType.createItem;
@@ -843,7 +1020,6 @@ public class AIMessage
 			}
 			else
 				throw new Exception("Incorrect # of arguments given in client message: " + s);
-		}
 		else if (clientArgs[0] == "destroyItem")
 		{
 			a.messageType = AIMessageType.destroyItem;
@@ -860,9 +1036,13 @@ public class AIMessage
 		//{}
 		
 		return a;
-	}
+
+		AIMessage a = new AIMessage ("other", "blah");
+		return a;
+	}*/
 	
-	public AIMessage(AIMessageType mtype, string sContent, float fContent=0, string details="")
+	public AIMessage(string mtype, string sContent, float fContent=0, string details="")
+	//AIMessageType mtype, string sContent, float fContent=0, string details="")
 	{
 		messageType = mtype;
 		stringContent = sContent;
@@ -875,5 +1055,90 @@ public class AIMessage
 	public override string ToString ()
 	{
 		return "{" + messageType.ToString() + ", " + stringContent + ", " + floatContent.ToString() + "}";
+	}
+
+
+
+	// this function formats the object into JSON format
+	/*public string ToJSON()
+	{
+		return "{ " + "messageType: " + messageType.ToString () + ", " +
+		"stringContent: \"" + stringContent + "\", " +
+		"floatContent: " + floatContent.ToString () + ", " +
+		"vectorContent: " + vectorContent.ToString () + ", " +
+		"detail: \"" + detail.ToString () + "\", " +
+		"timeCreated: \"" + timeCreated.ToString () + "\" }";
+		"f1: " + function1.ToString () + ", " +
+		"f2: " + function2.ToString () + ", " +
+		"vectors: " + vectors.ToString () + ", " +
+		"otherStrings: " + otherStrings + " }";
+	}*/
+}
+
+// a basic class to hold information going from unity to the connected agent
+// name will be "errorMsg" or type of sensor request such as "MDN" "MPN"
+// content will be the json object containing the sensor data requested
+[System.Serializable]
+public class MsgToAgent{
+	public string type;
+	public string content;
+
+	public MsgToAgent(){
+		type = "errorMsg";
+		content = "Err: Uninitialized message object.";
+	}
+
+	public MsgToAgent(string n, string c){
+		type = n;
+		content = c;
+	}
+}
+
+// this is used to send sensor data to the agent in the form of:
+// Name, x, y
+// this is used for velocity sensors, position sensors, proprioception sensors, and rotation sensors
+[System.Serializable]
+public class BasicSensorToAgent{
+	public string type;
+	public float x;
+	public float y;
+
+	public BasicSensorToAgent(){
+		type = "Uninitialized";
+		x = 0.0f;
+		y = 0.0f;
+	}
+
+	public BasicSensorToAgent(string s, float xval, float yval){
+		type = s;
+		x = xval;
+		y = yval;
+	}
+}
+
+
+// This class is used to format item info into JSON format to send back to the agent
+[System.Serializable]
+public class ItemInfoToAgent{
+	public string name;
+	public float x;
+	public float y;
+	public float vx;
+	public float vy;
+
+	public ItemInfoToAgent(){
+		name = "Uninitialized";
+		x = 0.0f;
+		y = 0.0f;
+		vx = 0.0f;
+		vy = 0.0f;
+	}
+
+	public ItemInfoToAgent(string n, float xval, float yval, float vxval, float vyval){
+		name = n;
+		x = xval;
+		y = yval;
+		vx = vxval;
+		vy = vyval;
 	}
 }

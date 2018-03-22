@@ -81,41 +81,57 @@ public class triggerBoxController : worldObject {
 			lastMouseUp = System.DateTime.Now;
 		}
 	}
-		
+
+	public string TriggerToJSON(string msg)
+	{
+		MsgToAgent newMsg = new MsgToAgent ("trigger", msg);
+		string jsonMsg = JsonUtility.ToJson (newMsg);
+		return jsonMsg;
+	}
+
 	void OnTriggerEnter2D(Collider2D other)
 	{//List<string> doNotRemove = new List<string>() { "leftHand", "rightHand", "mainBody" };
 		
 		//Debug.Log("trigger hit " + other.gameObject);
 		worldObject w = other.gameObject.GetComponent<worldObject>();
+		string strToReturn;
 		if (w!=null)
 		{
-			if (triggerOnBodyEnter && w.objectName == "mainBody")
-				GlobalVariables.outgoingMessages.Add("TB," + objectName + ",BE\n");
-			else if (triggerOnLeftHandEnter && w.objectName == "leftHand")
-				GlobalVariables.outgoingMessages.Add("TB," + objectName + ",LE\n");
-			else if (triggerOnRightHandEnter && w.objectName == "rightHand")
-				GlobalVariables.outgoingMessages.Add("TB," + objectName + ",RE\n");
-			else if (triggerOnOtherObjectsEnter)
-				GlobalVariables.outgoingMessages.Add("TB," + objectName + ",OE\n");
+			if (triggerOnBodyEnter && w.objectName == "mainBody") {
+				strToReturn = TriggerToJSON ("TB," + objectName + ",BE");
+				GlobalVariables.outgoingMessages.Add (strToReturn);
+			} else if (triggerOnLeftHandEnter && w.objectName == "leftHand") {
+				strToReturn = TriggerToJSON ("TB," + objectName + ",LE");
+				GlobalVariables.outgoingMessages.Add (strToReturn);
+			} else if (triggerOnRightHandEnter && w.objectName == "rightHand") {
+				strToReturn = TriggerToJSON ("TB," + objectName + ",RE");
+				GlobalVariables.outgoingMessages.Add (strToReturn);
+			} else if (triggerOnOtherObjectsEnter) {
+				strToReturn = TriggerToJSON ("TB," + objectName + ",OE");
+				GlobalVariables.outgoingMessages.Add (strToReturn);
+			}
 		}
 	}
 	
 	void OnTriggerExit2D(Collider2D other)
 	{
 		worldObject w = other.gameObject.GetComponent<worldObject>();
+		string strToReturn;
 		if (w!=null)
 		{
-			if (triggerOnBodyExit && w.objectName == "mainBody")
-			{
-				GlobalVariables.outgoingMessages.Add("TB," + objectName + ",BX\n");
-				//Debug.Log("hi");
+			if (triggerOnBodyExit && w.objectName == "mainBody") {
+				strToReturn = TriggerToJSON ("TB," + objectName + ",BX");
+				GlobalVariables.outgoingMessages.Add (strToReturn);
+			} else if (triggerOnLeftHandExit && w.objectName == "leftHand") {
+				strToReturn = TriggerToJSON ("TB," + objectName + ",OE");
+				GlobalVariables.outgoingMessages.Add (strToReturn);
+			} else if (triggerOnRightHandExit && w.objectName == "rightHand") {
+				strToReturn = TriggerToJSON ("TB," + objectName + ",RX");
+				GlobalVariables.outgoingMessages.Add (strToReturn);
+			} else if (triggerOnOtherObjectsExit) {
+				strToReturn = TriggerToJSON ("TB," + objectName + ",OX");
+				GlobalVariables.outgoingMessages.Add (strToReturn);
 			}
-			else if (triggerOnLeftHandExit && w.objectName == "leftHand")
-				GlobalVariables.outgoingMessages.Add("TB," + objectName + ",LX\n");
-			else if (triggerOnRightHandExit && w.objectName == "rightHand")
-				GlobalVariables.outgoingMessages.Add("TB," + objectName + ",RX\n");
-			else if (triggerOnOtherObjectsExit)
-				GlobalVariables.outgoingMessages.Add("TB," + objectName + ",OX\n");
 		}
 	}
 	
@@ -125,30 +141,39 @@ public class triggerBoxController : worldObject {
 	public void GripOrReleaseHandler(bool isGrip, bool isLeftHand)
 	{
 		//Debug.Log("got grip from " + isGrip + " at " + isLeftHand);
+		string strToReturn;
 		if (isGrip)
 		{
 			if (isLeftHand)
 			{
-				if (triggerOnLeftHandGrip)
-					GlobalVariables.outgoingMessages.Add("TB," + objectName + ",LG\n");
+				if (triggerOnLeftHandGrip) {
+					strToReturn = TriggerToJSON ("TB," + objectName + ",LG");
+					GlobalVariables.outgoingMessages.Add (strToReturn);
+				}
 			}
 			else
 			{
-				if (triggerOnRightHandGrip)
-					GlobalVariables.outgoingMessages.Add("TB," + objectName + ",RG\n");
+				if (triggerOnRightHandGrip) {
+					strToReturn = TriggerToJSON ("TB," + objectName + ",RG");
+					GlobalVariables.outgoingMessages.Add (strToReturn);
+				}
 			}
 		}
 		else
 		{
 			if (isLeftHand)
 			{
-				if (triggerOnLeftHandRelease)
-					GlobalVariables.outgoingMessages.Add("TB," + objectName + ",LR\n");
+				if (triggerOnLeftHandRelease) {
+					strToReturn = TriggerToJSON ("TB," + objectName + ",LR");
+					GlobalVariables.outgoingMessages.Add (strToReturn);
+				}
 			}
 			else
 			{
-				if (triggerOnRightHandRelease)
-					GlobalVariables.outgoingMessages.Add("TB," + objectName + ",RR\n");
+				if (triggerOnRightHandRelease) {
+					strToReturn = TriggerToJSON ("TB," + objectName + ",RR");
+					GlobalVariables.outgoingMessages.Add (strToReturn);
+				}
 			}
 		}
 	}

@@ -200,28 +200,28 @@ public class ControlPanel : MonoBehaviour
 
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("Zoom -")))
-			camera.orthographicSize = (camera.orthographicSize >= 89.3f)?125f:camera.orthographicSize + camera.orthographicSize*0.4f;
+			GetComponent<Camera>().orthographicSize = (GetComponent<Camera>().orthographicSize >= 89.3f)?125f:GetComponent<Camera>().orthographicSize + GetComponent<Camera>().orthographicSize*0.4f;
 		if (GUILayout.Button(new GUIContent("Zoom +")))
-			camera.orthographicSize = (camera.orthographicSize <= 41.7f)?20f:camera.orthographicSize - camera.orthographicSize*0.4f;
+			GetComponent<Camera>().orthographicSize = (GetComponent<Camera>().orthographicSize <= 41.7f)?20f:GetComponent<Camera>().orthographicSize - GetComponent<Camera>().orthographicSize*0.4f;
 		GUILayout.EndHorizontal();
 		
 		float scrollFactor = 5f; //larger means it scrolls less
 
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("/\\")))
-			camera.transform.Translate(0, camera.orthographicSize/scrollFactor, 0);
+			GetComponent<Camera>().transform.Translate(0, GetComponent<Camera>().orthographicSize/scrollFactor, 0);
 		GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("<")))
-			camera.transform.Translate(-(camera.orthographicSize/scrollFactor), 0, 0);
+			GetComponent<Camera>().transform.Translate(-(GetComponent<Camera>().orthographicSize/scrollFactor), 0, 0);
 		if (GUILayout.Button(new GUIContent(">")))
-			camera.transform.Translate(camera.orthographicSize/scrollFactor, 0, 0);
+			GetComponent<Camera>().transform.Translate(GetComponent<Camera>().orthographicSize/scrollFactor, 0, 0);
 		GUILayout.EndHorizontal();
 		
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("\\/")))
-			camera.transform.Translate(0, -camera.orthographicSize/scrollFactor, 0);
+			GetComponent<Camera>().transform.Translate(0, -GetComponent<Camera>().orthographicSize/scrollFactor, 0);
 		GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal();
@@ -231,12 +231,17 @@ public class ControlPanel : MonoBehaviour
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button(new GUIContent("test")))
 		{
-			AIMessage a = AIMessage.fromString("createItem,myname,bill.jpeg,5,10,1.5,3,3.14,0,5");
+			//AIMessage a = AIMessage.fromString("createItem,myname,bill.jpeg,5,10,1.5, 3,3.14,0,5");
+			// create a JSON AIMessage
+			string jsonStr = "{\"messageType\":\"createItem\",\"stringContent\":\"bill.jpeg\",\"floatContent\":1.5, \"vectorContent\":[x:5.0,y:10.0], \"vectors\":[],\"otherStings\":[\"myname,3,3.14,0,5\"]}\n";
+			AIMessage a = AIMessage.createFromJSON (jsonStr);
 			GlobalVariables.messageQueue.Add(a);
 		}
 		if (GUILayout.Button(new GUIContent("test2")))
 		{
-			AIMessage a = AIMessage.fromString("addForceToItem,myname,0,200,0");
+			//AIMessage a = AIMessage.fromString("addForceToItem,myname,0,200,0");
+			string jsonStr = "{\"messageType\":\"addForceToItem\",\"stringContent\":\"\",\"floatContent\":0.0, \"vectorContent\":[x:0.0,y:200.0], \"vectors\":[],\"otherStings\":[]}\n";
+			AIMessage a = AIMessage.createFromJSON (jsonStr);
 			GlobalVariables.messageQueue.Add(a);
 		}
         GUILayout.EndHorizontal();
@@ -356,20 +361,20 @@ public class ControlPanel : MonoBehaviour
 		GUILayout.BeginHorizontal();
 		//get the main guy
 		bodyController[] mainGuy = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(bodyController)) as bodyController[];
-		GUILayout.Label("Current coordinates of PAGI guy: " + mainGuy[0].rigidbody2D.position.ToString() + "\t\t");
+		GUILayout.Label("Current coordinates of PAGI guy: " + mainGuy[0].GetComponent<Rigidbody2D>().position.ToString() + "\t\t");
 		if (GUILayout.Button(new GUIContent("Reset PAGI guy to (0,0)"))) {
-			mainGuy[0].rigidbody2D.position = new Vector2(0,0);
+			mainGuy[0].GetComponent<Rigidbody2D>().position = new Vector2(0,0);
 			leftHandController[] leftHand = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(leftHandController)) as leftHandController[];
 			rightHandController[] rightHand = UnityEngine.MonoBehaviour.FindObjectsOfType(typeof(rightHandController)) as rightHandController[];
-			leftHand[0].rigidbody2D.position = new Vector2(-1f, 1f);
-			rightHand[0].rigidbody2D.position = new Vector2(1f, 1f);	
-			mainGuy[0].rigidbody2D.rotation = 0;
-			leftHand[0].rigidbody2D.rotation = 0;
-			rightHand[0].rigidbody2D.rotation = 0;
-			mainGuy[0].rigidbody2D.velocity = Vector2.zero;
-			leftHand[0].rigidbody2D.velocity = Vector2.zero;
-			rightHand[0].rigidbody2D.velocity = Vector2.zero;
-			mainGuy[0].rigidbody2D.AddForce(Vector2.zero); //forces update of rotation
+			leftHand[0].GetComponent<Rigidbody2D>().position = new Vector2(-1f, 1f);
+			rightHand[0].GetComponent<Rigidbody2D>().position = new Vector2(1f, 1f);	
+			mainGuy[0].GetComponent<Rigidbody2D>().rotation = 0;
+			leftHand[0].GetComponent<Rigidbody2D>().rotation = 0;
+			rightHand[0].GetComponent<Rigidbody2D>().rotation = 0;
+			mainGuy[0].GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+			leftHand[0].GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+			rightHand[0].GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+			mainGuy[0].GetComponent<Rigidbody2D>().AddForce(Vector2.zero); //forces update of rotation
 		}
 		GUILayout.EndHorizontal();
 		

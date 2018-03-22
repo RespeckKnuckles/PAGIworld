@@ -42,7 +42,7 @@ public class explodingObjectController : worldObject {
 			isExploding = true;
 			GetComponent<SpriteRenderer>().sprite = explosionSprite;
 			//Destroy(gameObject);
-			gameObject.rigidbody2D.velocity.Set(0,0);
+			gameObject.GetComponent<Rigidbody2D>().velocity.Set(0,0);
 		}
 	}
 }

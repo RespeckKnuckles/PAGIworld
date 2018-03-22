@@ -23,9 +23,9 @@ public class worldObjectSavedToFile
 		//store the world object's relevant details
 		prefabID = w.prefabID;
 		if (w.GetComponents<Rigidbody2D> ().Length > 0) {
-			positionX = w.rigidbody2D.transform.position.x;
-			positionY = w.rigidbody2D.transform.position.y;
-			rotation = w.rigidbody2D.transform.rotation.eulerAngles.z;
+			positionX = w.GetComponent<Rigidbody2D>().transform.position.x;
+			positionY = w.GetComponent<Rigidbody2D>().transform.position.y;
+			rotation = w.GetComponent<Rigidbody2D>().transform.rotation.eulerAngles.z;
 		}
 		//Debug.Log ("rotation of " + w.objectName + " is saved as " + rotation.ToString ());
 		objName = w.objectName;
@@ -141,15 +141,15 @@ public class FileSaving{
 		}//"Prefabs/food_and_pain/bacon"
 		
 		//set position/rotation of body, hands
-		mainBody.rigidbody2D.transform.position = new Vector2(bodyX, bodyY);
-		mainBody.rigidbody2D.velocity = Vector2.zero;
+		mainBody.GetComponent<Rigidbody2D>().transform.position = new Vector2(bodyX, bodyY);
+		mainBody.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
 		//Debug.Log("x " + bodyX + " Y " + bodyY);
-		mainBody.rigidbody2D.transform.rotation = Quaternion.Euler(0, 0, bodyRotation);
+		mainBody.GetComponent<Rigidbody2D>().transform.rotation = Quaternion.Euler(0, 0, bodyRotation);
 		rightHand.transform.position = new Vector2(rightHandX, rightHandY);
 		leftHand.transform.position = new Vector2(leftHandX, leftHandY);
-		rightHand.rigidbody2D.transform.rotation = mainBody.rigidbody2D.transform.rotation;
-		leftHand.rigidbody2D.transform.rotation = mainBody.rigidbody2D.transform.rotation;
-		mainBody.rigidbody2D.AddForce(new Vector2(0,0)); //this forces the screen to update his rotation
+		rightHand.GetComponent<Rigidbody2D>().transform.rotation = mainBody.GetComponent<Rigidbody2D>().transform.rotation;
+		leftHand.GetComponent<Rigidbody2D>().transform.rotation = mainBody.GetComponent<Rigidbody2D>().transform.rotation;
+		mainBody.GetComponent<Rigidbody2D>().AddForce(new Vector2(0,0)); //this forces the screen to update his rotation
 
 		//load environment variables like gravity, game speed, etc.
 		Physics2D.gravity = new Vector2(gravityX, gravityY);
@@ -165,9 +165,9 @@ public class FileSaving{
 	public void storeCurrentTask()
 	{
 		//store position/rotation of body, hands
-		bodyX = mainBody.rigidbody2D.transform.position.x;
-		bodyY = mainBody.rigidbody2D.transform.position.y;
-		bodyRotation = mainBody.rigidbody2D.transform.rotation.eulerAngles.z;
+		bodyX = mainBody.GetComponent<Rigidbody2D>().transform.position.x;
+		bodyY = mainBody.GetComponent<Rigidbody2D>().transform.position.y;
+		bodyRotation = mainBody.GetComponent<Rigidbody2D>().transform.rotation.eulerAngles.z;
 		rightHandX = rightHand.transform.position.x;
 		rightHandY = rightHand.transform.position.y;
 		leftHandX = leftHand.transform.position.x;
