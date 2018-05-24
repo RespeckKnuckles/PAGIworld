@@ -54,7 +54,7 @@ public class dispenserScript : worldObject {
 					}
 					else{
 						Instantiate(poison);
-						poison.rigidbody2D.position = gameObject.transform.position;
+						poison.GetComponent<Rigidbody2D>().position = gameObject.transform.position;
 						poison.transform.position += new Vector3(dispense_offset.x, dispense_offset.y, dispense_offset.z);
 					}
 					extC++;
