@@ -23,12 +23,13 @@ public class worldObjectSavedToFile
 		//store the world object's relevant details
 		prefabID = w.prefabID;
 		if (w.GetComponents<Rigidbody2D> ().Length > 0) {
-			positionX = w.GetComponent<Rigidbody2D>().transform.position.x;
-			positionY = w.GetComponent<Rigidbody2D>().transform.position.y;
-			rotation = w.GetComponent<Rigidbody2D>().transform.rotation.eulerAngles.z;
+			positionX = w.GetComponent<Rigidbody2D> ().transform.position.x;
+			positionY = w.GetComponent<Rigidbody2D> ().transform.position.y;
+			rotation = w.GetComponent<Rigidbody2D> ().transform.rotation.eulerAngles.z;
 		}
 		//Debug.Log ("rotation of " + w.objectName + " is saved as " + rotation.ToString ());
 		objName = w.objectName;
+		//w.saveVals ();
 		specialValues = w.valuesToSave;
 	}
 }
@@ -38,7 +39,8 @@ public class worldObjectSavedToFile
 /// </summary>
 [System.Serializable()]
 public class FileSaving{
-	
+
+
 	public string taskDescriptor = "";
 	public float bodyX, bodyY, bodyRotation;
 	public float leftHandX, leftHandY;
@@ -121,22 +123,31 @@ public class FileSaving{
 			bool loaded = false;
 			foreach (worldObject s in Resources.LoadAll<worldObject>("Prefabs"))
 			{
-				if (s.prefabID==wo.prefabID)
-				{
-					 worldObject newObj =  MonoBehaviour.Instantiate(s,//Resources.Load<GameObject>(wo.assetPath) 
-					                          new Vector3(wo.positionX, wo.positionY),
-					                          new Quaternion(0,0,wo.rotation,0)) as worldObject;
-					newObj.transform.rotation = Quaternion.Euler(0, 0, wo.rotation);
-					Debug.Log ("rotation of " + wo.objName + " is loaded as " + wo.rotation.ToString ());
+				if (s.prefabID == wo.prefabID && s.objectName == wo.objName) {
+					worldObject newObj = MonoBehaviour.Instantiate (s,//Resources.Load<GameObject>(wo.assetPath) 
+						                     new Vector3 (wo.positionX, wo.positionY),
+						                     new Quaternion (0, 0, wo.rotation, 0)) as worldObject;
+					
+					newObj.transform.rotation = Quaternion.Euler (0, 0, wo.rotation);
 					newObj.valuesToSave = wo.specialValues;
-					newObj.loadVals();
+					newObj.loadVals ();
+
 					loaded = true;					                     
 					break;
 				}
 			}
 			
-			if (!loaded)
-				Debug.Log("Couldn't load item " + wo.objName);
+			if (!loaded) {
+				// try to load the item as a custom object
+				customItemController cic = MonoBehaviour.Instantiate(mainBody.emptyblock, new Vector3(), new Quaternion()) as customItemController;
+				if (!cic.initialize ((string)wo.specialValues ["imagePath"], wo.objName, 
+					   new Vector2 ((float)wo.specialValues ["positionX"], (float)wo.specialValues ["positionY"]),
+					   (float)wo.specialValues ["rotation"], (float)wo.specialValues ["endorphins"],
+					   (float)wo.specialValues ["mass"], (int)wo.specialValues ["material"],
+					   (int)wo.specialValues ["kinematicStyle"])) {
+					Debug.Log ("Couldn't load item " + wo.objName);
+				}
+			}
 			
 		}//"Prefabs/food_and_pain/bacon"
 		

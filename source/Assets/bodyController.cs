@@ -713,22 +713,22 @@ public class bodyController : worldObject {
 					Debug.Log("Received command to create item");
 
 					Dictionary<string,System.Object> dd = (Dictionary<string,System.Object>)firstMsg.detail;
+					string[] clientArgs = firstMsg.otherStrings [0].Split (','); 
 					string wName = (string)dd["name"]; //firstMsg.otherStrings[0]; 
 					customItemController cic = Instantiate(emptyblock, new Vector3(), new Quaternion()) as customItemController;
 
-					//Debug.Log("MADE IT to bodyController func");
-					//if (!cic.initialize(firstMsg.stringContent, firstMsg.otherStrings[0], firstMsg.vectorContent, float.Parse(firstMsg.otherStrings[2]), 
-					//	float.Parse(firstMsg.otherStrings[3]), firstMsg.floatContent,
-					//	int.Parse(firstMsg.otherStrings[1]), int.Parse(firstMsg.otherStrings[4]) ))
-					if (!cic.initialize((string)dd["filePath"], wName, new Vector2((float)dd["x"], (float)dd["y"]),
-					               (float)dd["rotation"], (float)dd["endorphins"], (float)dd["mass"], (int)dd["friction"], (int)dd["kinematic"]))
+					if (!cic.initialize(firstMsg.stringContent, clientArgs[0], firstMsg.vectorContent,
+						float.Parse(clientArgs[2]), float.Parse(clientArgs[3]), firstMsg.floatContent,
+						int.Parse(clientArgs[1]), int.Parse(clientArgs[4])))
 					{
+						Destroy(cic.gameObject);
 						Debug.Log("file " + firstMsg.stringContent + " not found");
 						strToReturn = ErrorToJSON("createItem,"+wName+",FAILED,fileNotFound");
 						outgoingMessages.Add(strToReturn);
 					}
 					else
 					{
+						// get rid of all custom items in the scene that have the same name as this new item
 						while (customItems.ContainsKey(wName))
 						{
 							if (customItems[wName] != null)
@@ -740,10 +740,8 @@ public class bodyController : worldObject {
 						customItems.Add(wName,cic);
 						strToReturn = UpdateToJSON("createItem,"+wName+",OK\n");
 						outgoingMessages.Add(strToReturn);
-						//outgoingMessages.Add("createItem,"+(string)dd["name"]+",OK\n");
 					}
 
-					//Debug.Log("DONE in BodyController");
 				}
 				else if( firstMsg.messageType.CompareTo("say") == 0 ){//AIMessage.AIMessageType.say:
 					Debug.Log ("Received command to say " + firstMsg.stringContent);
@@ -935,7 +933,7 @@ public class bodyController : worldObject {
 					//outgoingMessages.Add(strToReturn + "\n");
 				}
 				
-				else if( firstMsg.messageType.CompareTo("loadTask") == 0 ){//AIMessage.AIMessageType.loadTask:
+				else if( firstMsg.messageType.CompareTo("loadTask") == 0 ){
 					Debug.Log("received message to load new task");
 					string finalMsg;
 					strToReturn = "loadTask," + firstMsg.stringContent.Trim();

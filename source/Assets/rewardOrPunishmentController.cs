@@ -39,7 +39,12 @@ public class rewardOrPunishmentController : worldObject {
 					sensorNum = i;
 			}
 			//Debug.Log("closest sensor was " + sensorNum);
-			GlobalVariables.outgoingMessages.Add("RD," + endorphins.ToString() + "," + sensorNum.ToString() + "\n");
+			string dummy = "RD," + endorphins.ToString() + "," + sensorNum.ToString();
+			MsgToAgent aceMsg = new MsgToAgent("Update",dummy);
+			string jsonMsg = JsonUtility.ToJson(aceMsg);
+			GlobalVariables.outgoingMessages.Add (jsonMsg);
+
+			//GlobalVariables.outgoingMessages.Add("RD," + endorphins.ToString() + "," + sensorNum.ToString() + "\n");
 			coll.gameObject.SendMessage("OnTouchedRewardOrPunishment", endorphins, SendMessageOptions.DontRequireReceiver);
 			
 			Cursor.visible = true;

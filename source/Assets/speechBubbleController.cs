@@ -9,6 +9,7 @@ public class speechBubbleController : worldObject {
 	Vector2 position; //in world coords
 	Vector2 topLeftPosition; //in screen point coordinates
 	Vector2 size; //in pixels
+	float scale;
 
 	public void initialize(string displayText, int timeout, Vector2 position)
 	{
@@ -17,16 +18,20 @@ public class speechBubbleController : worldObject {
 		//setup lifetime timeout
 		startTime = System.DateTime.Now;
 		endTime = startTime.Add (new System.TimeSpan (0, 0, timeout)); 
+
 		//estimate size of box based on text, and then resize and reposition
-		float scale = Mathf.Max (1.7f, 0.031f * (float)displayText.Length);
+		// the y scale doesnt need to grow as much as x scale, as adding room for a whole line takes up a lot of letters
+		scale = Mathf.Max (1.7f, 0.031f * (float)displayText.Length);
 		gameObject.transform.localScale = new Vector3 (scale, scale, 0);
 		Debug.Log ("new scale: " + scale);
 		size = new Vector2 (64f * scale, 40f * scale);
 
 		//update top-left position
-		this.position = position + new Vector2(0, scale*2.5f); //shift upwards so bottom edge is at the position. 4.2?
-		gameObject.GetComponent<Rigidbody2D>().position = this.position;
-		topLeftPosition = Camera.main.WorldToScreenPoint (this.position) - new Vector3 (size.x / 2, size.y / -2, 0);
+		//this.position = position + new Vector2(0, scale*2.5f); //shift upwards so bottom edge is at the position. 4.2?
+		transform.position = position + new Vector2(0, scale*2.5f); //shift upwards so bottom edge is at the position. 4.2?
+		//gameObject.GetComponent<Rigidbody2D>().position = this.position;
+		gameObject.GetComponent<Rigidbody2D>().position = transform.position;
+		topLeftPosition = Camera.main.WorldToScreenPoint (transform.position) - new Vector3 (size.x / 2, size.y / -2, 0);
 		Debug.Log (topLeftPosition);
 
 		objectName = "\"" + displayText.Replace ('"', '\'').Replace (',', ';') + "\"";
@@ -36,6 +41,7 @@ public class speechBubbleController : worldObject {
 	{
 		Color oldColor = GUI.color;
 		GUI.color = Color.black;
+		// check y values
 		GUI.Label(new Rect(topLeftPosition.x, (Screen.height - topLeftPosition.y), size.x, size.y), displayText);
 		GUI.color = oldColor;
 	}
@@ -50,5 +56,8 @@ public class speechBubbleController : worldObject {
 			//Debug.Log ("destroying");
 			Destroy (this.gameObject);
 		}
+		//update top-left position
+		topLeftPosition = Camera.main.WorldToScreenPoint (transform.position) - new Vector3 (size.x / 2, size.y / -2, 0);
+
 	}
 }

@@ -74,23 +74,14 @@ MDN/MPN - Convert MsgToAgent(type,content) to JSON and send
 //=============================================================================================================================
 	//=============================================================================================================================
 
-ADD/FIX - 
-	Positioning of say messages within speech bubble?
+5/30/18 - AE
+FIXED: 
+	Fixed an issue where custom created items wont have an endorphin level.
+	Fixed a bug where reporting endorphines is done through old AI messages instead of JSON
+	Fixed a bug where customItems were not being saved properly in task files
+	Fixed a bug where customItems were being loaded as bowling balls when loading a task file.
+	Fixed a bug where backgrounded custom objects would sometimes appear in the foreground. 
+	Fixed a bug where speech bubble text was drawn outside of speech bubbles.
+	Fixed a bug where speech bubble position ignored position defined by the command.
+	Fixed a bug where if an incorrect path to a custom object is given, a block will still be spawned.
 
-WARNINGS - removed initializations on the following:
-	bodycontroller 66, 47
-	worldObject 25
-
-TODO:
-	tidy up unity->agent sensor data
-		Vision Sensors
-		Touch Sensors
-		Map Sensors
-	UPDATE ALL DOCUMENTATION TO SUPPORT WHAT WE HAVE
-		Add in and double check return formats (unity->AI) for each command
-	test-test-test
-
-
-TEST THIS:
-	{"messageType":"setReflex","stringContent":"myCustomReflex","floatContent":0.0, 
-	"vectorContent":\{"x":0.0,"y":0.0\},"otherStrings":["testState;Sx|>|100"],"messages":[]\}}
